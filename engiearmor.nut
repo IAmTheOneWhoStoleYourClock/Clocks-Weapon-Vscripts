@@ -3,7 +3,7 @@
 //
 // Known issues:
 // 
-// mult_dmgtaken applies twice. mult_dmgtaken_active also might.
+// mult_dmgtaken I think breaks this. mult_dmgtaken_active also might.
 //
 
 // Ignores: All taunt damage, Stomp Damage (this is no spring loaded headgear), Map elements, and Killbinding
@@ -17,7 +17,6 @@ Constants.ETFDmgCustom.TF_DMG_CUSTOM_SUICIDE]
 //PrecacheModel("models/weapons/c_models/c_engineer_arms_iron_fist.mdl") //Grand design arm model. I'm just going to pull a Volvo and manually hard code this.
 
 local damageping = false
-local armorbreak = false
 local inflictorbuffer = null
 local hpbuffer = 0
 local nullvector = Vector(0,0,0)
