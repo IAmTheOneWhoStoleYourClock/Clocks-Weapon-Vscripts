@@ -1,0 +1,203 @@
+        "4437"
+		{
+			"name"						"TF_WEAPON_ENGIESWORD"
+			"prefab"					"weapon_wrench"
+			"item_class"				"tf_weapon_wrench"
+			"show_in_armory"			"1"
+			"anim_slot"	                "melee"
+
+			"propername"				"1"
+			"item_name_color"			"255 240 183 255"
+			"item_name"					"Grand design"
+			"item_type_name"			"Hammer and Armor"
+			"item_description"			"A bit of self improvement never hurt.
+
+Model: Hauu / IAmTheOneWhoStoleYourClock
+Wearable: GetGrenade"
+			"item_logname"				"granddesign"
+			"item_iconname"				"granddesign"
+			"image_inventory"			"backpack/weapons/w_models/w_granddesign"
+			"model_world"				"models/weapons/w_models/w_granddesign_engineer.mdl"
+			"model_player"				"models/weapons/v_models/v_granddesign_engineer.mdl"
+			"attach_to_hands"			"2"
+			"extra_wearables"			
+			{
+				"1" "models/workshop/player/items/engineer/sf14_iron_fist/sf14_iron_fist.mdl" // IMPORTANT: I DID NOT BOTHER WITH MAKING 4 TEAM SUPPORT FOR THESE! YES, THIS IS TEAM COLOURED FOR SOME REASON!
+				"2" "models/workshop/player/items/engineer/tw_engineerbot_armor/tw_engineerbot_armor.mdl" // I also might recommend exchanging this with the iron lung. I just haven't due to how the Inventorium operates.
+			}
+			"used_by_classes"
+			{
+				"engineer"				"1"
+			}
+			"static_attrs"
+			{
+				"unique weapon"							"1"
+				//"armor footsteps"						"10"
+				"engie armor display"					"0.5"
+				//"buildings upgrade cost bonus"			"-50"
+				"damage bonus DISPLAY ONLY"				"1.25"
+				"damage bonus HIDDEN"					"1.23"
+				"dmg taken from blast splash reduced"	"0.8" //Shouldn't break anything...?
+				//"no pda available"					"1"
+				"no sentry"								"1"
+				//"metal_pickup_decreased"				"0.8"
+				//"no metal from dispenser"				"1"
+				"dispenser healing received penalty"	"0.5"
+				"move speed penalty"					"0.85"
+				"fire rate penalty"						"1.2"
+				"is_a_sword"							"1"
+				"hidden separator"						"1"
+				"engie armor"							"0.5"
+				"engie armor ratio"						"2.5"
+				"mod sentrygun cost"					"10.888" //Nothing special, just 14-N + 15-O
+				//"no dispenser"						"1"
+				//"no teleporters"						"1"
+				//"building cost reduction"				"1000"
+				"custom hand viewmodel"		"models/weapons/c_models/c_engineer_arms_iron_fist.mdl" // A bit mangled, turns out a iron gauntlet isn't exactly something that fits over his normal one nicely.
+                // Also, you MIGHT need to make a preloader item for this for the client if you're hosting this on a server? The script might handle that though. Haven't checked.
+			}
+			"visuals" // Note that this uses custom sounds! sound/weapons/engiearmor contains armor damage sounds. At present they're HL2 metal hit sounds modified to be slightly louder.
+			{
+				"sound_melee_miss"		"Weapon_Sword.Swing"
+				"sound_melee_hit"		"Weapon_Sword.HitFlesh"
+				"sound_melee_hit_world"	"Weapon_Sword.HitWorld"
+				"sound_burst"			"Weapon_Sword.SwingCrit"
+			}
+			"mouse_pressed_sound"		"#ui/item_knife_large_pickup.wav"
+			"drop_sound"				"#ui/item_metal_weapon_drop.wav"
+		}
+
+        "17023"
+		{
+			"name"					"no pda available"
+			"description_string"	"Cannot use buildings"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+        "17651"
+		{
+			"name"					"engie armor display"
+			"description_string"	"Metal becomes armor, absorbing %s1%
+of all damage taken in a 5-2 ratio"
+			"description_format"	"value_is_additive_percentage"
+			"effect_type"			"positive"
+		}
+		"17652"
+		{
+			"name"					"no sentry"
+			"description_string"	"Cannot use sentry gun"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17653"
+		{
+			"name"					"no dispenser"
+			"description_string"	"Cannot use dispensers"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17654"
+		{
+			"name"					"no teleporters"
+			"description_string"	"Cannot use teleporters"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17655"
+		{
+			"name"					"engie armor"
+			"description_format"	"value_is_additive"
+			"hidden"				"1"
+			"effect_type"			"positive"
+		}
+		"17656"
+		{
+			"name"					"engie armor penalty"
+			"description_string"	"Armor resists %s1% less damage"
+			"description_format"	"value_is_additive_percentage"
+			"effect_type"			"negative"
+		}
+		"17657"
+		{
+			"name"					"engie armor ratio"
+			"description_format"	"value_is_percentage"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"17658"
+		{
+			"name"					"engie armor ratio bonus"
+			"description_string"	"Armor uses %s1% less metal"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17659"
+		{
+			"name"					"engie armor ratio penalty"
+			"description_string"	"Armor uses %s1% more metal"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"negative"
+		}
+		"17660"
+		{
+			"name"					"engie armor bonus"
+			"description_string"	"Armor resists %s1% more damage"
+			"description_format"	"value_is_additive_percentage"
+			"effect_type"			"positive"
+		}
+        "17663"
+		{
+			"name"					"no metal from dispenser"
+			"description_string"	"Cannot gain metal from dispensers"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17664"
+		{
+			"name"	"no metal from dispensers hidden VSCRIPT"
+			"attribute_class"	"no_metal_from_dispensers_while_active"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"stored_as_integer"	"1"
+		}
+		"17665"
+		{
+			"name"	"damage bonus DISPLAY ONLY"
+			"description_string"	"#Attrib_DamageDone_Positive"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+
+"EngieArmor.Break"
+{
+	"volume"		"0.98"
+	"soundlevel"	"SNDLVL_100dB" //The sound levels on these might be too high? Eh. Seemed fine from my testing.
+	"wave"			")weapons\engiearmor\metal_box_break1.wav"
+}
+"EngieArmor.ImpactHard"
+{
+	"soundlevel"	"SNDLVL_94dB"
+	"volume"		"1"
+	"pitch"			"98,100"
+	"rndwave"
+	{
+		"wave"	")weapons\engiearmor\metal_barrel_impact_hard1.wav"
+		"wave"	")weapons\engiearmor\metal_barrel_impact_hard2.wav"
+		"wave"	")weapons\engiearmor\metal_barrel_impact_hard3.wav"
+	}
+}
+"EngieArmor.ImpactSoft"
+{
+	"soundlevel"		"SNDLVL_89dB"
+	"volume"		"0.95"
+	"pitch"		"90,100"
+	"rndwave"
+	{
+		"wave"	")weapons\engiearmor\metal_barrel_impact_soft1.wav"
+		"wave"	")weapons\engiearmor\metal_barrel_impact_soft2.wav"
+		"wave"	")weapons\engiearmor\metal_barrel_impact_soft3.wav"
+	}
+}
