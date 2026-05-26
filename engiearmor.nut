@@ -18,7 +18,7 @@ Constants.ETFDmgCustom.TF_DMG_CUSTOM_SUICIDE]
 
 local damageping = false
 local armorbreak = false
-local weaponbuffer = null
+local inflictorbuffer = null
 local hpbuffer = 0
 local nullvector = Vector(0,0,0)
 
@@ -109,7 +109,7 @@ local nullvector = Vector(0,0,0)
 			if ((hpbuffer - (damage - damagereduced)) > 0) // If false, we are dead regardless of the armor. RIP. Don't deal the negative damage at all in this senario since it tends to mess up death stuff.
 			{
 				// Deal negative damage so the attacker still gets the right damage number. Hopefully.
-				player.TakeDamageEx(weaponbuffer, params.attacker, null, nullvector, nullvector, -damagereduced - 1, 0) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
+				player.TakeDamageEx(inflictorbuffer, params.attacker, null, nullvector, nullvector, -damagereduced - 1, 0) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
 				// (hInflictor, hAttacker, hWeapon, vecDamageForce, vecDamagePosition, flDamage, nDamageType)
 			}
 			if (remaining >= ceil(1*armorratio - 1))
@@ -148,7 +148,7 @@ function OnTakeDamage()
 		// Might still have some bugs. Oh well. Too bad ig. ¯\_(ツ)_/¯
 		damageping = true
 		hpbuffer = self.GetHealth()
-		weaponbuffer = info.GetInflictor()
+		inflictorbuffer = info.GetInflictor()
 		//DispatchParticleEffect("arm_impact_sparks", info.GetReportedPosition(), nullvector, self) // Doesn't like working well with me. Maybe i'll try again some other time.
 	}
 }
