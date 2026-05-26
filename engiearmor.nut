@@ -106,17 +106,14 @@ local nullvector = Vector(0,0,0)
 			local armorratio = GetWearableAttribute(player, "engie armor ratio", 1)
 			local damagereduced = floor(min(damage*armorprotection, armor/armorratio))
 			local remaining = armor - (damagereduced*armorratio)
-			printl(damagereduced)
-			printl(remaining)
 			if ((hpbuffer - (damage - damagereduced)) > 0) // If false, we are dead regardless of the armor. RIP. Don't deal the negative damage at all in this senario since it tends to mess up death stuff.
 			{
 				// Deal negative damage so the attacker still gets the right damage number. Hopefully.
 				player.TakeDamageEx(weaponbuffer, params.attacker, null, nullvector, nullvector, -damagereduced - 1, 0) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
+				// (hInflictor, hAttacker, hWeapon, vecDamageForce, vecDamagePosition, flDamage, nDamageType)
 			}
-			printl(ceil(1*armorratio - 1))
 			if (remaining >= ceil(1*armorratio - 1))
 			{
-				printl("ran321")
 				player.SetAmmoCount(3,remaining)
 				if (damage > 50) //Arbitrary.
 				{
@@ -129,10 +126,8 @@ local nullvector = Vector(0,0,0)
 			}
 			else if (damagereduced > 0) //It should never be... but just in case.
 			{
-				printl("ran123")
 				player.SetAmmoCount(3,0)
 				player.EmitSound("EngieArmor.Break")
-				// (hInflictor, hAttacker, hWeapon, vecDamageForce, vecDamagePosition, flDamage, nDamageType)
 			}
 			hpbuffer = 0
 		}
@@ -141,12 +136,12 @@ local nullvector = Vector(0,0,0)
 
 __CollectGameEventCallbacks(MyEventTable2)
 
-Entities.EnableEntityListening()
+Entities.EnableEntityListening() //Don't know if this is needed but whatever.
 
 function OnTakeDamage()
 {
 	local armorprotection = GetWearableAttribute(self, "engie armor", 0)
-	// Don't run this if we don't have armor, It's a damage source we shouldn't be touching (and stomps), or if it's fall damage, drowning damage, train damage, and sawblade damage. Also don't run it if we are already out of armor.
+	// Don't run this if we don't have armor, It's a damage source we shouldn't be touching (and stomps), or if it's fall damage, drowning damage, train damage, and sawblade damage.
 	if (!damageping && armorprotection > 0 && IGNOREDDAMAGE.find(info.GetDamageCustom()) == null && !HasMatchingFlags(info.GetDamageType(), 606256) && self.GetAmmoCount(3) != 0 && info.GetWeapon())
 	{
 		// This is janky, but after much testing, I've found this to be the best way to get this working.
@@ -154,7 +149,7 @@ function OnTakeDamage()
 		damageping = true
 		hpbuffer = self.GetHealth()
 		weaponbuffer = info.GetInflictor()
-		DispatchParticleEffect("arm_impact_sparks", info.GetReportedPosition(), nullvector, self)
+		//DispatchParticleEffect("arm_impact_sparks", info.GetReportedPosition(), nullvector, self) // Doesn't like working well with me. Maybe i'll try again some other time.
 	}
 }
 
