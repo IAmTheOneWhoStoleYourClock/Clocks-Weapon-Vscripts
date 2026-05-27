@@ -9,40 +9,61 @@
 
 __CollectGameEventCallbacks(EngieSkeletonsEventTable)
 
-local firepoint = Vector(0,0,-26)
+firepoint <- Vector(0,100,0)
 local skeletonsoffun = null
 local skeletonspos = null
 local heretickill = false
+local skeletonpoulation = array(MaxPlayers(), 0)
+local summoning = false
 
 function PlayerRunCommand()
 {
 	if (HasMatchingFlags(self.GetButtons(), 2048))
 	{
 		local weapon = self.GetActiveWeapon()
-		if (weapon.NextSecondaryAttack() <= Time())
+		local skeletoncap = weapon.GetAttribute("engie skeletons", 5)
+		if (weapon.NextSecondaryAttack() <= Time() && skeletoncap > 0)
 		{
 			weapon.SetNextSecondaryAttack(Time() + 2)
 			local ammocount = self.GetAmmoCount(3)
-			if (ammocount >= 50)
+			local skeletoncost = weapon.GetAttribute("engie skeleton cost", 60)
+			if (ammocount >= skeletoncost)
 			{
-				self.SetAmmoCount(3, ammocount - 50)
-				local spell = Entities.CreateByClassname("tf_projectile_spellspawnzombie")
-				NetProps.SetPropInt(spell, "m_iType", 1)
-				spell.SetOrigin(self.ShootPosition())
-				spell.SetModel("models/props_mvm/mvm_human_skull_collide.mdl")
-				spell.PhysicsInitNormal(2,8,false)
-				local newphysics = spell.GetPhysicsObject()
-				SetPhysVelocity(newphysics, self.GetEyeForward()*1000, firepoint)
-				//NetProps.SetPropEntity(spell, "m_hLauncher", self)
-				spell.SetThrower(self)
-				spell.SetOwner(self)
-				spell.AddContext("Owner", self.GetEntityIndex().tostring(), 0)
-				spell.SetTeam(self.GetTeam())
-				newphysics.EnableGravity(true)
-				printl(spell.GetOrigin())
-				//spell.AcceptInput("detonate", "", spell, spell.GetThrower())
-				EntFireByHandle(spell, "CallScriptFunction", "skeletonexplode", 2, null, null)
-				weapon.SendWeaponAnim(1)
+				local ownerindex = self.GetEntityIndex()
+				//Don't allow them to make too many skeletons
+				if (skeletonpoulation[ownerindex] < skeletoncap && !IsInFunc(self, "func_respawnroom"))
+				{
+					summoning = true
+					self.SetAmmoCount(3, ammocount - 60)
+					local spell = Entities.CreateByClassname("tf_projectile_spellspawnzombie")
+					NetProps.SetPropInt(spell, "m_iType", 1)
+					spell.SetOrigin(self.ShootPosition())
+					spell.SetModel("models/props_mvm/mvm_human_skull_collide.mdl")
+					spell.PhysicsInitNormal(2,8,false)
+					local newphysics = spell.GetPhysicsObject()
+					SetPhysVelocity(newphysics, self.GetEyeForward()*1000, self.GetEyeForward())
+					//NetProps.SetPropEntity(spell, "m_hLauncher", self)
+					spell.SetThrower(self)
+					spell.SetOwner(self)
+					local ownerindex = self.GetEntityIndex()
+					spell.AddContext("Owner", ownerindex.tostring(), 0)
+					spell.AddContext("Cost", skeletoncost.tostring(), 0)
+					spell.SetTeam(self.GetTeam())
+					//newphysics.EnableGravity(true)
+					spell.SetAbsAngles(self.GetAbsAngles())
+					//spell.AcceptInput("detonate", "", spell, spell.GetThrower())
+					EntFireByHandle(spell, "CallScriptFunction", "skeletonexplode", 2, null, null)
+					weapon.SendWeaponAnim(1)
+					summoning = false
+				}
+				else
+				{
+					EmitSoundOnClient("Player.UseDeny",self)
+				}
+			}
+			else
+			{
+				EmitSoundOnClient("Player.UseDeny",self)
 			}
 		}
 	}
@@ -86,7 +107,7 @@ Hooks.Add(this, "OnEntityCreated", function(entity)
 
 Hooks.Add(this, "OnEntityCreated", function(entity)
 {
-	OnEntityCreated(entity)
+	entity.SetContextThink("OnEntityCreated", OnEntityCreated, 0.01);
 }, "Skeletonsoffun" )
 
 function OnEntityCreated(entity)
@@ -95,15 +116,25 @@ function OnEntityCreated(entity)
 	{
 		if (skeletonsoffun && skeletonsoffun.GetContext("Owner") != "")
 		{
-			entity.SetOwner(EntIndexToHScript(skeletonsoffun.GetContext("Owner").tointeger()))
-			entity.AddContext("EngieSkele", "Yes", 0)
-			entity.ValidateScriptScope()
-			skeletonsoffun = null
+			if (IsInFunc(entity, "func_respawnroom")) //Prevent them from spawning in people's spawn rooms, because they just don't work there for some reason?
+			{
+				entity.Kill()
+			}
+			else
+			{
+				local ownerindex = skeletonsoffun.GetContext("Owner").tointeger()
+				entity.SetOwner(EntIndexToHScript(ownerindex))
+				entity.AddContext("EngieSkele", "Yes", 0)
+				skeletonpoulation[ownerindex] += 1
+				entity.ValidateScriptScope()
+				entity.AddContext("Owner", ownerindex.tostring(), 0)
+				skeletonsoffun = null
+			}
 		}
 	}
 	else if (entity.GetClassname() == "tf_projectile_spellspawnzombie")
 	{
-		if (heretickill)
+		if (heretickill && entity.GetOwner())
 		{
 			entity.Kill()
 		}
@@ -117,10 +148,79 @@ function OnDeath()
 		if (self.GetContext("EngieSkele") == "Yes")
 		{
 			heretickill = true
+			skeletonpoulation[self.GetContext("Owner").tointeger()] -= 1
+			self.AddContext("Counted", "yes", 0.1)
 		}
 		else
 		{
 			heretickill = false
 		}
 	}
+}
+
+function UpdateOnRemove() //Seperate from the other check just so that heretickill gets done at the right time.
+{
+	if (self.GetClassname() == "tf_zombie")
+	{
+		if (self.GetContext("EngieSkele") == "Yes" && self.GetContext("Counted") == "")
+		{
+			skeletonpoulation[self.GetContext("Owner").tointeger()] -= 1
+		}
+	}
+}
+
+function GetWearableAttribute(player, attribname, basenum)
+{
+	if (basenum != 0)
+	{
+		local returnvalue = basenum
+		for (local i = 0; i < 8; i++)
+		{
+			local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
+			if (held_weapon == null)
+				continue
+			returnvalue = held_weapon.GetAttribute(attribname, returnvalue)
+		}
+		for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
+		{
+			if (wearable.GetClassname() != "tf_wearable")
+				continue
+			returnvalue = wearable.GetAttribute(attribname, returnvalue)
+		}
+		returnvalue = player.GetCustomAttribute(attribname, returnvalue)
+		return returnvalue
+	}
+	else
+	{
+		local returnvalue = 0
+		for (local i = 0; i < 8; i++)
+		{
+			local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
+			if (held_weapon == null)
+				continue
+			returnvalue += held_weapon.GetAttribute(attribname, 0)
+		}
+		for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
+		{
+			if (wearable.GetClassname() != "tf_wearable")
+				continue
+			returnvalue += wearable.GetAttribute(attribname, 0)
+		}
+		returnvalue += player.GetCustomAttribute(attribname, 0)
+		return returnvalue
+	}
+}
+
+function IsInFunc(entity, funcname)
+{
+	local inside = false
+	local func = null
+	while ((func = Entities.FindByClassname(func, funcname)) && !inside)
+	{
+		if (func.IsTouching(entity))
+		{
+			inside = true
+		}
+	}
+	return inside
 }
