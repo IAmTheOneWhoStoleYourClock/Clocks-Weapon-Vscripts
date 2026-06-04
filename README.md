@@ -7,8 +7,8 @@ Any bugs? Let me know! Either make an issue or contact me on discord. (@theclock
 No 4 team asset support as of yet sadly. I am lazy.
 
 Current plugins:
-GF&A: Grenade fixes and additions, pretty self explanatory.
-engiearmor: Allows engineer to use his metal meter like armor, amoungst a couple of other engineer utility stats.
-engieskeletons (UNFINISHED, WAITING FOR TF2C UPDATE TO FIX SKELETONS): Spend metal to create a skeleton, simple as it gets.
-Might make this a custom building, but I'd need to make a custom buildings frame work for that first.
-BLSC: Allows you to modify the speed of the bison laser. Thrilling, I know.
+\nGF&A: Grenade fixes and additions, pretty self explanatory.
+\nengiearmor: Allows engineer to use his metal meter like armor, amoungst a couple of other engineer utility stats.
+\nengieskeletons (UNFINISHED, WAITING FOR TF2C UPDATE TO FIX SKELETONS): Spend metal to create a skeleton, simple as it gets.
+\nMight make this a custom building, but I'd need to make a custom buildings frame work for that first.
+\nBLSC: Allows you to modify the speed of the bison laser. Thrilling, I know.
