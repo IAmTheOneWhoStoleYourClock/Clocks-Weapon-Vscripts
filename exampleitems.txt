@@ -43,12 +43,12 @@ Wearable: GetGrenade"
 				//"metal_pickup_decreased"				"0.8"
 				//"no metal from dispenser"				"1"
 				"dispenser healing received penalty"	"0.5"
-				"move speed penalty"					"0.75"
+				"move speed penalty"					"0.8"
 				"fire rate penalty"						"1.2"
 				"is_a_sword"							"1"
 				"hidden separator"						"1"
 				"engie armor"							"0.5"
-				"engie armor ratio"						"2"
+				"engie armor ratio"						"2.5"
 				"mod sentrygun cost"					"10.888" //Nothing special, just 14-N + 15-O
 				//"no dispenser"						"1"
 				//"no teleporters"						"1"
@@ -78,7 +78,7 @@ Wearable: GetGrenade"
 		{
 			"name"					"engie armor display"
 			"description_string"	"Metal becomes armor, absorbing %s1%
-of all damage taken in a 2-1 ratio"
+of all damage taken in a 5-2 ratio"
 			"description_format"	"value_is_additive_percentage"
 			"effect_type"			"positive"
 		}
