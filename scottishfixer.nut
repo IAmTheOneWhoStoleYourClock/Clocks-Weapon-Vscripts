@@ -19,8 +19,6 @@ function EntitySpawnScottishFixer(entity)
 		return
 	}
 
-	local classname = entity.GetClassname()
-
 	if (entity.GetClassname() != "tf_projectile_pipe_remote")
 	{
 		return
