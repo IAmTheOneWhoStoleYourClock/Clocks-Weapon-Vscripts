@@ -139,6 +139,10 @@ Entities.EnableEntityListening() //Don't know if this is needed but whatever.
 
 function OnTakeDamage()
 {
+	if (!(self.GetClassname == "player") && self.IsPlayer())
+	{
+		return true
+	}
 	local armorprotection = GetWearableAttribute(self, "engie armor", 0)
 	// Don't run this if we don't have armor, It's a damage source we shouldn't be touching (and stomps), or if it's fall damage, drowning damage, train damage, and sawblade damage.
 	if (!damageping && armorprotection > 0 && IGNOREDDAMAGE.find(info.GetDamageCustom()) == null && !HasMatchingFlags(info.GetDamageType(), 606256) && self.GetAmmoCount(3) != 0 && info.GetWeapon())

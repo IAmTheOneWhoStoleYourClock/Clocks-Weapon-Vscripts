@@ -12,3 +12,4 @@ Current plugins:
 <br>engieskeletons (UNFINISHED, WAITING FOR TF2C UPDATE TO FIX SKELETONS): Spend metal to create a skeleton, simple as it gets.
 <br>Might make this a custom building, but I'd need to make a custom buildings frame work for that first.
 <br>BLSC: Allows you to modify the speed of the bison laser. Thrilling, I know.
+<br>NOTE TO FUTURE SELF: PLEASE UPDATE THIS WITH THE ACTUAL ATTRIBUTES THAT EACH OF THESE CONTAIN I'M TOO LAZY TO DO IT RN!
