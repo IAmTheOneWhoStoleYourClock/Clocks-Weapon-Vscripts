@@ -96,7 +96,7 @@ Wearable: GetGrenade"
 				"min_viewmodel_offset"		"10 -2 -5"
 				"banner speed"				"1.15" // How much faster (or slower) you go during the banner effect.
 				"banner rate"				"1.15" // How much faster (or slower) the banner charges.
-				//"banner effect"			"42"   // A additional effect that should get applied during the uber (index only!)
+				//"banner effect"			"42"   // An additional effect that should get applied during the uber (index only!)
 			}
 			"attributes"
 			{

@@ -53,7 +53,7 @@ MAXWEAPONS <- 8
 		if (hasbanner)
 		{
 			local bannercurr = player.GetContext("BannerCurr").tofloat()
-			local banneradjust = ((player.GetRageMeter() - bannercurr) * bannerrate) + bannercurr
+			local banneradjust = max(((player.GetRageMeter() - bannercurr) * bannerrate) + bannercurr, 100)
 			player.SetRageMeter(banneradjust)
 			player.AddContext("BannerCurr", banneradjust.tostring(), 0)
 		}
