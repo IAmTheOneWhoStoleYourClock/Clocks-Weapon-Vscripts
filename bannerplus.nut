@@ -30,14 +30,11 @@ MAXWEAPONS <- 8
 	{
 		local hasbanner = false
 		local player = GetPlayerFromUserID(params.attacker)
-		printl(player)
-		printl(params.attacker)
 		if (!player || !player.IsValid() || !player.IsPlayer() || player.IsRageDraining())
 		{
 			return
 		}
 		local bannerrate =  GetWearableAttribute(player, "banner rate", 1)
-		printl(bannerrate)
 		if (bannerrate == 1)
 		{
 			return
@@ -59,7 +56,6 @@ MAXWEAPONS <- 8
 			local banneradjust = ((player.GetRageMeter() - bannercurr) * bannerrate) + bannercurr
 			player.SetRageMeter(banneradjust)
 			player.AddContext("BannerCurr", banneradjust.tostring(), 0)
-			printl("ran")
 		}
 
 	}
