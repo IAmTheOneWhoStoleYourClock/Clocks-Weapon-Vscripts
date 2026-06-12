@@ -64,7 +64,7 @@ function RageThink(player)
 	if (hasbanner)
 	{
 		local bannercurr = player.GetContext("BannerCurr").tofloat()
-		local banneradjust = max(((player.GetRageMeter() - bannercurr) * bannerrate) + bannercurr, 100)
+		local banneradjust = min(((player.GetRageMeter() - bannercurr) * bannerrate) + bannercurr, 100)
 		player.SetRageMeter(banneradjust)
 	}
 }
