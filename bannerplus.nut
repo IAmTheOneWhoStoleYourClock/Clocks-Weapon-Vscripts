@@ -13,7 +13,6 @@ MAXWEAPONS <- 8
 	{
 		local player = GetPlayerFromUserID(params.buff_owner)
 		local weapon = player.GetActiveWeapon()
-		player.AddContext("BannerCurr", "0", 0)
 		local bannertime = GetWearableAttribute(player,"increase buff duration", 10)
 		local speedup = weapon.GetAttribute("banner speed", 1)
 		if (speedup != 1)
@@ -28,52 +27,48 @@ MAXWEAPONS <- 8
 	}
 	function OnGameEvent_player_hurt(params)
 	{
-		local hasbanner = false
 		local player = GetPlayerFromUserID(params.attacker)
 		if (!player || !player.IsValid() || !player.IsPlayer() || player.IsRageDraining())
 		{
 			return
 		}
-		local bannerrate =  GetWearableAttribute(player, "banner rate", 1)
-		if (bannerrate == 1)
-		{
-			return
-		}
-		for (local i = 0; i < MAXWEAPONS; i++)
-		{
-			local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
-			if (held_weapon == null)
-				continue
-			if (held_weapon.GetClassname() == "tf_weapon_buff_item")
-			{
-				hasbanner = true
-				break
-			}
-		}
-		if (hasbanner)
-		{
-			local bannercurr = player.GetContext("BannerCurr").tofloat()
-			local banneradjust = max(((player.GetRageMeter() - bannercurr) * bannerrate) + bannercurr, 100)
-			player.SetRageMeter(banneradjust)
-			player.AddContext("BannerCurr", banneradjust.tostring(), 0)
-		}
-
-	}
-	function OnGameEvent_player_spawn(params)
-	{
-		local player = GetPlayerFromUserID(params.userid)
-		player.AddContext("BannerCurr", "0", 0)
+		player.AddContext("BannerCurr", player.GetRageMeter().tostring(), 0)
+		player.SetContextThink("RageThink", RageThink, 0.0015)
 	}
 }
 
-__CollectGameEventCallbacks(BuffBannerEventTable)
 
-local player = Entities.FindByClassname(null, "player")
-while (player != null)
+function RageThink(player)
 {
-	player.AddContext("BannerCurr", player.GetRageMeter().tostring(), 0)
-	player = Entities.FindByClassname(player, "player")
+	if (player.GetRageMeter() == 0)
+	{
+		return
+	}
+	local bannerrate =  GetWearableAttribute(player, "banner rate", 1)
+	if (bannerrate == 1)
+	{
+		return
+	}
+	local hasbanner = false
+	for (local i = 0; i < MAXWEAPONS; i++)
+	{
+		local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
+		if (held_weapon == null)
+			continue
+		if (held_weapon.GetClassname() == "tf_weapon_buff_item")
+		{
+			hasbanner = true
+			break
+		}
+	}
+	if (hasbanner)
+	{
+		local bannercurr = player.GetContext("BannerCurr").tofloat()
+		local banneradjust = max(((player.GetRageMeter() - bannercurr) * bannerrate) + bannercurr, 100)
+		player.SetRageMeter(banneradjust)
+	}
 }
+__CollectGameEventCallbacks(BuffBannerEventTable)
 
 function GetWearableAttribute(player, attribname, basenum)
 {
