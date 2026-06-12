@@ -69,6 +69,74 @@ Wearable: GetGrenade"
 			"drop_sound"				"#ui/item_metal_weapon_drop.wav"
 		}
 
+		"3033"
+		{
+			"name"			"TF_WEAPON_BUFF"
+			"item_class"	"tf_weapon_buff_item"
+			"show_in_armory"	"1"
+			"item_type_name"	"#TF_Weapon_Battle_Banner"
+			"item_name"	"#TF_Unique_Achievement_SoldierBuff"
+			"item_description"	"When the blood gets flowing, I just can't help myself."
+
+			"item_slot"	"secondary"
+			"equip_region"	"back"
+			"anim_slot"	"melee"
+			"propername"	"1"
+
+			"image_inventory"	"backpack/weapons/c_models/c_buffpack/c_buffpack"
+			"model_player"	"models/weapons/c_models/c_bugle/c_bugle.mdl"
+			"attach_to_hands" "1"
+			"extra_wearable" "models/weapons/c_models/c_buffpack/c_buffpack.mdl"
+			"used_by_classes"
+			{
+				"soldier"	"1"
+			}
+			"static_attrs"
+			{
+				"min_viewmodel_offset"		"10 -2 -5"
+				"banner speed"				"1.15" // How much faster (or slower) you go during the banner effect.
+				"banner rate"				"1.15" // How much faster (or slower) the banner charges.
+				//"banner effect"			"42"   // A additional effect that should get applied during the uber (index only!)
+			}
+			"attributes"
+			{
+				"mod soldier buff type"
+				{
+					"attribute_class"	"set_buff_type"
+					"value"				"1"
+				}
+				"allowed in medieval mode"
+				{
+					"attribute_class"	"allowed_in_medieval_mode"
+					"value"				"1"
+				}
+				"mod soldier buff range" // Unused vanilla attribute
+				{
+					"attribute_class"	"mod_soldier_buff_range"
+					"value"				"0"
+				}
+			}
+			"visuals"
+			{
+				"animation_replacement"
+				{
+					"ACT_MP_ATTACK_STAND_MELEE_SECONDARY"	"ACT_MP_ATTACK_STAND_ITEM1_SECONDARY"
+					"ACT_MP_ATTACK_CROUCH_MELEE_SECONDARY"	"ACT_MP_ATTACK_STAND_ITEM1_SECONDARY"
+				}
+			}
+			"mouse_pressed_sound"	"ui/item_pack_pickup.wav"
+			"drop_sound"		"ui/item_pack_drop.wav"
+		}
+
+		"5277"
+		{
+			"name"		"mod soldier buff range"
+			"attribute_class"		"mod_soldier_buff_range"
+			"description_format"		"value_is_percentage"
+			"hidden"		"1"
+			"effect_type"		"negative"
+			"stored_as_integer"		"0"
+		}
         "17023"
 		{
 			"name"					"no pda available"
@@ -169,6 +237,30 @@ of all damage taken in a 5-2 ratio"
 			"description_string"	"#Attrib_DamageDone_Positive"
 			"description_format"	"value_is_percentage"
 			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17666"
+		{
+			"name"	"banner rate"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17667"
+		{
+			"name"	"banner speed"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17668"
+		{
+			"name"	"banner effect"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
 			"effect_type"	"positive"
 			"stored_as_integer"	"0"
 		}
