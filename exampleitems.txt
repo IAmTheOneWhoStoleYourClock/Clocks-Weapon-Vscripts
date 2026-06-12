@@ -1,9 +1,9 @@
         "4437"
 		{
 			"name"						"TF_WEAPON_ENGIESWORD"
-			"prefab"					"weapon_wrench"
 			"item_class"				"tf_weapon_wrench"
 			"show_in_armory"			"1"
+			"item_slot"					"melee"
 			"anim_slot"	                "melee"
 
 			"propername"				"1"
@@ -31,7 +31,6 @@ Wearable: GetGrenade"
 			}
 			"static_attrs"
 			{
-				"unique weapon"							"1"
 				//"armor footsteps"						"10"
 				"engie armor display"					"0.5"
 				//"buildings upgrade cost bonus"			"-50"
@@ -45,8 +44,11 @@ Wearable: GetGrenade"
 				"dispenser healing received penalty"	"0.5"
 				"move speed penalty"					"0.8"
 				"fire rate penalty"						"1.2"
-				"is_a_sword"							"1"
+				"is_a_sword"							"0"
 				"hidden separator"						"1"
+				"melee range multiplier"				"1.5"
+				"single wep deploy time increased"		"1.5"
+				"single wep holster time increased"		"1.5"
 				"engie armor"							"0.5"
 				"engie armor ratio"						"2.5"
 				"mod sentrygun cost"					"10.888" //Nothing special, just 14-N + 15-O
@@ -173,14 +175,14 @@ of all damage taken in a 5-2 ratio"
 
 "EngieArmor.Break"
 {
-	"volume"		"0.98"
+	"volume"		"0.96"
 	"soundlevel"	"SNDLVL_100dB" //The sound levels on these might be too high? Eh. Seemed fine from my testing.
 	"wave"			")weapons\engiearmor\metal_box_break1.wav"
 }
 "EngieArmor.ImpactHard"
 {
 	"soundlevel"	"SNDLVL_94dB"
-	"volume"		"1"
+	"volume"		"0.97"
 	"pitch"			"98,100"
 	"rndwave"
 	{
@@ -192,7 +194,7 @@ of all damage taken in a 5-2 ratio"
 "EngieArmor.ImpactSoft"
 {
 	"soundlevel"		"SNDLVL_89dB"
-	"volume"		"0.95"
+	"volume"		"0.93"
 	"pitch"		"90,100"
 	"rndwave"
 	{

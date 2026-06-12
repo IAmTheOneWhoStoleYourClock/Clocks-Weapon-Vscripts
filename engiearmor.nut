@@ -16,10 +16,11 @@ Constants.ETFDmgCustom.TF_DMG_CUSTOM_SUICIDE]
 
 //PrecacheModel("models/weapons/c_models/c_engineer_arms_iron_fist.mdl") //Grand design arm model. I'm just going to pull a Volvo and manually hard code this.
 
-local damageping = false
-local inflictorbuffer = null
-local hpbuffer = 0
-local nullvector = Vector(0,0,0)
+damageping <- false
+inflictorbuffer <- null
+hpbuffer <- 0
+nullvector <- Vector(0,0,0)
+MAXWEAPONS <- 8
 
 ::MyEventTable2 <- {
 	function OnGameEvent_player_spawn(params)
@@ -34,6 +35,7 @@ local nullvector = Vector(0,0,0)
 	function OnGameEvent_post_inventory_application(params)
 	{
 		local player = GetPlayerFromUserID(params.userid)
+		player.ValidateScriptScope()
 		if (GetWearableAttribute(player, "no sentry", 0) != 0)
 		{
 			local sentry = Entities.FindByClassname(null, "obj_sentrygun")
@@ -107,26 +109,28 @@ local nullvector = Vector(0,0,0)
 			local remaining = armor - (damagereduced*armorratio)
 			if ((hpbuffer - (damage - damagereduced)) > 0) // If false, we are dead regardless of the armor. RIP. Don't deal the negative damage at all in this senario since it tends to mess up death stuff.
 			{
+				printl("ran")
 				// Deal negative damage so the attacker still gets the right damage number. Hopefully.
 				player.TakeDamageEx(inflictorbuffer, params.attacker, null, nullvector, nullvector, -damagereduced - 1, 0) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
 				// (hInflictor, hAttacker, hWeapon, vecDamageForce, vecDamagePosition, flDamage, nDamageType)
-			}
-			if (remaining >= ceil(1*armorratio - 1))
-			{
-				player.SetAmmoCount(3,remaining)
-				if (damage > 50) //Arbitrary.
+			
+				if (remaining >= ceil(1*armorratio - 1))
 				{
-					player.EmitSound("EngieArmor.ImpactHard")
+					player.SetAmmoCount(3,remaining)
+					if (damage > 50) //Arbitrary.
+					{
+						player.EmitSound("EngieArmor.ImpactHard")
+					}
+					else
+					{
+						player.EmitSound("EngieArmor.ImpactSoft")
+					}
 				}
-				else
+				else if (damagereduced > 0) //It should never be... but just in case.
 				{
-					player.EmitSound("EngieArmor.ImpactSoft")
+					player.SetAmmoCount(3,0)
+					player.EmitSound("EngieArmor.Break")
 				}
-			}
-			else if (damagereduced > 0) //It should never be... but just in case.
-			{
-				player.SetAmmoCount(3,0)
-				player.EmitSound("EngieArmor.Break")
 			}
 			hpbuffer = 0
 		}
@@ -139,20 +143,20 @@ Entities.EnableEntityListening() //Don't know if this is needed but whatever.
 
 function OnTakeDamage()
 {
-	if (!(self.GetClassname == "player") && self.IsPlayer())
+	if (!(self.GetClassname() == "player") && self.IsPlayer())
 	{
 		return true
 	}
 	local armorprotection = GetWearableAttribute(self, "engie armor", 0)
 	// Don't run this if we don't have armor, It's a damage source we shouldn't be touching (and stomps), or if it's fall damage, drowning damage, train damage, and sawblade damage.
-	if (!damageping && armorprotection > 0 && IGNOREDDAMAGE.find(info.GetDamageCustom()) == null && !HasMatchingFlags(info.GetDamageType(), 606256) && self.GetAmmoCount(3) != 0 && info.GetWeapon())
+	if (!damageping && armorprotection > 0 && IGNOREDDAMAGE.find(info.GetDamageCustom()) == null && !(info.GetDamageType() & 606256) && self.GetAmmoCount(3) != 0 && info.GetWeapon())
 	{
 		// This is janky, but after much testing, I've found this to be the best way to get this working.
 		// Might still have some bugs. Oh well. Too bad ig. ¯\_(ツ)_/¯
 		damageping = true
 		hpbuffer = self.GetHealth()
 		inflictorbuffer = info.GetInflictor()
-		//DispatchParticleEffect("arm_impact_sparks", info.GetReportedPosition(), nullvector, self) // Doesn't like working well with me. Maybe i'll try again some other time.
+		DispatchParticleEffect("arm_detonate_sparks", info.GetDamagePosition(), nullvector, self)
 	}
 }
 
@@ -161,7 +165,7 @@ function GetWearableAttribute(player, attribname, basenum)
 	if (basenum != 0)
 	{
 		local returnvalue = basenum
-		for (local i = 0; i < 8; i++)
+		for (local i = 0; i < MAXWEAPONS; i++)
 		{
 			local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
 			if (held_weapon == null)
@@ -180,7 +184,7 @@ function GetWearableAttribute(player, attribname, basenum)
 	else
 	{
 		local returnvalue = 0
-		for (local i = 0; i < 8; i++)
+		for (local i = 0; i < MAXWEAPONS; i++)
 		{
 			local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
 			if (held_weapon == null)
@@ -200,7 +204,7 @@ function GetWearableAttribute(player, attribname, basenum)
 
 function AddWearerAttribute(player, attribname, value)
 {
-	for (local i = 0; i < 8; i++)
+	for (local i = 0; i < MAXWEAPONS8; i++) // Doesn't bother with wearables atm, have no reason to.
 	{
 		local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
 		if (held_weapon == null)
@@ -211,34 +215,17 @@ function AddWearerAttribute(player, attribname, value)
 
 function RemoveWearerAttribute(player, attribname)
 {
-	for (local i = 0; i < 8; i++)
+	for (local i = 0; i < MAXWEAPONS; i++)
 	{
 		local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
 		if (held_weapon == null)
 			continue
 		held_weapon.RemoveAttribute(attribname)
 	}
-}
-
-function HasMatchingFlags(a,b)
-{
-	local current = 1
-	local match = false
-	while (current < a || current < b)
+	for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
 	{
-		current *= 2
+		if (wearable.GetClassname() != "tf_wearable")
+			continue
+		wearable.RemoveAttribute(attribname)
 	}
-	while (current >= 1 && !match)
-	{
-		if ((a % current*2) - current >= 0)
-		{
-			if ((b % current*2) - current >= 0)
-			{
-				match = true
-			}
-		}
-		current *= 0.5
-	}
-
-	return match
 }
