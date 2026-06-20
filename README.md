@@ -14,4 +14,6 @@ Current plugins:
 <br>BLSC: Allows you to modify the speed of the bison laser. Thrilling, I know.
 <br>scottishfixer: Changes the model of the scottish resistance's stickbomb so it can be team coloured.
 <br>superammo: Allows setting ammo types beyond the normal limits of TF2
+<br>sandvichthrowteamyes: Thrown sandviches are now team coloured.
+<br>linkeditemID: Emulates the previous "linked item id" attribute
 <br>NOTE TO FUTURE SELF: PLEASE UPDATE THIS WITH THE ACTUAL ATTRIBUTES THAT EACH OF THESE CONTAIN I'M TOO LAZY TO DO IT RN!

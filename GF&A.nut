@@ -92,55 +92,6 @@ Convars.RegisterConvar("GFA_projdeteonatefrequency", "0.09", "How long the delay
 				params.inflictor = NetProps.GetPropEntity(params.inflictor, "m_hEffectEntity")
 				params.damage_custom = 0
 			}
-//////////////////////////////////// IF GRENADE DAMAGE IS FIXED, DELETE BETWEEN THESE TWO LINES!!! ////////////////////////////////
-			else if (WCD == -1)
-			{
-				return
-			}
-			else if (params.inflictor.GetContext("CurrentDamageForFix").tofloat() == damage) // If these are equal, this is roller damage, which is a 0.6 multiplier to base damage. Unlike attributes, this is NOT applied after this!
-			{
-				local altered = params.inflictor.GetContext("AlteredBase").tofloat()
-				if (altered > 1)
-				{
-					params.damage = (altered*0.6) * sqrt(damage/(altered*0.6)) * (params.damage/damage)
-				}
-				else
-				{
-					params.damage = (WCD*0.6) * sqrt(damage/(WCD*0.6)) * (params.damage/damage)
-				}
-			}
-			else
-			{
-				local altered = params.inflictor.GetContext("AlteredBase").tofloat()
-				if (altered > 1)
-				{
-					params.damage = altered * sqrt(damage/altered) * (params.damage/damage) // Base damage * Real base damage multiplier (Obtained by getting the square root of the current multiplier) * Percentage of damage splash damage reduces by
-				}
-				else
-				{
-					params.damage = (WCD) * sqrt(damage/WCD) * (params.damage/damage)
-				}
-			}
-		}
-		else if (params.inflictor.GetClassname() == "tf2c_projectile_grenade_cyclops" || params.inflictor.GetClassname() == "tf_projectile_pipe_remote")
-		{
-			// The wiki says it does 5 less damage on a bounce but it turns out that's actually a limitation of the blast radius penalty, it actually doesn't lose damage at all.
-			local damage = params.inflictor.GetDamage()
-			local altered = params.inflictor.GetContext("AlteredBase").tofloat()
-			if (altered > 1)
-			{
-				params.damage = altered * sqrt(damage/altered) * (params.damage/damage) // Base damage * Real base damage multiplier (Obtained by getting the square root of the current multiplier) * Percentage of damage splash damage reduces by
-			}
-			else if (WCD == -1)
-			{
-				return
-			}
-			else
-			{
-				local WCD = WEAPONCLASSBASEDAMAGE.rawget(params.weapon.GetClassname())
-				params.damage = WCD * sqrt(damage/WCD) * (params.damage/damage)
-			}
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		}
 		if (params.inflictor.GetContext("BombExplodedByRocket") == "ye")
 		{
@@ -179,23 +130,6 @@ function EntitySpawn(entity)
 
 	local weapon = entity.GetThrower().GetActiveWeapon()
 
-	if (SNIPERRIFLES.find(weapon.GetClassname()) != null)
-	{
-		local gorp = NetProps.GetPropFloat(weapon, "m_flChargedDamage")
-		if (gorp > 50)
-		{
-			entity.AddContext("AlteredBase", gorp.tostring(), 0)
-		}
-		else
-		{
-			entity.AddContext("AlteredBase", "0", 0)
-		}
-	}
-	else
-	{
-		entity.AddContext("AlteredBase", "0", 0)
-	}
-
 	if (NONEXPLODEYGRENADES.find(classname) != null)
 	{
 		weapon.AddAttribute("brick explodes", 0, 0) // Just in case people can't read
@@ -224,7 +158,7 @@ function EntitySpawn(entity)
 	{
 		// Unfortunately, bomblets do not remember their creators, so we have to keep track of which mirv this player most recently exploded.
 		// I dont think it's possible to mess this up? Even if it is, it should require a level of precision that would only ever come up intentionally and in extremely neiche circumstances.
-		local bomb = Entities.FindByClassnameNearest("tf_weapon_grenade_mirv_projectile", entity.GetOrigin(),0.00001) // Interestingly, TF2 adds an additional 1 unit when spawning to the z axis, but TF2C seems to have removed this.
+		local bomb = Entities.FindByClassnameNearest("tf_weapon_grenade_mirv_projectile", entity.GetOrigin(),10) // Interestingly, TF2 adds an additional 1 unit when spawning to the z axis, but TF2C seems to have removed this.
 		if (bomb == null)
 		{
 			return
