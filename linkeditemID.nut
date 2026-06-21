@@ -8,10 +8,10 @@
 //
 
 ::LinkedItemIdTable <- {
-	function OnGameEvent_weapon_equipped(params)
+	function OnGameEvent_weapon_equipped(params) // Makes it so that you aren't forced to the weapon whenever you resupply
 	{
-		local player = EntIndexToHScript(params.entindex).GetOwner() // So that you aren't forced to the weapon whenever you resupply
-		if (player.GetActiveWeapon() == null)
+		local player = EntIndexToHScript(params.entindex).GetOwner()
+		if (player.GetActiveWeapon() == null || NetProps.GetPropInt(player.GetActiveWeapon(), "m_bLowered"))
 		{
 			player.AddContext("GlenQuagmireIDCNoClearContextNamesForYou", "g", 0.015)
 		}
