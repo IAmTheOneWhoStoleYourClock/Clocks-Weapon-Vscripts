@@ -164,7 +164,7 @@ function EntitySpawn(entity)
 			return
 		}
 		local weapondata = split(bomb.GetContext("MirvLogWeaponDataGrenadeFix1"),",")
-		local bombreplace = weapondata[1].tofloat()
+		local bombreplace = weapondata[0].tofloat()
 		if (bombreplace > 0)
 		{
 			local projectilename = ""
@@ -174,7 +174,7 @@ function EntitySpawn(entity)
 			}
 			else if (bombreplace <= 2)
 			{
-				projectilename = weapondata[2].slice(0,-4) + "_bomblet.mdl"
+				projectilename = weapondata[1].slice(0,-4) + "_bomblet.mdl"
 			}
 			else if (bombreplace <= 3)
 			{
@@ -182,7 +182,7 @@ function EntitySpawn(entity)
 			}
 			else
 			{
-				projectilename = weapondata[2]
+				projectilename = weapondata[1]
 			}
 
 			entity.SetModel(projectilename)
@@ -198,23 +198,14 @@ function EntitySpawn(entity)
 	else if (classname == "tf_weapon_grenade_mirv_projectile")
 	{
 		// TO DO: There's gotta be a better way of doing this...
-		EntFireByHandle(entity, "CallScriptFunction", "MirvFuseTime", 0, null, null) // Wait a frame because m_flDetonateTime isn't initialised yet.
 		// Just incase this weapon gets removed, we still want to be able to access the data it had, so compile it all together now and add it as contexts to the MIRV
-		local weapondata1 = weapon.GetAttribute("fuse bonus", 1).tostring() + ","  + weapon.GetAttribute("bomblet custom projectile", 0).tostring() + "," + weapon.GetWorldModel()
+		local weapondata1 = weapon.GetAttribute("bomblet custom projectile", 0).tostring() + "," + weapon.GetWorldModel()
 		local weapondata2 = weapon.GetAttribute("bomblet fuse bonus", 1).tostring() + "," + weapon.GetAttribute("bomblet damage", 1).tostring() + "," + weapon.GetAttribute("bomblet blast radius", 1).tostring() + "," + weapon.GetAttribute("bomblet fuse flat", 0).tostring() + "," + weapon.GetAttribute("mult bomblet velocity", 1).tostring()
-		local fuse = (NetProps.GetPropFloat(entity, "m_flDetonateTime") - Time()) * weapon.GetAttribute("fuse bonus", 1)
+		local fuse = NetProps.GetPropFloat(entity, "m_flDetonateTime") - Time()
 		entity.AddContext("MirvLogWeaponDataGrenadeFix1", weapondata1, fuse + 0.1)
 		entity.AddContext("MirvLogWeaponDataGrenadeFix2", weapondata2, fuse + 0.1)
 		entity.AddContext("MirvLogMirvModel", entity.GetModelName(), fuse + 0.1) // It will have forgotten its own model when we're going to be looking for it with the bomblets.
 		// entity.ValidateScriptScope() // Should be unnessesary?
-	}
-	else if (classname == "tf_projectile_pipe") // NOTE: THIS IS BOTH CANNON BALLS AND REGULAR PIPES!
-	{
-		local fuse = NetProps.GetPropFloat(entity, "m_flDetonateTime") - Time()
-		local fuseadjust = weapon.GetAttribute("fuse bonus", fuse)
-		if (fuseadjust != fuse){
-			NetProps.SetPropFloat(entity, "m_flDetonateTime", Time() + fuseadjust)
-		}
 	}
 	else if (classname == "tf_projectile_pipe_remote")
 	{
@@ -319,16 +310,6 @@ function GetSolidFlags(entity)
     }
 
 	return solidflags
-}
-
-function MirvFuseTime()
-{
-	// For reasons beyond my understanding, this specific grenade does not start with m_flDetonateTime initialised.
-	local fuse = NetProps.GetPropFloat(self, "m_flDetonateTime") - Time()
-	local fuseadjust = split(self.GetContext("MirvLogWeaponDataGrenadeFix1"),",")[0].tofloat()
-	if (fuseadjust != fuse){
-		NetProps.SetPropFloat(self, "m_flDetonateTime", Time() + (fuse * fuseadjust))
-	}
 }
 
 function BombletApplyAttribs()
