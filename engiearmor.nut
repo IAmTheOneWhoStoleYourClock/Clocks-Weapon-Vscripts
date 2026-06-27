@@ -14,7 +14,7 @@ Constants.ETFDmgCustom.TF_DMG_CUSTOM_TAUNTATK_ENGINEER_GUITAR_SMASH, Constants.E
 Constants.ETFDmgCustom.TF_DMG_CUSTOM_CROC, Constants.ETFDmgCustom.TF_DMG_CUSTOM_TAUNTATK_GASBLAST, Constants.ETFDmgCustom.TF_DMG_CUSTOM_TAUNTATK_TRICKSHOT,
 Constants.ETFDmgCustom.TF_DMG_CUSTOM_SUICIDE]
 
-//PrecacheModel("models/weapons/c_models/c_engineer_arms_iron_fist.mdl") //Grand design arm model. I'm just going to pull a Volvo and manually hard code this.
+PrecacheModel("models/weapons/c_models/c_engineer_arms_iron_fist.mdl") //Grand design arm model. I'm just going to pull a Volvo and manually hard code this.
 
 damageping <- false
 inflictorbuffer <- null
@@ -92,10 +92,10 @@ MAXWEAPONS <- 8
 	}
 	function OnGameEvent_player_hurt(params)
 	{
-		if (damageping)
+		local player = GetPlayerFromUserID(params.userid)
+		if (player.GetContext("damageping") == "yes")
 		{
-			local player = GetPlayerFromUserID(params.userid)
-			damageping = false
+			self.AddContext("damageping", "no", 0.1)
 			local damage = params.damageamount
 			if (damage <= 0)
 			{
@@ -107,11 +107,10 @@ MAXWEAPONS <- 8
 			local armorratio = GetWearableAttribute(player, "engie armor ratio", 1)
 			local damagereduced = floor(min(damage*armorprotection, armor/armorratio))
 			local remaining = armor - (damagereduced*armorratio)
-			if ((hpbuffer - (damage - damagereduced)) > 0) // If false, we are dead regardless of the armor. RIP. Don't deal the negative damage at all in this senario since it tends to mess up death stuff.
+			if ((player.GetContext("hpbuffer").tointeger() - (damage - damagereduced)) > 0) // If false, we are dead regardless of the armor. RIP. Don't deal the negative damage at all in this senario since it tends to mess up death stuff.
 			{
-				printl("ran")
 				// Deal negative damage so the attacker still gets the right damage number. Hopefully.
-				player.TakeDamageEx(inflictorbuffer, params.attacker, null, nullvector, nullvector, -damagereduced - 1, 0) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
+				player.TakeDamageEx(EntIndexToHScript(player.GetContext("inflictorbuffer").tointeger()), params.attacker, null, nullvector, nullvector, -damagereduced - 1, 0) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
 				// (hInflictor, hAttacker, hWeapon, vecDamageForce, vecDamagePosition, flDamage, nDamageType)
 			
 				if (remaining >= ceil(1*armorratio - 1))
@@ -132,7 +131,6 @@ MAXWEAPONS <- 8
 					player.EmitSound("EngieArmor.Break")
 				}
 			}
-			hpbuffer = 0
 		}
 	}
 }
@@ -153,9 +151,9 @@ function OnTakeDamage()
 	{
 		// This is janky, but after much testing, I've found this to be the best way to get this working.
 		// Might still have some bugs. Oh well. Too bad ig. ¯\_(ツ)_/¯
-		damageping = true
-		hpbuffer = self.GetHealth()
-		inflictorbuffer = info.GetInflictor()
+		self.AddContext("damageping", "yes", 0.1)
+		self.AddContext("hpbuffer", self.GetHealth().tostring(), 0.1)
+		self.AddContext("inflictorbuffer", info.GetInflictor().GetEntityIndex().tostring(), 0.1)
 		DispatchParticleEffect("arm_detonate_sparks", info.GetDamagePosition(), nullvector, self)
 	}
 }
