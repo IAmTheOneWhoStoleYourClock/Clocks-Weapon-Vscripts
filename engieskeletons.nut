@@ -15,13 +15,14 @@ local skeletonspos = null
 local heretickill = false
 local skeletonpoulation = array(MaxPlayers(), 0)
 local summoning = false
+local table = {}
 
 function PlayerRunCommand()
 {
 	if (HasMatchingFlags(self.GetButtons(), 2048))
 	{
 		local weapon = self.GetActiveWeapon()
-		local skeletoncap = weapon.GetAttribute("engie skeletons", 5)
+		local skeletoncap = weapon.GetAttribute("engie skeletons", 0)
 		if (weapon.NextSecondaryAttack() <= Time() && skeletoncap > 0)
 		{
 			weapon.SetNextSecondaryAttack(Time() + 2)
@@ -53,7 +54,11 @@ function PlayerRunCommand()
 					spell.SetAbsAngles(self.GetAbsAngles())
 					//spell.AcceptInput("detonate", "", spell, spell.GetThrower())
 					EntFireByHandle(spell, "CallScriptFunction", "skeletonexplode", 2, null, null)
-					weapon.SendWeaponAnim(1)
+					local viewmodel = NetProps.GetPropEntity(self, "m_hViewModel")
+					viewmodel.ResetSequence(8)
+					viewmodel.ResetSequence(11)
+					viewmodel.ResetSequenceInfo()
+					weapon.SetNextPrimaryAttack(Time() + 2)
 					summoning = false
 				}
 				else
@@ -119,16 +124,6 @@ function OnEntityCreated(entity)
 			if (IsInFunc(entity, "func_respawnroom")) //Prevent them from spawning in people's spawn rooms, because they just don't work there for some reason?
 			{
 				entity.Kill()
-			}
-			else
-			{
-				local ownerindex = skeletonsoffun.GetContext("Owner").tointeger()
-				entity.SetOwner(EntIndexToHScript(ownerindex))
-				entity.AddContext("EngieSkele", "Yes", 0)
-				skeletonpoulation[ownerindex] += 1
-				entity.ValidateScriptScope()
-				entity.AddContext("Owner", ownerindex.tostring(), 0)
-				skeletonsoffun = null
 			}
 		}
 	}
