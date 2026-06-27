@@ -18,7 +18,7 @@ __CollectGameEventCallbacks(WeaponGroupEventTable)
 
 function OnTakeDamage()
 {
-	if (!self.IsPlayer() || info.GetAttacker() == self)
+	if (!self.IsPlayer() || info.GetAttacker() == self || !info.GetWeapon())
 	{
 		return
 	}
