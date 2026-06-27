@@ -95,7 +95,7 @@ MAXWEAPONS <- 8
 		local player = GetPlayerFromUserID(params.userid)
 		if (player.GetContext("damageping") == "yes")
 		{
-			self.AddContext("damageping", "no", 0.1)
+			player.AddContext("damageping", "no", 0.1)
 			local damage = params.damageamount
 			if (damage <= 0)
 			{
@@ -147,7 +147,7 @@ function OnTakeDamage()
 	}
 	local armorprotection = GetWearableAttribute(self, "engie armor", 0)
 	// Don't run this if we don't have armor, It's a damage source we shouldn't be touching (and stomps), or if it's fall damage, drowning damage, train damage, and sawblade damage.
-	if (!damageping && armorprotection > 0 && IGNOREDDAMAGE.find(info.GetDamageCustom()) == null && !(info.GetDamageType() & 606256) && self.GetAmmoCount(3) != 0 && info.GetWeapon())
+	if (!damageping && armorprotection > 0 && IGNOREDDAMAGE.find(info.GetDamageCustom()) == null && !(info.GetDamageType() & 606256) && self.GetAmmoCount(3) != 0 && info.GetInflictor() && (info.GetWeapon() || info.GetInflictor().GetClassname() == "obj_sentrygun"))
 	{
 		// This is janky, but after much testing, I've found this to be the best way to get this working.
 		// Might still have some bugs. Oh well. Too bad ig. ¯\_(ツ)_/¯
