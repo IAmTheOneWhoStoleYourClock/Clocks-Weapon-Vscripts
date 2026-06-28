@@ -23,7 +23,7 @@ __CollectGameEventCallbacks(LinkedItemIdTable)
 Entities.EnableEntityListening()
 Hooks.Add(this, "OnEntityCreated", function(entity)
 {
-	entity.SetContextThink("EntitySpawnLinkedIDWearablesCatch", EntitySpawnLinkedIDWearablesCatch, 0.01); //Sadly there has to be a small delay here to let it initalize. This does mean that wearables finish processing after everything else.
+	entity.SetContextThink("EntitySpawnLinkedIDWearablesCatch", EntitySpawnLinkedIDWearablesCatch, 0.01); // Sadly there has to be a small delay here to let it initalize. This does mean that wearables finish processing after everything else.
 }, "EntitySpawnLinkedIDWearablesCatch" );
 
 function EntitySpawnLinkedIDWearablesCatch(entity)
@@ -51,15 +51,23 @@ function EntitySpawnLinkedEquipStuff(weapon)
 	local player = weapon.GetOwner()
 	local enabletactician = GetWearableAttribute(player, "tactician bonus enable", 0)
 	linkedid = weapon.GetAttribute("linked item id", 0)
+
+	// Ugh, if the weapon with tactian bonus is spawned AFTER (either via resupply or because you put it on a lower slot) we have to go through ALL OF THE WEAPONS AGAIN just to make sure we didn't miss anything.
 	if (weapon.GetAttribute("tactician bonus enable", 0))
 	{
 		for (local i = 0; i < 8; i++)
 		{
 			local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
-			printl(held_weapon)
 			if (held_weapon != null && held_weapon.GetAttribute("linked item id tactician", 0))
 			{
 				EntitySpawnLinkedEquipStuff(held_weapon)
+			}
+		}
+		for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
+		{
+			if (wearable.GetClassname() == "tf_wearable" && wearable.GetAttribute("linked item id tactician", 0))
+			{
+				EntitySpawnLinkedEquipStuff(wearable)
 			}
 		}
 	}
