@@ -7,74 +7,75 @@
 // Preventing automatically swapping to new weapons may cause conflicts with other scripts.
 //
 
+MAXWEAPONS <- 8
+
 ::LinkedItemIdTable <- {
-	function OnGameEvent_weapon_equipped(params) // Makes it so that you aren't forced to the weapon whenever you resupply
+	function OnGameEvent_weapon_equipped(params)
 	{
-		local player = EntIndexToHScript(params.entindex).GetOwner()
-		if (player.GetActiveWeapon() == null || NetProps.GetPropInt(player.GetActiveWeapon(), "m_bLowered"))
-		{
-			player.AddContext("GlenQuagmireIDCNoClearContextNamesForYou", "g", 0.015)
-		}
-		else if (player.GetContext("GlenQuagmireIDCNoClearContextNamesForYou") == "")
-		{
-			player.AddCustomAttribute("disable weapon switch", 1, 0.015)
-		}
-	}
-	function OnGameEvent_post_inventory_application(params)
-	{
-		local player = GetPlayerFromUserID(params.userid)
-		player.RemoveCustomAttribute("disable weapon switch")
-		local linkedid
-		local enabletactician = 0
-		local tacticianbuffer = []
-		local noswitchbuffer = []
-		for (local i = 0; i < 8; i++)
-		{
-			local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
-			if (held_weapon == null)
-				continue
-			held_weapon.ValidateScriptScope()
-			linkedid = held_weapon.GetAttribute("linked item id", 0)
-			if (linkedid != 0)
-			{
-				GivePlayerWeapon(player, WeaponsClassesList[held_weapon.GetAttribute("linked item class", 0)], linkedid)
-			}
-			linkedid = held_weapon.GetAttribute("linked item id tactician", 0)
-			if (linkedid != 0)
-			{
-				tacticianbuffer.append([linkedid, WeaponsClassesList[held_weapon.GetAttribute("linked item class", 0)]])
-			}
-			enabletactician += held_weapon.GetAttribute("tactician bonus enable", 0) // Do it like this in case a weapon wants to disable it for whatever reason
-		}
-		for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
-		{
-			if (wearable.GetClassname() != "tf_wearable")
-				continue
-			linkedid = wearable.GetAttribute("linked item id", 0)
-			if (linkedid != 0)
-			{
-				GivePlayerWeapon(player, WeaponsClassesList[wearable.GetAttribute("linked item class", 0)], linkedid)
-			}
-			linkedid = wearable.GetAttribute("linked item id tactician", 0)
-			if (linkedid != 0)
-			{
-				tacticianbuffer.append([linkedid, WeaponsClassesList[wearable.GetAttribute("linked item class", 0)]])
-			}
-			enabletactician += wearable.GetAttribute("tactician bonus enable", 0)
-		}
-		if (enabletactician > 0)
-		{
-			foreach (i in tacticianbuffer)
-			{
-				GivePlayerWeapon(player, i[1], i[0])
-			}
-		}
+		EntIndexToHScript(params.entindex).SetContextThink("EntitySpawnLinkedEquipStuff", EntitySpawnLinkedEquipStuff, 0.01);
 	}
 }
 
 Entities.EnableEntityListening()
 
 __CollectGameEventCallbacks(LinkedItemIdTable)
+
+Entities.EnableEntityListening()
+Hooks.Add(this, "OnEntityCreated", function(entity)
+{
+	entity.SetContextThink("EntitySpawnLinkedIDWearablesCatch", EntitySpawnLinkedIDWearablesCatch, 0.01); //Sadly there has to be a small delay here to let it initalize. This does mean that wearables finish processing after everything else.
+}, "EntitySpawnLinkedIDWearablesCatch" );
+
+function EntitySpawnLinkedIDWearablesCatch(entity)
+{
+	if (!entity || !entity.IsValid())
+	{
+		return
+	}
+
+	if (entity.GetClassname() == "tf_wearable" && NetProps.GetPropInt(entity, "m_AttributeManager.m_Item.m_iItemDefinitionIndex") != 65535) // The later is succifient to check if this is an extra wearable.
+	{
+		local eventable = { entindex = entity.GetEntityIndex() }
+		eventable.rawset("class", "tf_wearable") // Need to do it this way since I can't just put it in the table normally because class is a reserved keyword by squirrel
+		SendGlobalGameEvent("weapon_equipped", eventable)
+	}
+}
+
+function EntitySpawnLinkedEquipStuff(weapon)
+{
+	if (!weapon || !weapon.IsValid() || !weapon.IsWeapon())
+	{
+		return
+	}
+	local linkedid
+	local player = weapon.GetOwner()
+	local enabletactician = GetWearableAttribute(player, "tactician bonus enable", 0)
+	linkedid = weapon.GetAttribute("linked item id", 0)
+	if (weapon.GetAttribute("tactician bonus enable", 0))
+	{
+		for (local i = 0; i < 8; i++)
+		{
+			local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
+			printl(held_weapon)
+			if (held_weapon != null && held_weapon.GetAttribute("linked item id tactician", 0))
+			{
+				EntitySpawnLinkedEquipStuff(held_weapon)
+			}
+		}
+	}
+
+	if (linkedid != 0)
+	{
+		GivePlayerWeapon(player, WeaponsClassesList[weapon.GetAttribute("linked item class", 0)], linkedid)
+		return
+	}
+	linkedid = weapon.GetAttribute("linked item id tactician", 0)
+	if (linkedid != 0 && enabletactician > 0)
+	{
+		GivePlayerWeapon(player, WeaponsClassesList[weapon.GetAttribute("linked item class", 0)], linkedid)
+		return
+	}
+}
 
 function GivePlayerWeapon(player, classname, item_id)
 {
@@ -104,7 +105,6 @@ function GivePlayerWeapon(player, classname, item_id)
 		}
 		held_weapon.Destroy()
 		NetProps.SetPropEntityArray(player, "m_hMyWeapons", null, i)
-		break
 	}
 
 	player.Weapon_Equip(weapon)
