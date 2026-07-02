@@ -85,8 +85,9 @@ function OnTakeDamage()
 	if (cond)
 	{
 		local condtime = weapon.GetAttribute("taser cond apply full only duration", 0)
+		// Could also check if it has ammo, but this works fine.
 		local chargetime = NetProps.GetPropFloat(weapon,"m_flEffectBarRegenTime")
-		if (Time() < chargetime)
+		if (Time() > chargetime)
 		{
 			self.AddCondEx(cond, condtime, info.GetAttacker())
 		}
