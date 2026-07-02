@@ -143,7 +143,7 @@ Entities.EnableEntityListening() //Don't know if this is needed but whatever.
 
 function OnTakeDamage()
 {
-	if (!(self.GetClassname() == "player") && self.IsPlayer())
+	if (!(self.GetClassname() == "player") || !self.IsPlayer())
 	{
 		return true
 	}

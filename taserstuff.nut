@@ -9,6 +9,15 @@
 IncludeScript("lib/clocksutils.nut");
 
 ::TaserStuffEventTable <- {
+	function OnGameEvent_weapon_equipped(params)
+	{
+		local weapon = EntIndexToHScript(params.entindex)
+		if (weapon.GetClassname() == "tf2c_weapon_taser")
+		{
+			printl("RAN")
+			weapon.AddContext("rechargestarttime", Time().tostring(), 0)
+		}
+	}
 	function OnGameEvent_player_healed(params)
 	{
 		if(!("priority" in params))
@@ -20,6 +29,7 @@ IncludeScript("lib/clocksutils.nut");
 				return
 			}
 			local weapon = healer.GetActiveWeapon()
+			weapon.AddContext("rechargestarttime", Time().tostring(), 0)
 			local cap = weapon.GetAttribute("taser cap", 0)
 			if (cap)
 			{
@@ -47,3 +57,40 @@ IncludeScript("lib/clocksutils.nut");
 }
 
 __CollectGameEventCallbacks(TaserStuffEventTable)
+
+function OnTakeDamage()
+{
+	printl(info.GetDamageType() & 134217728)
+	if (!(self.GetClassname() == "player") || !self.IsPlayer() || !info.GetWeapon() || !(info.GetDamageType() & 134217728))
+	{
+		return true
+	}
+	printl(info.GetDamageType())
+	local weapon = info.GetWeapon()
+	local cond = weapon.GetAttribute("taser cond apply", 0)
+	if (cond)
+	{
+		local condtime = weapon.GetAttribute("taser cond apply duration", 0)
+		local chargetime = NetProps.GetPropFloat(weapon,"m_flEffectBarRegenTime")
+		local chargestarttime = weapon.GetContext("rechargestarttime").tofloat()
+		if (Time() < chargetime)
+		{
+			self.AddCondEx(cond, condtime * (Time() - chargestarttime.tofloat()) / (chargetime - chargestarttime.tofloat()), info.GetAttacker())
+		}
+		else
+		{
+			self.AddCondEx(cond, condtime, info.GetAttacker())
+		}
+	}
+	local condfullonly = weapon.GetAttribute("taser cond apply full only", 0)
+	if (cond)
+	{
+		local condtime = weapon.GetAttribute("taser cond apply full only duration", 0)
+		local chargetime = NetProps.GetPropFloat(weapon,"m_flEffectBarRegenTime")
+		if (Time() < chargetime)
+		{
+			self.AddCondEx(cond, condtime, info.GetAttacker())
+		}
+	}
+	weapon.AddContext("rechargestarttime", Time().tostring(), 0)
+}

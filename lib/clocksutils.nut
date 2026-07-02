@@ -50,7 +50,7 @@
 
 ::AddWearerAttribute <- function(player, attribname, value)
 {
-	for (local i = 0; i < MAXWEAPONS8; i++) // Doesn't bother with wearables atm, have no reason to.
+	for (local i = 0; i < MAXWEAPONS; i++) // Doesn't bother with wearables atm, have no reason to.
 	{
 		local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
 		if (held_weapon == null)
