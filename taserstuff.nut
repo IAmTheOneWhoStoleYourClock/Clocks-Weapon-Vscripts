@@ -14,7 +14,6 @@ IncludeScript("lib/clocksutils.nut");
 		local weapon = EntIndexToHScript(params.entindex)
 		if (weapon.GetClassname() == "tf2c_weapon_taser")
 		{
-			printl("RAN")
 			weapon.AddContext("rechargestarttime", Time().tostring(), 0)
 		}
 	}
