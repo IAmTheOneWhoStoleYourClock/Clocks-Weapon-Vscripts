@@ -6,6 +6,8 @@
 // None, which probably means it has some grevious issue I missed.
 //
 
+IncludeScript("lib/clocksutils.nut");
+
 ::WeaponGroupEventTable <- {
 	function OnGameEvent_player_spawn(params)
 	{

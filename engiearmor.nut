@@ -16,6 +16,8 @@ Constants.ETFDmgCustom.TF_DMG_CUSTOM_SUICIDE]
 
 PrecacheModel("models/weapons/c_models/c_engineer_arms_iron_fist.mdl") //Grand design arm model. I'm just going to pull a Volvo and manually hard code this.
 
+IncludeScript("lib/clocksutils.nut");
+
 damageping <- false
 inflictorbuffer <- null
 hpbuffer <- 0
@@ -155,75 +157,5 @@ function OnTakeDamage()
 		self.AddContext("hpbuffer", self.GetHealth().tostring(), 0.1)
 		self.AddContext("inflictorbuffer", info.GetInflictor().GetEntityIndex().tostring(), 0.1)
 		DispatchParticleEffect("arm_detonate_sparks", info.GetDamagePosition(), nullvector, self)
-	}
-}
-
-function GetWearableAttribute(player, attribname, basenum)
-{
-	if (basenum != 0)
-	{
-		local returnvalue = basenum
-		for (local i = 0; i < MAXWEAPONS; i++)
-		{
-			local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
-			if (held_weapon == null)
-				continue
-			returnvalue = held_weapon.GetAttribute(attribname, returnvalue)
-		}
-		for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
-		{
-			if (wearable.GetClassname() != "tf_wearable")
-				continue
-			returnvalue = wearable.GetAttribute(attribname, returnvalue)
-		}
-		returnvalue = player.GetCustomAttribute(attribname, returnvalue)
-		return returnvalue
-	}
-	else
-	{
-		local returnvalue = 0
-		for (local i = 0; i < MAXWEAPONS; i++)
-		{
-			local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
-			if (held_weapon == null)
-				continue
-			returnvalue += held_weapon.GetAttribute(attribname, 0)
-		}
-		for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
-		{
-			if (wearable.GetClassname() != "tf_wearable")
-				continue
-			returnvalue += wearable.GetAttribute(attribname, 0)
-		}
-		returnvalue += player.GetCustomAttribute(attribname, 0)
-		return returnvalue
-	}
-}
-
-function AddWearerAttribute(player, attribname, value)
-{
-	for (local i = 0; i < MAXWEAPONS8; i++) // Doesn't bother with wearables atm, have no reason to.
-	{
-		local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
-		if (held_weapon == null)
-			continue
-		held_weapon.AddAttribute(attribname, value, 0)
-	}
-}
-
-function RemoveWearerAttribute(player, attribname)
-{
-	for (local i = 0; i < MAXWEAPONS; i++)
-	{
-		local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
-		if (held_weapon == null)
-			continue
-		held_weapon.RemoveAttribute(attribname)
-	}
-	for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
-	{
-		if (wearable.GetClassname() != "tf_wearable")
-			continue
-		wearable.RemoveAttribute(attribname)
 	}
 }

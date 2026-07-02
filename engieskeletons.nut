@@ -1,3 +1,13 @@
+// This plugin was made without the assitance of AI, all stupidity is entirely on me.
+
+//
+// Known issues:
+// 
+// All of the things. This isn't done yet.
+//
+
+IncludeScript("lib/clocksutils.nut");
+
 ::EngieSkeletonsEventTable <- {
 	function OnGameEvent_player_spawn(params)
 	{
@@ -161,48 +171,6 @@ function UpdateOnRemove() //Seperate from the other check just so that hereticki
 		{
 			skeletonpoulation[self.GetContext("Owner").tointeger()] -= 1
 		}
-	}
-}
-
-function GetWearableAttribute(player, attribname, basenum)
-{
-	if (basenum != 0)
-	{
-		local returnvalue = basenum
-		for (local i = 0; i < 8; i++)
-		{
-			local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
-			if (held_weapon == null)
-				continue
-			returnvalue = held_weapon.GetAttribute(attribname, returnvalue)
-		}
-		for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
-		{
-			if (wearable.GetClassname() != "tf_wearable")
-				continue
-			returnvalue = wearable.GetAttribute(attribname, returnvalue)
-		}
-		returnvalue = player.GetCustomAttribute(attribname, returnvalue)
-		return returnvalue
-	}
-	else
-	{
-		local returnvalue = 0
-		for (local i = 0; i < 8; i++)
-		{
-			local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
-			if (held_weapon == null)
-				continue
-			returnvalue += held_weapon.GetAttribute(attribname, 0)
-		}
-		for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
-		{
-			if (wearable.GetClassname() != "tf_wearable")
-				continue
-			returnvalue += wearable.GetAttribute(attribname, 0)
-		}
-		returnvalue += player.GetCustomAttribute(attribname, 0)
-		return returnvalue
 	}
 }
 

@@ -6,6 +6,8 @@
 // This hyjacks the metal count in order to replenish replenishable super ammo types, meaning this breaks on engie. Not much to be done about that.
 //
 
+IncludeScript("lib/clocksutils.nut");
+
 ::SuperAmmoEventTable <- {
 	function OnGameEvent_post_inventory_application(params)
 	{
@@ -16,7 +18,7 @@
 			if (held_weapon == null)
 				continue
 			local superammotype = held_weapon.GetAttribute("super mod use custom ammo type", 0)
-			if (superammotype != 0)
+			if (superammotype > 5)
 			{
 				local superammomult = held_weapon.GetAttribute("super ammo mult", 1)
 				player.SetAmmoCount(superammotype, 200 * superammomult)
@@ -54,7 +56,7 @@
 function NOMETAL(self)
 {
 	NetProps.SetPropIntArray(self, "m_iAmmo", 0, 3)
-	player.SetAmmoCount(3, 200)
+	self.SetAmmoCount(3, 200)
 }
 
 __CollectGameEventCallbacks(SuperAmmoEventTable)

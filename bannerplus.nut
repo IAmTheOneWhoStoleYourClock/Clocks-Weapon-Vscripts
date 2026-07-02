@@ -6,6 +6,8 @@
 // None.
 //
 
+IncludeScript("lib/clocksutils.nut");
+
 PrecacheModel("models/weapons/c_models/c_samurai_soldier_arms.mdl")
 PrecacheModel("models/weapons/c_models/c_chest_buffbanner/c_chest_buffbanner.mdl")
 PrecacheModel("models/weapons/c_models/c_seige_buffbanner/c_seige_buffbanner.mdl")
@@ -14,6 +16,15 @@ PrecacheScriptSound(")player/pl_scout_dodge_can_drink.wav")
 
 MAXWEAPONS <- 8
 BannerBoomOffset <- Vector(0, 0, 30)
+LootText <- SpawnEntityFromTable("game_text", {
+	message = "If you're seeing this, something's gone wrong",
+	x = 0.9,
+	y = 0.8,
+	effect = 0,
+	color = "255 255 255",
+	fadein = 0.5,
+	holdtime = 9999.0
+});
 
 ::BuffBannerEventTable <- {
 	function OnGameEvent_round_start(params)
@@ -107,7 +118,7 @@ BannerBoomOffset <- Vector(0, 0, 30)
 		local duckrating = GetWearableAttribute(player,"banner heads", 0)
 		if (duckrating == 0)
 		{
-			if (player.GetContext("Loot") == "0")
+			if (player.GetContext("Loot") != "0")
 			{
 				player.RemoveCustomAttribute("halloween fire rate bonus")
 				player.RemoveCustomAttribute("halloween reload time decreased")
@@ -200,7 +211,7 @@ BannerBoomOffset <- Vector(0, 0, 30)
 	function OnGameEvent_player_spawn(params)
 	{
 		local player = GetPlayerFromUserID(params.userid)
-		if (player.GetContext("Loot") != "")
+		if (player.GetContext("Loot") == "")
 		{
 			player.AddContext("Loot", "0", 0)
 		}
@@ -308,48 +319,6 @@ function ExplodeThink2()
 }
 __CollectGameEventCallbacks(BuffBannerEventTable)
 
-function GetWearableAttribute(player, attribname, basenum)
-{
-	if (basenum != 0)
-	{
-		local returnvalue = basenum
-		for (local i = 0; i < MAXWEAPONS; i++)
-		{
-			local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
-			if (held_weapon == null)
-				continue
-			returnvalue *= held_weapon.GetAttribute(attribname, 1)
-		}
-		for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
-		{
-			if (wearable.GetClassname() != "tf_wearable")
-				continue
-			returnvalue *= wearable.GetAttribute(attribname, 1)
-		}
-		returnvalue *= player.GetCustomAttribute(attribname, 1)
-		return returnvalue
-	}
-	else
-	{
-		local returnvalue = 0
-		for (local i = 0; i < MAXWEAPONS; i++)
-		{
-			local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
-			if (held_weapon == null)
-				continue
-			returnvalue += held_weapon.GetAttribute(attribname, 0)
-		}
-		for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
-		{
-			if (wearable.GetClassname() != "tf_wearable")
-				continue
-			returnvalue += wearable.GetAttribute(attribname, 0)
-		}
-		returnvalue += player.GetCustomAttribute(attribname, 0)
-		return returnvalue
-	}
-}
-
 PrecacheParticleSystem("explosionTrail_seeds_mvm")
 PrecacheParticleSystem("fluidSmokeExpl_ring_mvm")
 
@@ -365,18 +334,4 @@ function ExplodeNowBanner(banner, owner)
 	pipe.GetDamageRadius()
 	NetProps.SetPropEntity(pipe, "m_hOriginalLauncher", owner) // Gives it the correct explosion effect.
 	pipe.AcceptInput("detonate", "", banner, owner)
-}
-
-::GivePlayerWeapon <- function(player, classname, item_id)
-{
-	local weapon = Entities.CreateByClassname(classname)
-	NetProps.SetPropInt(weapon, "m_AttributeManager.m_Item.m_iItemDefinitionIndex", item_id)
-	NetProps.SetPropBool(weapon, "m_AttributeManager.m_Item.m_bInitialized", true)
-	NetProps.SetPropBool(weapon, "m_bValidatedAttachedEntity", true)
-	weapon.SetTeam(player.GetTeam())
-	weapon.DispatchSpawn()
-
-	player.Weapon_Equip(weapon)
-
-	return weapon
 }

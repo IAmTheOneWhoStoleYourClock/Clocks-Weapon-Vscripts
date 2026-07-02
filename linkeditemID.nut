@@ -8,6 +8,7 @@
 //
 
 MAXWEAPONS <- 8
+IncludeScript("lib/clocksutils.nut");
 
 ::LinkedItemIdTable <- {
 	function OnGameEvent_weapon_equipped(params)
@@ -123,48 +124,6 @@ function GivePlayerWeapon(player, classname, item_id)
 	}
 
 	return weapon
-}
-
-function GetWearableAttribute(player, attribname, basenum)
-{
-	if (basenum != 0)
-	{
-		local returnvalue = basenum
-		for (local i = 0; i < MAXWEAPONS; i++)
-		{
-			local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
-			if (held_weapon == null)
-				continue
-			returnvalue *= held_weapon.GetAttribute(attribname, 1)
-		}
-		for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
-		{
-			if (wearable.GetClassname() != "tf_wearable")
-				continue
-			returnvalue *= wearable.GetAttribute(attribname, 1)
-		}
-		returnvalue *= player.GetCustomAttribute(attribname, 1)
-		return returnvalue
-	}
-	else
-	{
-		local returnvalue = 0
-		for (local i = 0; i < MAXWEAPONS; i++)
-		{
-			local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
-			if (held_weapon == null)
-				continue
-			returnvalue += held_weapon.GetAttribute(attribname, 0)
-		}
-		for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
-		{
-			if (wearable.GetClassname() != "tf_wearable")
-				continue
-			returnvalue += wearable.GetAttribute(attribname, 0)
-		}
-		returnvalue += player.GetCustomAttribute(attribname, 0)
-		return returnvalue
-	}
 }
 
 // organized in alphabetical order, NOTE THAT FUTURE WEAPON CLASSES WILL BE APPENDED TO THE END SO AS NOT TO BREAK EXISTING SCRIPTS!
