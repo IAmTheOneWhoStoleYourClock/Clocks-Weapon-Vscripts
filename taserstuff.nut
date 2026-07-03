@@ -17,6 +17,15 @@ IncludeScript("lib/clocksutils.nut");
 			weapon.AddContext("rechargestarttime", Time().tostring(), 0)
 		}
 	}
+	function OnGameEvent_player_hurt(params)
+	{
+		if("userid" in params && "priority" in params && params.priority == 5 && params.attacker == params.userid) //For some reason it's exclusively like this for this specific attribute.
+		{
+			local healer = GetPlayerFromUserID(params.attacker)
+			local weapon = healer.GetActiveWeapon()
+			healer.SetHealth(params.health + params.damageamount - (params.damageamount * weapon.GetAttribute("add give health to teammate on hit self scale", 1)))
+		}
+	}
 	function OnGameEvent_player_healed(params)
 	{
 		if(!("priority" in params))
@@ -59,12 +68,10 @@ __CollectGameEventCallbacks(TaserStuffEventTable)
 
 function OnTakeDamage()
 {
-	printl(info.GetDamageType() & 134217728)
 	if (!(self.GetClassname() == "player") || !self.IsPlayer() || !info.GetWeapon() || !(info.GetDamageType() & 134217728))
 	{
 		return true
 	}
-	printl(info.GetDamageType())
 	local weapon = info.GetWeapon()
 	local cond = weapon.GetAttribute("taser cond apply", 0)
 	if (cond)
