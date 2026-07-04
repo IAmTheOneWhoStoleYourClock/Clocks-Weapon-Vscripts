@@ -75,13 +75,13 @@ function EntitySpawnLinkedEquipStuff(weapon)
 
 	if (linkedid != 0)
 	{
-		GivePlayerWeapon(player, WeaponsClassesList[weapon.GetAttribute("linked item class", 0)], linkedid)
+		GivePlayerWeapon(player, WeaponsClassesListAlpha[weapon.GetAttribute("linked item class", 0)], linkedid)
 		return
 	}
 	linkedid = weapon.GetAttribute("linked item id tactician", 0)
 	if (linkedid != 0 && enabletactician > 0)
 	{
-		GivePlayerWeapon(player, WeaponsClassesList[weapon.GetAttribute("linked item class", 0)], linkedid)
+		GivePlayerWeapon(player, WeaponsClassesListAlpha[weapon.GetAttribute("linked item class", 0)], linkedid)
 		return
 	}
 }
