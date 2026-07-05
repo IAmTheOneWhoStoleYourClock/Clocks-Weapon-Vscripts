@@ -7,6 +7,20 @@
 //
 
 MAXWEAPONS <- 8
+ATTRIBSTOBECLEAREDWEARER <- array(MaxPlayers(), [])
+ATTRIBSTOBECLEARED <- array(MaxPlayers(), [])
+activator <- null //Otherwise it just decides it DOESN'T WANT TO SHOW UP THE FIRST TIME IT'S CALLED
+
+::PlayerCleanup <- {
+	function OnGameEvent_player_disconnect(params)
+	{
+		local index = GetPlayerFromUserID(params.userid).GetEntityIndex()
+		ATTRIBSTOBECLEAREDWEARER[index] = []
+		ATTRIBSTOBECLEARED[index] = []
+	}
+}
+
+__CollectGameEventCallbacks(PlayerCleanup)
 
 ::GetWearableAttribute <- function(player, attribname, basenum)
 {
@@ -75,6 +89,56 @@ MAXWEAPONS <- 8
 		if (wearable.GetClassname() != "tf_wearable")
 			continue
 		wearable.RemoveAttribute(attribname)
+	}
+}
+
+// Suprisingly a pain
+::AddTimedWearerAttribute <- function(player, attribname, value, time)
+{
+	local truetime = time + Time()
+	AddWearerAttribute(player, attribname, value) //Sadly, the float that's supposed to determine how long it lasts does not, infact, do that.
+	// "Wait the amount of time and then run the function" SHOULD NOT BE THIS MUCH OF A PAIN.
+	local playerarray = ATTRIBSTOBECLEAREDWEARER[player.GetEntityIndex()]
+	local i = 0
+	while (i < playerarray.len() && playerarray[i][1] < truetime)
+	{
+		i += 1
+	}
+	playerarray.insert(i,[attribname, truetime])
+	EntFireByHandle(player, "CallScriptFunction", "__RemoveTimedWearerAttribute", time, null, null)
+}
+
+// For those unfamiliar, __ before a functions means "DON'T USE THIS", so like, don't use this.
+::__RemoveTimedWearerAttribute <- function()
+{
+	local playerarray = ATTRIBSTOBECLEAREDWEARER[self.GetEntityIndex()]
+	local attribname = playerarray.remove(0)[0]
+	RemoveWearerAttribute(self, attribname)
+}
+
+::AddTimedAttribute <- function(weapon, attribname, value, time)
+{
+	local truetime = time + Time()
+	local player = weapon.GetOwner()
+	weapon.AddAttribute(attribname, value, 0) //Sadly, the float that's supposed to determine how long it lasts, does not, infact, do that.
+	// "Wait the amount of time and then run the function" SHOULD NOT BE THIS MUCH OF A PAIN.
+	local playerarray = ATTRIBSTOBECLEARED[player.GetEntityIndex()]
+	local i = 0
+	while (i < playerarray.len() && playerarray[i][1] < truetime)
+	{
+		i += 1
+	}
+	ATTRIBSTOBECLEARED[player.GetEntityIndex()].insert(i,[attribname, truetime])
+	EntFireByHandle(player, "CallScriptFunction", "__RemoveTimedAttribute", time, weapon, null)
+}
+
+// For those unfamiliar, __ before a functions means "DON'T USE THIS", so like, don't use this.
+::__RemoveTimedAttribute <- function()
+{
+	local attribname = ATTRIBSTOBECLEARED[self.GetEntityIndex()].remove(0)[0]
+	if (activator && activator.IsValid() && activator.IsWeapon())
+	{
+		activator.RemoveAttribute(attribname)
 	}
 }
 
