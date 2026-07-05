@@ -51,7 +51,6 @@ function ApplyBiteEffects()
 		return
 	}
 	local triggered = self.GetContext("triggered") != ""
-	printl(self.GetAttribute("special sandvich", 0))
 	switch (self.GetAttribute("special sandvich", 0))
 	{
 		case 1: // Dalokohs Bar, you know what this one does.
@@ -138,7 +137,6 @@ function FinishedEatingSandvichlander()
 {
 	self.AddContext("triggered", "", 0)
 	local owner = self.GetOwner()
-	printl(owner)
 	if (!owner || !owner.IsValid() || !owner.IsPlayer() || !owner.IsAlive())
 	{
 		return
@@ -180,6 +178,6 @@ function StopEatingEarly()
 	NetProps.SetPropFloat(self, "m_flNextPrimaryAttack", Time()) // So you switch off immediately
 	local owner = self.GetOwner()
 	owner.CancelTaunt()
-	printl(owner.GetWeapon(0))
+
 	owner.Weapon_Switch(owner.GetWeapon(0))
 }
