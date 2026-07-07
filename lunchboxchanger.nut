@@ -3,30 +3,33 @@
 //
 // Known issues:
 // 
-// None, which probably means it has some grevious issue I missed.
+// Lunchboxes are no longer counted as healthpacks for "health from packs decreased", being replaced with "healing from sandvich recieved" and "healing from sandvich recieved enemy". Account for this!
 //
 
 IncludeScript("lib/clocksutils.nut");
 
-PrecacheParticleSystem("superrare_beams1")
+MOSTRECENTHEAL <- array(MaxPlayers(), 0)
+PACKSTABLE <- {
+	item_healthkit_small = 0.2
+	item_healthkit_medium = 0.5
+	item_healthkit_full = 1
+	item_healthammokit = 0.5
+}
 
 ::DamageTypeOverrideEventTable <- {
 	function OnGameEvent_weapon_equipped(params)
 	{
 		local weapon = EntIndexToHScript(params.entindex)
 		weapon.ValidateScriptScope()
+		if (weapon.GetAttribute("item_meter_resupply_denied", 0))
+		{
+			EntFireByHandle(weapon.GetOwner(), "CallScriptFunction", "RidMeters", 0, null, null)
+		}
 	}
 	function OnGameEvent_post_inventory_application(params)
 	{
 		local player = GetPlayerFromUserID(params.userid)
 		player.RemoveCustomAttribute("disable weapon switch")
-		if (GetWearableAttribute(player, "item_meter_resupply_denied", 0))
-		{
-			for (local i = 0; i < 8; i++)
-			{
-				NetProps.SetPropFloatArray(player, "m_Shared.m_flItemChargeMeter", 0.1, i)
-			}
-		}
 		if (GetWearableAttribute(player, "grenades1_resupply_denied", 0))
 		{
 			NetProps.SetPropIntArray(player, "m_iAmmo", 0, 4)
@@ -37,12 +40,28 @@ PrecacheParticleSystem("superrare_beams1")
 		}
 		if (GetWearableAttribute(player, "special sandvich", 0) != 6) //There's definately a better way of doing this but I REALLY DON'T CARE RN
 		{
-			player.RemoveCustomAttribute("major move speed bonus")
+			player.RemoveCustomAttribute("swimming mastery")
 		}
+		if (GetWearableAttribute(player, "special sandvich", 0) != 20) //There's definately a better way of doing this but I REALLY DON'T CARE RN
+		{
+			player.RemoveCustomAttribute("regen bonus sandvichlander")
+		}
+	}
+	function OnGameEvent_player_healonhit(params)
+	{
+		MOSTRECENTHEAL[params.entindex] = params.amount
 	}
 }
 
 __CollectGameEventCallbacks(DamageTypeOverrideEventTable)
+
+function RidMeters()
+{
+	for (local i = 0; i < 8; i++)
+	{
+		NetProps.SetPropFloatArray(self, "m_Shared.m_flItemChargeMeter", 0.1, i)
+	}
+}
 
 function ApplyBiteEffects()
 {
@@ -77,7 +96,8 @@ function ApplyBiteEffects()
 			break;
 		case 5: // Bunny hop for 15 seconds. Again, cause it's funny.
 			hPlayer.AddCustomAttribute("auto jumping", 1, 15) 
-			hPlayer.AddCustomAttribute("duck jumping", 1, 15) 
+			hPlayer.AddCustomAttribute("duck jumping", 1, 15)
+			hPlayer.AddCustomAttribute("increased air control", 1.5, 15)
 			break;
 		case 6: // Swim in air sandvich, fairly typical. Lasts for 12 seconds.
 			hPlayer.AddCondEx(107, 12, self)
@@ -97,8 +117,8 @@ function ApplyBiteEffects()
 				self.AddContext("triggered", "yes", 0)
 			}
 			break;
-		case 9: // Regen Sandvich, gain 15 regen for 15 seconds. Also cancels the taunt early.
-			hPlayer.AddCustomAttribute("CARD: health regen", 15, 15) 
+		case 9: // Regen Sandvich, gain 15 regen for 20 seconds. Also cancels the taunt early.
+			hPlayer.AddCustomAttribute("CARD: health regen", 15, 20) 
 			if (!triggered)
 			{
 				EntFireByHandle(self, "CallScriptFunction", "StopEatingEarly", 1.3, null, null)
@@ -106,13 +126,72 @@ function ApplyBiteEffects()
 			}
 			break;
 		case 10: // Cancels the taunt immediately
-			NetProps.SetPropFloat(self, "m_flNextPrimaryAttack", Time()) // So you switch off immediately
+			NetProps.SetPropFloat(self, "m_flNextPrimaryAttack", Time() + 0.1) // So you switch off immediately
 			hPlayer.CancelTaunt()
 			break;
 		case 11: // Cancels the taunt slightly less than immediately, just in time to hear heavy say "nom", at normal speed.
 			if (!triggered)
 			{
 				EntFireByHandle(self, "CallScriptFunction", "StopEatingEarly", 0.42, null, null)
+				self.AddContext("triggered", "yes", 0)
+			}
+			break;
+		case 12: // Eat glass.
+			hPlayer.BleedPlayer(8)
+			if (!triggered)
+			{
+				EntFireByHandle(self, "CallScriptFunction", "FinishedEatingGlass", hPlayer.GetTauntRemoveTime() - Time(), null, null)
+				self.AddContext("triggered", "yes", 0)
+			}
+			break;
+		case 13: // Lifesteal sandvich. Gain the conchereror buff, but have the speed boost from it removed. Lasts 16 seconds.
+			if (!triggered)
+			{
+				EntFireByHandle(self, "CallScriptFunction", "FinishedLifestealSandvich", hPlayer.GetTauntRemoveTime() - Time(), null, null)
+				self.AddContext("triggered", "yes", 0)
+			}
+			break;
+		case 14: // Team Support Sandvich, heals allies.
+			hPlayer.AddCondEx(55, 1, self)
+			hPlayer.AddCustomAttribute("medigun healing received penalty", 0, 1) // Disable the healing from the effect itself, but keep healing from everything but mediguns. Good enough.
+			break;
+		case 15: // Big Sandvich, tranqs you and increases the ammount of damage you take by 15%.
+			hPlayer.AddCondEx(136, 8, self)
+			hPlayer.AddCustomAttribute("dmg taken increased", 1.15, 8)
+			break;
+		case 16: // Team Support Sandvich 2, your sandviches heal more for 2 seconds after using them. USE "custom lunchbox throwable type" "1" ON THE SANDVICH ITSELF!
+			if (!triggered) // TO DO: ADD A WAY TO HAVE MULTIPLE SANDVICHES AT ONCE TO GO WITH THIS!
+			{
+				self.AddAttribute("custom lunchbox throwable type", 2, 0)
+				AddAttributeAfterTime(self, "custom lunchbox throwable type", 1, 10)
+				EntFireByHandle(self, "CallScriptFunction", "Untrigger", hPlayer.GetTauntRemoveTime() - Time(), null, null)
+				self.AddContext("triggered", "yes", 0)
+			}
+			break;
+		case 17: // Glass Sandvich 2, take lots of damage (150 total) to move VERY fast for 8 seconds. USE "self dmg push force decreased"	"0" ON THE SANDVICH BECAUSE I CAN'T BE BOTHERED TO MAKE IT DO NO SELF KB!
+			hPlayer.BleedPlayerEx(8, 5, false, 0)
+			hPlayer.AddCustomAttribute("dmg taken increased", 1.15, 8)
+			hPlayer.AddCustomAttribute("major move speed bonus", 1.5, 8)
+			if (!triggered) // (hInflictor, hAttacker, hWeapon, vecDamageForce, vecDamagePosition, flDamage, nDamageType, nCustomDamageType)
+			{
+				hPlayer.TakeDamageCustom(self,hPlayer,self,hPlayer.GetOrigin(),hPlayer.GetOrigin(),16,0,0)
+				self.AddContext("triggered", "yes", 0)
+				EntFireByHandle(self, "CallScriptFunction", "Untrigger", hPlayer.GetTauntRemoveTime() - Time(), null, null)
+			}
+			break;
+		case 18: // Overhealing sandvich. Normal healing still applies, incase you want it to heal more damage than overheal. (And other technical reasons.)
+			local newhealth = min(hPlayer.GetHealth() + 30 * self.GetAttribute("lunchbox healing overheal",1), hPlayer.GetMaxHealth() * self.GetAttribute("lunchbox healing overheal cap",0) + self.GetAttribute("lunchbox healing overheal cap additive",0))
+			hPlayer.SetHealth(newhealth)
+		case 19: // Overhealing sandvich + Dalokohs Bar, like the good ol' days.
+			local newhealth = min(hPlayer.GetHealth() + 30 * self.GetAttribute("lunchbox healing overheal",1), hPlayer.GetMaxHealth() * self.GetAttribute("lunchbox healing overheal cap",0) + self.GetAttribute("lunchbox healing overheal cap additive",0))
+			hPlayer.AddCustomAttribute("hidden maxhealth non buffed", 50, 30) //Fun fact! This is just how the normal dalokohs bar works internally.
+			hPlayer.SetHealth(newhealth)
+		case 20: // Sandvichlander 2! Every time you eat it, gain more health regen. Also overheals.
+			local newhealth = min(hPlayer.GetHealth() + 30 * self.GetAttribute("lunchbox healing overheal",1), hPlayer.GetMaxHealth() * self.GetAttribute("lunchbox healing overheal cap",0) + self.GetAttribute("lunchbox healing overheal cap additive",0))
+			hPlayer.SetHealth(newhealth)
+			if (!triggered)
+			{
+				EntFireByHandle(self, "CallScriptFunction", "FinishedEatingSandvichlander2", hPlayer.GetTauntRemoveTime() - Time(), null, null)
 				self.AddContext("triggered", "yes", 0)
 			}
 			break;
@@ -167,6 +246,10 @@ function FinishedEatingBuffFood()
 {
 	self.AddContext("triggered", "", 0)
 	local owner = self.GetOwner()
+	if (!owner.IsPlayer() || !owner.IsAlive())
+	{
+		return
+	}
 	AddTimedWearerAttribute(owner,"CARD: damage bonus", 1.2, 8)
 	//AddTimedWearerAttribute(owner,"attach particle effect static", 4, 12) Particles are bugging out and I can't be bothered
 	owner.AddCondEx(36, 8, self)
@@ -175,9 +258,201 @@ function FinishedEatingBuffFood()
 function StopEatingEarly()
 {
 	self.AddContext("triggered", "", 0)
-	NetProps.SetPropFloat(self, "m_flNextPrimaryAttack", Time()) // So you switch off immediately
+	NetProps.SetPropFloat(self, "m_flNextPrimaryAttack", Time() + 0.1) // So you switch off immediately
 	local owner = self.GetOwner()
 	owner.CancelTaunt()
 
 	owner.Weapon_Switch(owner.GetWeapon(0))
+}
+
+function FinishedEatingGlass()
+{
+	self.AddContext("triggered", "", 0)
+	local owner = self.GetOwner()
+	if (!owner.IsPlayer() || !owner.IsAlive())
+	{
+		return
+	}
+	AddTimedWearerAttribute(owner,"bleeding duration", 8, 8)
+	owner.BleedPlayer(8)
+}
+
+function FinishedLifestealSandvich()
+{
+	self.AddContext("triggered", "", 0)
+	local owner = self.GetOwner()
+	if (!owner.IsPlayer || !owner.IsAlive())
+	{
+		return
+	}
+	owner.AddCondEx(29, 16, self)
+	owner.AddCustomAttribute("major move speed bonus", 0.7142857, 16)
+}
+
+function FinishedEatingSandvichlander2()
+{
+	self.AddContext("triggered", "", 0)
+	local owner = self.GetOwner()
+	if (!owner || !owner.IsValid() || !owner.IsPlayer() || !owner.IsAlive())
+	{
+		return
+	}
+	local regen = self.GetAttribute("sandvichlander regen", 0)
+	local regencap = self.GetAttribute("sandvichlander regen cap", 1)
+	owner.AddCustomAttribute("regen bonus sandvichlander", min(owner.GetCustomAttribute("regen bonus sandvichlander", 0) + regen,regencap), 0)
+}
+
+function Untrigger()
+{
+	self.AddContext("triggered", "", 0)
+}
+
+//
+// This part handles the thrown sandvich. Nothing too out of the ordinary here.
+//
+
+
+Entities.EnableEntityListening()
+Hooks.Add(this, "OnEntitySpawned", function(entity)
+{
+	entity.SetContextThink("EntitySpawnSandvichThrow", EntitySpawnSandvichThrow, 0.01);
+}, "EntitySpawnSandvichThrow" );
+
+function EntitySpawnSandvichThrow(entity)
+{
+	if (!entity || !entity.IsValid())
+	{
+		return
+	}
+
+	if (!startswith(entity.GetClassname(),"item_health"))
+	{
+		return
+	}
+
+	local owner = entity.GetOwner()
+	if(owner != null && owner.IsPlayer())
+	{
+		entity.SetSkin(owner.GetTeam() - 2)
+		// If it has this stat, allow the user to eat their own thrown sandvich.
+		if (GetWearableAttribute(owner, "eat thrown sandviches", 0) > 0)
+		{
+			entity.AddContext("TrueOwner", owner.GetEntityIndex().tostring(), 0)
+			entity.SetOwner(null)
+		}
+		entity.AddContext("IsSandvich", "yer", 0)
+		entity.ConnectOutput("OnPlayerPickup", "ThrownLunchboxAcquired")
+	}
+}
+
+Hooks.Add(this, "OnEntityDeleted", function(entity)
+{
+	ThrownLunchboxAcquired(entity)
+}, "ThrownLunchboxAcquired" );
+
+// TO DO: FIND A BETTER WAY OF DOING THIS!
+function ThrownLunchboxAcquired(self) // Yes, I'm well aware this isn't a mapbase hook and should isntead be entity, but this started as one and BOY do I not want to change this!
+{
+	if (self.GetContext("IsSandvich") != "yer")
+	{
+		return
+	}
+	local owner = self.GetOwner()
+	if (owner == Entities.First())
+	{
+		owner = EntIndexToHScript(self.GetContext("TrueOwner").tointeger())
+	}
+
+	// Find who even picked us up, Check our bounding box to see which player is even in it.
+	local pickeruper = Entities.FindByClassnameWithinBox(null, "player", self.GetBoundingMins() + self.GetOrigin(), self.GetBoundingMaxs() + self.GetOrigin())
+
+	// If the person who picked us up is the same as our owner (not our TRUE owner, our entity owner) then nothing happens, we just picked our sandvich back up.
+	if (pickeruper == self.GetOwner())
+	{
+		return
+	}
+
+	// We actually don't check this for much, pretty much everything we care about should be on wearer
+	local weapon = GetWeaponByClass(owner,"tf_weapon_lunchbox")
+
+	local oldhealth = pickeruper.GetHealth() - MOSTRECENTHEAL[pickeruper.GetEntityIndex()]
+	local newhealth
+	// However, if it's the same as our true owner, that means this is a thrown sandvich. Apply the thing. I guess.
+	if (pickeruper == owner)
+	{
+		newhealth = oldhealth + floor(((PACKSTABLE[self.GetClassname()] * pickeruper.GetMaxHealth()) * GetWearableAttribute(owner, "sandvich self healing", 1)) + GetWearableAttribute(owner, "sandvich self healing additive", 0))
+		printl(newhealth)
+
+		if (GetWearableAttribute(owner, "sandvich can overheal self", 0) > 0)
+		{
+			newhealth = min(newhealth,pickeruper.GetMaxHealth() + ((pickeruper.GetMaxHealth() * 0.5) * GetWearableAttribute(owner, "patient overheal penalty", 1)))
+		}
+		else
+		{
+			newhealth = min(newhealth,pickeruper.GetMaxHealth())
+		}
+
+		local cond = GetWearableAttribute(owner, "sandvich self cond", 0)
+		if (cond)
+		{
+			owner.AddCondEx(cond, GetWearableAttribute(owner, "sandvich self cond time", 0), self)
+		}
+	}
+	// If the teams differ, an opponent has stolen the precious sandvich!
+	else if (pickeruper.GetTeam() != owner.GetTeam())
+	{
+		newhealth = oldhealth + floor((((PACKSTABLE[self.GetClassname()] * pickeruper.GetMaxHealth()) * GetWearableAttribute(owner, "sandvich enemy healing", 1)) + GetWearableAttribute(owner, "sandvich enemy healing additive", 0))*GetWearableAttribute(pickeruper, "healing from sandvich recieved enemy", 1)*GetWearableAttribute(pickeruper, "health from healers reduced", 1))
+
+		if (GetWearableAttribute(owner, "sandvich can overheal enemy", 0) > 0)
+		{
+			newhealth = min(newhealth,pickeruper.GetMaxHealth() + ((pickeruper.GetMaxHealth() * 0.5) * GetWearableAttribute(owner, "patient overheal penalty", 1)))
+		}
+		else
+		{
+			newhealth = min(newhealth,pickeruper.GetMaxHealth())
+		}
+
+		local cond = GetWearableAttribute(owner, "sandvich enemy cond", 0)
+		if (cond)
+		{
+			owner.AddCondEx(cond, GetWearableAttribute(owner, "sandvich enemy cond time", 0), self)
+		}
+	}
+	// Then our allies have recieved the food. As is right.
+	else
+	{
+		newhealth = oldhealth + floor((((PACKSTABLE[self.GetClassname()] * pickeruper.GetMaxHealth()) * GetWearableAttribute(owner, "sandvich healing", 1)) + GetWearableAttribute(owner, "sandvich healing additive", 0))*GetWearableAttribute(pickeruper, "healing from sandvich recieved", 1)*GetWearableAttribute(pickeruper, "health from healers reduced", 1))
+
+		if (GetWearableAttribute(owner, "sandvich can overheal friend", 0) > 0)
+		{
+			newhealth = min(newhealth,pickeruper.GetMaxHealth() + ((pickeruper.GetMaxHealth() * 0.5) * GetWearableAttribute(owner, "patient overheal penalty", 1)))
+		}
+		else
+		{
+			newhealth = min(newhealth,pickeruper.GetMaxHealth())
+		}
+
+		local cond = GetWearableAttribute(owner, "sandvich friend cond", 0)
+		if (cond)
+		{
+			owner.AddCondEx(cond, GetWearableAttribute(owner, "sandvich friend cond time", 0), self)
+		}
+
+		switch (weapon.GetAttribute("special sandvich", 0))
+		{
+			case 9: // Regen Sandvich, gain 0.05 of max health in regen for 10 seconds.
+				pickeruper.AddCustomAttribute("CARD: health regen", ceil(pickeruper.GetMaxHealth() * 0.05), 10) 
+				break;
+		}
+	}
+
+	if (newhealth < oldhealth)
+	{
+		pickeruper.SetHealth(oldhealth)
+		pickeruper.TakeDamageEx(self, owner, GetWeaponByClass(owner,"tf_weapon_lunchbox"), NULLVECTOR, pickeruper.GetOrigin(), oldhealth - newhealth, 0)
+	}
+	else if (newhealth != pickeruper.GetHealth())
+	{
+		pickeruper.SetHealth(newhealth)
+	}
 }
