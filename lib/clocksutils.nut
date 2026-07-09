@@ -9,6 +9,8 @@
 MAXWEAPONS <- 8
 ATTRIBSTOBECLEAREDWEARER <- array(MaxPlayers(), [])
 ATTRIBSTOBECLEARED <- array(MaxPlayers(), [])
+ATTRIBSTOBEADDED <- array(MaxPlayers(), [])
+NULLVECTOR <- Vector(0,0,0)
 activator <- null //Otherwise it just decides it DOESN'T WANT TO SHOW UP THE FIRST TIME IT'S CALLED
 
 ::PlayerCleanup <- {
@@ -142,6 +144,32 @@ __CollectGameEventCallbacks(PlayerCleanup)
 	}
 }
 
+::AddAttributeAfterTime <- function(weapon, attribname, value, time)
+{
+	local truetime = time + Time()
+	local player = weapon.GetOwner()
+	// "Wait the amount of time and then run the function" SHOULD NOT BE THIS MUCH OF A PAIN.
+	local playerarray = ATTRIBSTOBEADDED[player.GetEntityIndex()]
+	local i = 0
+	while (i < playerarray.len() && playerarray[i][1] < truetime)
+	{
+		i += 1
+	}
+	ATTRIBSTOBEADDED[player.GetEntityIndex()].insert(i,[attribname, truetime, value])
+	EntFireByHandle(player, "CallScriptFunction", "__AddAttributeAfterTime", time, weapon, null)
+}
+
+// For those unfamiliar, __ before a functions means "DON'T USE THIS", so like, don't use this.
+::__AddAttributeAfterTime <- function()
+{
+	local attrib = ATTRIBSTOBEADDED[self.GetEntityIndex()].remove(0)
+
+	if (activator && activator.IsValid() && activator.IsWeapon())
+	{
+		activator.AddAttribute(attrib[0],attrib[2],0)
+	}
+}
+
 ::GetWeaponByDefIndex <- function(player, index)
 {
 	for (local i = 0; i < MAXWEAPONS; i++)
@@ -165,6 +193,22 @@ __CollectGameEventCallbacks(PlayerCleanup)
 		if (held_weapon == null)
 			continue
 		if (held_weapon.GetClassname() == WeaponsClassesListCode[index] || (index == 64 && held_weapon.GetClassname() == "tf_weapon_katana"))
+		{
+			return held_weapon
+		}
+	}
+	return null
+}
+
+
+::GetWeaponByClass <- function(player, weaponclass)
+{
+	for (local i = 0; i < MAXWEAPONS; i++)
+	{
+		local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
+		if (held_weapon == null)
+			continue
+		if (held_weapon.GetClassname() == weaponclass)
 		{
 			return held_weapon
 		}

@@ -3,7 +3,17 @@
 //
 // Known issues:
 // 
-// Lunchboxes are no longer counted as healthpacks for "health from packs decreased", being replaced with "healing from sandvich recieved" and "healing from sandvich recieved enemy". Account for this!
+// None, although with how much of a headache this gave me I'm sure there's something
+//
+
+//
+// DETECTING SANDVICH CONSUMPTION, UNFORTUNATELY, IS RIDICULOUSLY INEFFICENT. SET THIS TO FALSE TO TURN IT OFF ENTIRELY!
+//
+
+local sandvichdetectionon = true
+
+//
+// Okay back to buisness
 //
 
 IncludeScript("lib/clocksutils.nut");
@@ -15,6 +25,8 @@ PACKSTABLE <- {
 	item_healthkit_full = 1
 	item_healthammokit = 0.5
 }
+PLAYERBOUNDMAX <- Vector(16,16,0)
+PLAYERBOUNDMIN <- Vector(-16,-16,-72)
 
 ::DamageTypeOverrideEventTable <- {
 	function OnGameEvent_weapon_equipped(params)
@@ -341,101 +353,208 @@ function EntitySpawnSandvichThrow(entity)
 			entity.SetOwner(null)
 		}
 		entity.AddContext("IsSandvich", "yer", 0)
-		entity.ConnectOutput("OnPlayerPickup", "ThrownLunchboxAcquired")
+		if (sandvichdetectionon)
+		{
+			entity.SetThinkFunction("AreWeThereYet", 0)
+		}
+		entity.ValidateScriptScope()
+		entity.SetOrigin(entity.GetOrigin())
 	}
 }
 
-Hooks.Add(this, "OnEntityDeleted", function(entity)
+// Run this a mere EVERY. SINGLE. FRAME. No, there is not a better way to do this. (I think)
+// The reason we need to do this is because otherwise the visual feedback for healing gets messed up, and we can't properly detect getting picked up by somebody standing on us.
+function AreWeThereYet()
 {
-	ThrownLunchboxAcquired(entity)
-}, "ThrownLunchboxAcquired" );
+	if (!self || !self.IsValid())
+	{
+		return 9
+	}
+	local pickeruper = Entities.FindByClassname(null, "player")
+	while (pickeruper != null && (!TouchingBBox(self, pickeruper) || pickeruper == self.GetOwner() || !CanBeHealedByHealthKits(pickeruper)))
+	{
+		pickeruper = Entities.FindByClassname(pickeruper, "player")
+	}
 
-// TO DO: FIND A BETTER WAY OF DOING THIS!
-function ThrownLunchboxAcquired(self) // Yes, I'm well aware this isn't a mapbase hook and should isntead be entity, but this started as one and BOY do I not want to change this!
+	// If we have a valid player, we can leave this nightmare. THANK GOODNESS.
+	if (pickeruper)
+	{
+		ThrownLunchboxAcquired(self, pickeruper)
+	}
+	// The nightmare continues.
+	else
+	{
+		return 0
+	}
+}
+
+function TouchingBBox(ent1, ent2)
+{
+	// Okay so, let me be clear. THIS IS HORRENDOUS!
+	// DO. NOT. DO. THIS.
+	// Unfortunately, due to, persumably, an issue in how the origin is reported, this is, in fact, 100% nessesary. FOR THIS SPECIFIC SENARIO.
+	// THIS IS THE WRONG WAY TO DO THIS!
+	// BIG RED X!
+	// Okay anyways
+
+	local bboxmax1 = ent1.GetBoundingMaxs()
+	local bboxmin1 = ent1.GetBoundingMins()
+
+	local bboxmax2 = ent2.GetBoundingMaxs()
+	local bboxmin2 = ent2.GetBoundingMins()
+	
+	// Look back through all of the entities to find one that's in a bounding box created like... that.
+	// The math reason i'm doing that is because if a box calculated as such contains the origin, the boxes should intersect.
+	local entity = Entities.FindByClassnameWithinBox(null, "player", bboxmin1 - bboxmax2 + ent1.GetOrigin(), bboxmax1 - bboxmin2 + ent1.GetOrigin())
+	local start = entity
+	local ran = false
+	while (entity != null && entity != ent2 && (entity != start || !ran))
+	{
+		entity = Entities.FindByClassnameWithinBox(entity, "player", bboxmin1 - bboxmax2 + ent1.GetOrigin(), bboxmax1 - bboxmin2 + ent1.GetOrigin())
+		ran = true
+	}
+
+	// If we've found an entity in that box that is the one we are looking for, great job! It's in it!
+	if (entity == ent2)
+	{
+		return true
+	}
+	// Otherwise we didn't find it. Did I mention we need to repeat through this for every single player?
+	else
+	{
+		return false
+	}
+}
+
+// Can the player be healed by healthkits?
+function CanBeHealedByHealthKits(player)
+{
+	local activeweapon = player.GetActiveWeapon()
+	local overheal = GetWearableAttribute(player, "health kits can overheal on wearer", 0) + activeweapon.GetAttribute("health kits can overheal on active", 0)
+
+	local owner
+	if (self.GetContext("TrueOwner") != "")
+	{
+		owner = EntIndexToHScript(self.GetContext("TrueOwner").tointeger())
+	}
+	else
+	{
+		owner = self.GetOwner()
+	}
+
+	local enemy = false
+	if (owner == player)
+	{
+		overheal += GetWearableAttribute(owner, "sandvich can overheal self", 0)
+	}
+	else if (owner.GetTeam() != player.GetTeam())
+	{
+		overheal += GetWearableAttribute(owner, "sandvich can overheal enemy", 0)
+		enemy = true
+	}
+	else
+	{
+		overheal += GetWearableAttribute(owner, "sandvich can overheal friend", 0)
+	}
+
+	if (GetWearableAttribute(player, "health from packs decreased", 1) == 0 || activeweapon.GetAttribute("health from packs decreased on active", 1) == 0)
+	{
+		return false
+	}
+
+	return (
+		(player.GetMaxHealth() > player.GetHealth()) ||
+		(overheal > 0 && player.GetMaxHealth() * 1.5 * GetWearableAttribute(player, "patient overheal penalty", 1) > player.GetHealth()) ||
+		// This entire last condition is purely so that sandviches that deal damage to enemies are allowed through. Hopefully shouldn't decrease efficency TOO much?
+		(enemy && overheal > 0 && ((player.GetMaxHealth() * PACKSTABLE[self.GetClassname()] * GetWearableAttribute(owner, "sandvich enemy healing", 1)) + GetWearableAttribute(owner, "sandvich enemy healing additive", 0)) < 0)
+	)
+}
+
+function ThrownLunchboxAcquired(self, pickeruper)
 {
 	if (self.GetContext("IsSandvich") != "yer")
 	{
 		return
 	}
-	local owner = self.GetOwner()
-	if (owner == Entities.First())
+
+	local owner
+	if (self.GetContext("TrueOwner") != "")
 	{
 		owner = EntIndexToHScript(self.GetContext("TrueOwner").tointeger())
 	}
-
-	// Find who even picked us up, Check our bounding box to see which player is even in it.
-	local pickeruper = Entities.FindByClassnameWithinBox(null, "player", self.GetBoundingMins() + self.GetOrigin(), self.GetBoundingMaxs() + self.GetOrigin())
-
-	// If the person who picked us up is the same as our owner (not our TRUE owner, our entity owner) then nothing happens, we just picked our sandvich back up.
-	if (pickeruper == self.GetOwner())
+	else
 	{
-		return
+		owner = self.GetOwner()
 	}
 
 	// We actually don't check this for much, pretty much everything we care about should be on wearer
 	local weapon = GetWeaponByClass(owner,"tf_weapon_lunchbox")
 
-	local oldhealth = pickeruper.GetHealth() - MOSTRECENTHEAL[pickeruper.GetEntityIndex()]
-	local newhealth
 	// However, if it's the same as our true owner, that means this is a thrown sandvich. Apply the thing. I guess.
+	local healtotal
 	if (pickeruper == owner)
 	{
-		newhealth = oldhealth + floor(((PACKSTABLE[self.GetClassname()] * pickeruper.GetMaxHealth()) * GetWearableAttribute(owner, "sandvich self healing", 1)) + GetWearableAttribute(owner, "sandvich self healing additive", 0))
-		printl(newhealth)
+		healtotal = (pickeruper.GetMaxHealth() * PACKSTABLE[self.GetClassname()] * GetWearableAttribute(owner, "sandvich self healing", 1)) + GetWearableAttribute(owner, "sandvich self healing additive", 0)
 
-		if (GetWearableAttribute(owner, "sandvich can overheal self", 0) > 0)
+		if (healtotal > 0)
 		{
-			newhealth = min(newhealth,pickeruper.GetMaxHealth() + ((pickeruper.GetMaxHealth() * 0.5) * GetWearableAttribute(owner, "patient overheal penalty", 1)))
+			pickeruper.AddCustomAttribute("sandvich VSCRIPT", GetWearableAttribute(owner, "sandvich self healing", 1), 0.00001)
+			pickeruper.AddCustomAttribute("sandvich additive VSCRIPT", GetWearableAttribute(owner, "sandvich self healing additive", 0), 0.00001)
+			pickeruper.AddCustomAttribute("health kits can overheal on wearer", GetWearableAttribute(owner, "sandvich can overheal self", 0), 0.00001)
 		}
 		else
 		{
-			newhealth = min(newhealth,pickeruper.GetMaxHealth())
+			pickeruper.AddCustomAttribute("sandvich VSCRIPT", 0, 0.00001)
 		}
 
 		local cond = GetWearableAttribute(owner, "sandvich self cond", 0)
 		if (cond)
 		{
-			owner.AddCondEx(cond, GetWearableAttribute(owner, "sandvich self cond time", 0), self)
+			pickeruper.AddCondEx(cond, GetWearableAttribute(owner, "sandvich self cond time", 0), self)
 		}
 	}
 	// If the teams differ, an opponent has stolen the precious sandvich!
 	else if (pickeruper.GetTeam() != owner.GetTeam())
 	{
-		newhealth = oldhealth + floor((((PACKSTABLE[self.GetClassname()] * pickeruper.GetMaxHealth()) * GetWearableAttribute(owner, "sandvich enemy healing", 1)) + GetWearableAttribute(owner, "sandvich enemy healing additive", 0))*GetWearableAttribute(pickeruper, "healing from sandvich recieved enemy", 1)*GetWearableAttribute(pickeruper, "health from healers reduced", 1))
+		healtotal = (pickeruper.GetMaxHealth() * PACKSTABLE[self.GetClassname()] * GetWearableAttribute(owner, "sandvich enemy healing", 1)) + GetWearableAttribute(owner, "sandvich enemy healing additive", 0)
 
-		if (GetWearableAttribute(owner, "sandvich can overheal enemy", 0) > 0)
+		if (healtotal > 0)
 		{
-			newhealth = min(newhealth,pickeruper.GetMaxHealth() + ((pickeruper.GetMaxHealth() * 0.5) * GetWearableAttribute(owner, "patient overheal penalty", 1)))
+			pickeruper.AddCustomAttribute("sandvich VSCRIPT", GetWearableAttribute(owner, "sandvich enemy healing", 1), 0.00001)
+			pickeruper.AddCustomAttribute("sandvich additive VSCRIPT", GetWearableAttribute(owner, "sandvich enemy healing additive", 0), 0.00001)
+			pickeruper.AddCustomAttribute("health kits can overheal on wearer", GetWearableAttribute(owner, "sandvich can overheal enemy", 0), 0.00001)
 		}
 		else
 		{
-			newhealth = min(newhealth,pickeruper.GetMaxHealth())
+			pickeruper.AddCustomAttribute("sandvich VSCRIPT", 0, 0.1)
 		}
 
 		local cond = GetWearableAttribute(owner, "sandvich enemy cond", 0)
 		if (cond)
 		{
-			owner.AddCondEx(cond, GetWearableAttribute(owner, "sandvich enemy cond time", 0), self)
+			pickeruper.AddCondEx(cond, GetWearableAttribute(owner, "sandvich enemy cond time", 0), self)
 		}
 	}
 	// Then our allies have recieved the food. As is right.
 	else
 	{
-		newhealth = oldhealth + floor((((PACKSTABLE[self.GetClassname()] * pickeruper.GetMaxHealth()) * GetWearableAttribute(owner, "sandvich healing", 1)) + GetWearableAttribute(owner, "sandvich healing additive", 0))*GetWearableAttribute(pickeruper, "healing from sandvich recieved", 1)*GetWearableAttribute(pickeruper, "health from healers reduced", 1))
+		healtotal = (pickeruper.GetMaxHealth() * PACKSTABLE[self.GetClassname()] * GetWearableAttribute(owner, "sandvich friend healing", 1)) + GetWearableAttribute(owner, "sandvich friend healing additive", 0)
 
-		if (GetWearableAttribute(owner, "sandvich can overheal friend", 0) > 0)
+		if (healtotal > 0)
 		{
-			newhealth = min(newhealth,pickeruper.GetMaxHealth() + ((pickeruper.GetMaxHealth() * 0.5) * GetWearableAttribute(owner, "patient overheal penalty", 1)))
+			pickeruper.AddCustomAttribute("sandvich VSCRIPT", GetWearableAttribute(owner, "sandvich friend healing", 1), 0.00001)
+			pickeruper.AddCustomAttribute("sandvich additive VSCRIPT", GetWearableAttribute(owner, "sandvich friend healing additive", 0), 0.00001)
+			pickeruper.AddCustomAttribute("health kits can overheal on wearer", GetWearableAttribute(owner, "sandvich can overheal friend", 0), 0.00001)
 		}
 		else
 		{
-			newhealth = min(newhealth,pickeruper.GetMaxHealth())
+			pickeruper.AddCustomAttribute("sandvich VSCRIPT", 0, 0.1)
 		}
 
 		local cond = GetWearableAttribute(owner, "sandvich friend cond", 0)
 		if (cond)
 		{
-			owner.AddCondEx(cond, GetWearableAttribute(owner, "sandvich friend cond time", 0), self)
+			pickeruper.AddCondEx(cond, GetWearableAttribute(owner, "sandvich friend cond time", 0), self)
 		}
 
 		switch (weapon.GetAttribute("special sandvich", 0))
@@ -446,13 +565,13 @@ function ThrownLunchboxAcquired(self) // Yes, I'm well aware this isn't a mapbas
 		}
 	}
 
-	if (newhealth < oldhealth)
+	if (healtotal < 0)
 	{
-		pickeruper.SetHealth(oldhealth)
-		pickeruper.TakeDamageEx(self, owner, GetWeaponByClass(owner,"tf_weapon_lunchbox"), NULLVECTOR, pickeruper.GetOrigin(), oldhealth - newhealth, 0)
+		pickeruper.TakeDamageEx(self, owner, GetWeaponByClass(owner,"tf_weapon_lunchbox"), NULLVECTOR, pickeruper.GetOrigin(), -healtotal, 0)
+		self.Destroy()
 	}
-	else if (newhealth != pickeruper.GetHealth())
+	else if (healtotal == 0)
 	{
-		pickeruper.SetHealth(newhealth)
+		self.Destroy()
 	}
 }

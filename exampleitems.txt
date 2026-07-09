@@ -68,6 +68,206 @@ Wearable: GetGrenade"
 			"mouse_pressed_sound"		"#ui/item_knife_large_pickup.wav"
 			"drop_sound"				"#ui/item_metal_weapon_drop.wav"
 		}
+		// Trapvich, uses the dropped sanvich attributes to do some hurtin.
+		"4438"
+		{
+			"name"				"The Trapvich"
+			"item_name"			"Trapvich"
+			"item_type_name"	"#TF_Weapon_LunchBox"
+			"item_description"	"Enemies that pick up the trapvich take 50 damage and are tranquilized for 10 seconds"
+			"item_quality"		"normal"
+			"propername"		"1"
+
+			"item_class"	"tf_weapon_lunchbox"
+			"item_slot"		"secondary"
+			"used_by_classes"
+			{
+				"Heavy"		"1"
+			}
+			"static_attrs"
+			{
+				"sandvich can overheal enemy"			"1" // In this case, just makes it so that the enemy can pick up the trapvich regardless of health.
+				"sandvich enemy healing"				"0"
+				"sandvich enemy healing additive"		"-50"
+				"sandvich enemy cond"					"136"
+				"sandvich enemy cond time"				"10"
+			}
+			"attributes"
+			{
+				"sandvich explain"		"1"
+
+				"lunchbox healing decreased"
+				{
+					"attribute_class"	"lunchbox_healing_scale"
+					"value"				"0.5"
+				}
+
+				"special taunt"
+				{
+					"attribute_class"	"special_taunt"
+					"value"				"1"
+				}
+				"allowed in medieval mode"
+				{
+					"attribute_class"	"allowed_in_medieval_mode"
+					"value"				"1"
+				}
+				"mod lunchbox critboostable"
+				{
+					"attribute_class" 	"mod_lunchbox_critboostable"
+					"value"				"1"
+				}
+			}
+
+			"model_player"			"models/weapons/v_models/v_sandwich_heavy.mdl"
+			"model_world"			"models/weapons/w_models/w_sandwich.mdl"
+			"anim_slot"				"ITEM1"
+			"extra_wearable"		"models/player/items/sandvich_lunchbox.mdl"
+			"attach_to_hands"		"2"
+			"static_attrs"
+			{
+				"min_viewmodel_offset"	"10 0 -11"
+
+				"item_meter_charge_type"	"1"
+				"item_meter_charge_rate"	"30"
+				"meter_label"				"#TF_Meter_LunchBox"
+			}
+			"visuals"
+			{
+				"animation_replacement"
+				{
+					"ACT_SECONDARY_VM_INSPECT_START"	"ACT_ITEM1_VM_INSPECT_START"
+					"ACT_SECONDARY_VM_INSPECT_IDLE"		"ACT_ITEM1_VM_INSPECT_IDLE"
+					"ACT_SECONDARY_VM_INSPECT_END"		"ACT_ITEM1_VM_INSPECT_END"
+				}
+			}
+
+			"image_inventory"		"backpack/weapons/w_models/w_sandwich"
+			"mouse_pressed_sound"	"ui/item_sandwich_drop.wav"
+			"drop_sound"			"ui/item_sandwich_pickup.wav"
+		}
+		// Second Banana, uses a special sandvich type to cancel the taunt early.
+		"1113" //Second Banana by shualdock
+		{
+			"name"						"The Sandvich"
+			"name"						"TF_WEAPON_BANANA"
+			"item_class"				"tf_weapon_lunchbox"
+			"item_slot"					"secondary"
+			"show_in_armory"			"1"
+			"item_name"					"Second Banana"
+			"item_type_name"			"Banana"
+			"item_quality"              "unique"
+			"item_description"			"Eat very quickly to regain up to 60 health
+Alt-Fire: Share a banana with a friend
+(Small health kit)
+
+A faint reminder of broken promises..."
+			"image_inventory"			"backpack/weapons/c_models/c_banana/c_banana"
+			"model_world"				"models/weapons/c_models/c_banana/c_banana.mdl"
+			"model_player"				"models/weapons/c_models/c_banana/c_banana.mdl"
+			"extra_wearable"			"models/player/items/sandvich_lunchbox.mdl"
+			"attach_to_hands"			"1"			
+			"used_by_classes"
+			{
+				"heavy"					"1"
+			}
+			"static_attrs"
+			{
+				"charge recharge rate increased"		"1.5"
+				"lunchbox consumed on use"				"1"
+				"item_meter_charge_type"				"1"
+				"item_meter_charge_rate"				"15"
+				"hidden separator"						"1"
+				"special sandvich"						"11"
+				"custom lunchbox throwable model"		"models\items\banana\plate_banana.mdl"
+			}
+			"attributes"
+			{
+				"lunchbox healing decreased" // Needs to have this to justify its existence. -Clock
+				{
+					"attribute_class"	"lunchbox_healing_scale"
+					"value"				"2"
+				}
+				"lunchbox consumed on use" // Kind of pointless if it doesn't revolve around this... -Clock
+				{
+					"attribute_class"	"lunchbox_force_cooldown"
+					"value"				"1"
+				}
+				"mod lunchbox critboostable"
+				{
+					"attribute_class"	"mod_lunchbox_critboostable"
+					"value"				"1"
+				}
+				"custom lunchbox throwable type"
+				{
+					"attribute_class"	"custom_lunchbox_throwable_type"
+					"value"				"1"
+				}
+			}
+			"mouse_pressed_sound"		"#ui/item_sandwich_drop.wav"
+			"drop_sound"				"#ui/item_sandwich_pickup.wav"
+		}
+		// Sandvichlander
+		"1110" //Fishcake by shualdock
+		{
+			"name"						"The Sandvich"
+			"name"						"TF_WEAPON_FISHCAKE"
+			"item_class"				"tf_weapon_lunchbox"
+			"item_slot"					"secondary"
+			"show_in_armory"			"1"
+			"item_name"					"Fishcake"
+			"item_type_name"			"Fishcake"
+			"item_quality"              "unique" // 8% is actually a lie, it's actually about 7%. But it makes it easier for the player to understand.
+			"item_description"			"Eat to regain up to 450 health that overheals, and gain a +4 regen boost (max +20)
+
+Takes 450 damage to charge
+
+Alt-Fire: Share a protein cake with a friend
+(Large health kit + Overheal + Far Throw,
+Improperly trained ememies take Damage!)
+
+Vossler Industries All-Natural Artificial-Fish-Derived Food Product
+
+Model: Valve, SpaceChem"
+			"image_inventory"			"backpack/workshop/weapons/c_models/c_fishcake/c_fishcake"
+			"model_world"				"models/weapons/c_models/c_fishcake/c_fishcake.mdl"
+			"model_player"				"models/weapons/c_models/c_fishcake/c_fishcake.mdl"
+			"extra_wearable"			"models/player/items/sandvich_lunchbox.mdl"
+			"attach_to_hands"			"1"			
+			"used_by_classes"
+			{
+				"heavy"					"1"
+			}
+			"static_attrs"
+			{
+				"health from healers reduced"			"0.4"
+				"lunchbox consumed on use"				"1"
+				"hidden separator"						"1"
+				"custom lunchbox throwable type"		"3"
+				"item_meter_charge_type"				"3" // Needs to be 3 rather than 2, because otherwise it just fails sometimes? Okay.
+				"item_meter_charge_rate"				"9999999" // Never will actually charge. I mean, unless you survive over 2777 hours.
+				"item_meter_resupply_denied"			"1" // The main operatives.
+				"grenades1_resupply_denied"				"1" // The main operatives.
+				"item_meter_damage_for_full_charge"		"1"
+				"special sandvich"						"20"
+				"lunchbox healing overheal"				"3.75"
+				"lunchbox healing overheal cap"			"1.5" // Lower this on anything with an overheal reduction!
+				"lunchbox healing decreased"			"0" // Cause the overhealer thing should manage that
+				"sandvichlander regen"					"3"
+				"sandvichlander regen cap"				"15"
+				"sandvich self healing"					"1.5"
+				"sandvich can overheal self"			"1"
+				"sandvich friend healing"				"1.5"
+				"sandvich can overheal friend"			"1"
+				"sandvich enemy healing"				"0"
+				"sandvich enemy healing additive"		"-100"
+				"mult lunchbox throwable velocity"		"1.75"
+				"self dmg push force decreased"			"0"
+				"meter_label"							"#TF_Meter_LunchBox"
+			}
+			"mouse_pressed_sound"		"#ui/item_sandwich_drop.wav"
+			"drop_sound"				"#ui/item_sandwich_pickup.wav"
+		}
 
 		"3033"
 		{
@@ -263,6 +463,237 @@ of all damage taken in a 5-2 ratio"
 			"hidden"	"1"
 			"effect_type"	"positive"
 			"stored_as_integer"	"0"
+		}
+
+		"17692"
+		{
+			"name"		"special sandvich"
+			"description_format"		"value_is_additive"
+			"hidden"				"1"
+			"effect_type"		"positive"
+		}
+		"17693"
+		{
+			"name"		"move speed bonus sandvichlander"
+			"attribute_class"		"mult_player_movespeed"
+			"description_format"		"value_is_percentage"
+			"hidden"				"1"
+			"effect_type"		"positive"
+		}
+		"17694"
+		{
+			"name"		"sandvichlander speed cap"
+			"description_format"		"value_is_percentage"
+			"hidden"				"1"
+			"effect_type"		"positive"
+		}
+		"17695"
+		{
+			"name"		"sandvichlander eat cap"
+			"description_format"		"value_is_additive"
+			"hidden"				"1"
+			"effect_type"		"positive"
+		}
+		"17696"
+		{
+			"name"	"lunchbox healing overheal"
+			"description_string" "#Attrib_LunchboxHealingDecreased"
+			"description_format" "value_is_percentage"
+			"hidden" "0"
+			"effect_type" "negative"
+			"stored_as_integer" "0"
+		}
+		"17697" // Did you know there are wearer versions
+		{
+			"name"	"sandvich enemy healing"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"armory_Desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"17698"
+		{
+			"name"	"sandvich enemy healing additive"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"armory_Desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"17699"
+		{
+			"name"	"sandvich self healing"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"armory_Desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"17700"
+		{
+			"name"	"sandvich self healing additive"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"armory_Desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"17701"
+		{
+			"name"	"sandvich friend healing"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"armory_Desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"17702"
+		{
+			"name"	"sandvich friend healing additive"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"armory_Desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"17703"
+		{
+			"name"	"sandvich can overheal enemy"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"armory_Desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"17704"
+		{
+			"name"	"sandvich can overheal self"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"armory_Desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"17705"
+		{
+			"name"	"sandvich can overheal friend"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"armory_Desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"17706"
+		{
+			"name"	"eat thrown sandviches"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"armory_Desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"17707"
+		{
+			"name"	"regen bonus sandvichlander"
+			"attribute_class"		"add_health_regen"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"armory_Desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"17708"
+		{
+			"name"	"sandvichlander regen"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"armory_Desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"17709"
+		{
+			"name"	"sandvichlander regen cap"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"armory_Desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"17710"
+		{
+			"name"	"lunchbox healing overheal cap"
+			"description_format" "value_is_percentage"
+			"hidden" "1"
+			"effect_type" "negative"
+			"stored_as_integer" "0"
+		}
+		"17711"
+		{
+			"name"	"sandvich friend cond"
+			"description_format" "value_is_additive"
+			"hidden" "1"
+			"effect_type" "negative"
+			"stored_as_integer" "0"
+		}
+		"17712"
+		{
+			"name"	"sandvich enemy cond"
+			"description_format" "value_is_additive"
+			"hidden" "1"
+			"effect_type" "negative"
+			"stored_as_integer" "0"
+		}
+		"17713"
+		{
+			"name"	"sandvich self cond"
+			"description_format" "value_is_additive"
+			"hidden" "1"
+			"effect_type" "negative"
+			"stored_as_integer" "0"
+		}
+		"17714"
+		{
+			"name"	"sandvich friend cond time"
+			"description_format" "value_is_additive"
+			"hidden" "1"
+			"effect_type" "negative"
+			"stored_as_integer" "0"
+		}
+		"17715"
+		{
+			"name"	"sandvich enemy cond time"
+			"description_format" "value_is_additive"
+			"hidden" "1"
+			"effect_type" "negative"
+			"stored_as_integer" "0"
+		}
+		"17716"
+		{
+			"name"	"sandvich self cond time"
+			"description_format" "value_is_additive"
+			"hidden" "1"
+			"effect_type" "negative"
+			"stored_as_integer" "0"
+		}
+		"17717"
+		{
+			"name"	"sandvich VSCRIPT"
+			"attribute_class"		"mult_health_frompacks"
+			"description_format" "value_is_percentage"
+			"hidden" "1"
+			"effect_type" "negative"
+			"stored_as_integer" "0"
+		}
+		"17718"
+		{
+			"name"	"sandvich additive VSCRIPT"
+			"attribute_class"		"mult_health_frompacks"
+			"description_format" "value_is_additive"
+			"hidden" "1"
+			"effect_type" "negative"
+			"stored_as_integer" "0"
 		}
 
 "EngieArmor.Break"
