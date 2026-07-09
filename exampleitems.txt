@@ -264,6 +264,7 @@ Model: Valve, SpaceChem"
 				"mult lunchbox throwable velocity"		"1.75"
 				"self dmg push force decreased"			"0"
 				"meter_label"							"#TF_Meter_LunchBox"
+				"custom lunchbox throwable model"		"models/workshop/weapons/c_models/c_fishcake/plate_fishcake.mdl"
 			}
 			"mouse_pressed_sound"		"#ui/item_sandwich_drop.wav"
 			"drop_sound"				"#ui/item_sandwich_pickup.wav"
