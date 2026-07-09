@@ -13,6 +13,26 @@ ATTRIBSTOBEADDED <- array(MaxPlayers(), [])
 NULLVECTOR <- Vector(0,0,0)
 activator <- null //Otherwise it just decides it DOESN'T WANT TO SHOW UP THE FIRST TIME IT'S CALLED
 
+BuildText <- SpawnEntityFromTable("game_text", {
+	message = "If you're seeing this, something's gone wrong",
+	x = 0.9,
+	y = 0.8,
+	effect = 0,
+	color = "12 255 12",
+	fadein = 0.5,
+	holdtime = 9999.0
+});
+
+TimerText <- SpawnEntityFromTable("game_text", {
+	message = "If you're seeing this, something's gone wrong",
+	x = 0.885,
+	y = 0.8,
+	effect = 0,
+	color = "100 12 12",
+	fadein = 0.2,
+	holdtime = 9999.0
+});
+
 ::PlayerCleanup <- {
 	function OnGameEvent_player_disconnect(params)
 	{
@@ -215,6 +235,141 @@ __CollectGameEventCallbacks(PlayerCleanup)
 	}
 	return null
 }
+
+::DisplayStackBuildText <- function(player, text)
+{
+	if (!BuildText || !BuildText.IsValid())
+	{
+		BuildText <- SpawnEntityFromTable("game_text", {
+			message = "If you're seeing this, something's gone wrong",
+			x = 0.9,
+			y = 0.8,
+			effect = 0,
+			color = "12 255 12",
+			fadein = 0.5,
+			holdtime = 9999.0
+		});	
+	}
+	BuildText.AcceptInput("settext", text,player,null)
+	BuildText.AcceptInput("Display", "",player,null)
+}
+
+// Just reuse the timer text for this one.
+::DisplayRageBuildText <- function(player, text)
+{
+	if (!TimerText || !TimerText.IsValid())
+	{
+		TimerText <- SpawnEntityFromTable("game_text", {
+			message = "If you're seeing this, something's gone wrong",
+			x = 0.885,
+			y = 0.8,
+			effect = 0,
+			color = "100 12 12",
+			fadein = 0.2,
+			holdtime = 9999.0
+		});
+	}
+	TimerText.AcceptInput("settext", text,player,null)
+	TimerText.AcceptInput("Display", "",player,null)
+}
+
+// Display a timer
+::DisplayTimer <- function(player, time)
+{
+	if (!TimerText || !TimerText.IsValid())
+	{
+		TimerText <- SpawnEntityFromTable("game_text", {
+			message = "If you're seeing this, something's gone wrong",
+			x = 0.885,
+			y = 0.8,
+			effect = 0,
+			color = "100 12 12",
+			fadein = 0.2,
+			holdtime = 9999.0
+		});
+	}
+	TimerText.AcceptInput("settext", "▢▢▢▢▢▢▢▢▢▢",player,null)
+	TimerText.AcceptInput("Display", "",player,null)
+	// I don't think there's a better way of doing this.
+	EntFireByHandle(player, "CallScriptFunction", "__TimeInterval0", time*(1/11.0), player, null)
+	EntFireByHandle(player, "CallScriptFunction", "__TimeInterval1", time*(2/11.0), player, null)
+	EntFireByHandle(player, "CallScriptFunction", "__TimeInterval2", time*(3/11.0), player, null)
+	EntFireByHandle(player, "CallScriptFunction", "__TimeInterval3", time*(4/11.0), player, null)
+	EntFireByHandle(player, "CallScriptFunction", "__TimeInterval4", time*(5/11.0), player, null)
+	EntFireByHandle(player, "CallScriptFunction", "__TimeInterval5", time*(6/11.0), player, null)
+	EntFireByHandle(player, "CallScriptFunction", "__TimeInterval6", time*(7/11.0), player, null)
+	EntFireByHandle(player, "CallScriptFunction", "__TimeInterval7", time*(8/11.0), player, null)
+	EntFireByHandle(player, "CallScriptFunction", "__TimeInterval8", time*(9/11.0), player, null)
+	EntFireByHandle(player, "CallScriptFunction", "__TimeInterval9", time*(10/11.0), player, null)
+	EntFireByHandle(player, "CallScriptFunction", "__TimeInterval10", time*(11/11.0), player, null)
+}
+
+::__TimeInterval0 <- function()
+{
+	TimerText.AcceptInput("settext", "▣▢▢▢▢▢▢▢▢▢",self,null)
+	TimerText.AcceptInput("Display", "",self,null)
+}
+
+::__TimeInterval1 <- function()
+{
+	TimerText.AcceptInput("settext", "▣▣▢▢▢▢▢▢▢▢",self,null)
+	TimerText.AcceptInput("Display", "",self,null)
+}
+
+::__TimeInterval2 <- function()
+{
+	TimerText.AcceptInput("settext", "▣▣▣▢▢▢▢▢▢▢",self,null)
+	TimerText.AcceptInput("Display", "",self,null)
+}
+
+::__TimeInterval3 <- function()
+{
+	TimerText.AcceptInput("settext", "▣▣▣▣▢▢▢▢▢▢",self,null)
+	TimerText.AcceptInput("Display", "",self,null)
+}
+
+::__TimeInterval4 <- function()
+{
+	TimerText.AcceptInput("settext", "▣▣▣▣▣▢▢▢▢▢",self,null)
+	TimerText.AcceptInput("Display", "",self,null)
+}
+
+::__TimeInterval5 <- function()
+{
+	TimerText.AcceptInput("settext", "▣▣▣▣▣▣▢▢▢▢",self,null)
+	TimerText.AcceptInput("Display", "",self,null)
+}
+
+::__TimeInterval6 <- function()
+{
+	TimerText.AcceptInput("settext", "▣▣▣▣▣▣▣▢▢▢",self,null)
+	TimerText.AcceptInput("Display", "",self,null)
+}
+
+::__TimeInterval7 <- function()
+{
+	TimerText.AcceptInput("settext", "▣▣▣▣▣▣▣▣▢▢",self,null)
+	TimerText.AcceptInput("Display", "",self,null)
+}
+
+::__TimeInterval8 <- function()
+{
+	TimerText.AcceptInput("settext", "▣▣▣▣▣▣▣▣▣▢",self,null)
+	TimerText.AcceptInput("Display", "",self,null)
+}
+
+::__TimeInterval9 <- function()
+{
+	TimerText.AcceptInput("settext", "▣▣▣▣▣▣▣▣▣▣",self,null)
+	TimerText.AcceptInput("Display", "",self,null)
+}
+
+::__TimeInterval10 <- function()
+{
+	TimerText.AcceptInput("settext", "",self,null)
+	TimerText.AcceptInput("Display", "",self,null)
+}
+
 
 // in alphabetical order, makes things readable
 ::WeaponsClassesListAlpha <-
@@ -442,5 +597,30 @@ __CollectGameEventCallbacks(PlayerCleanup)
 	"tf2c_weapon_cyclops",
 	0, // no idea
 	"tf2c_weapon_heallauncher",
+	"tf2c_weapon_taser",
+]
+
+::MeleeWeapons <-
+[
+	"tf_weapon_bat",
+	"tf_weapon_bat_wood",
+	"tf_weapon_bottle",
+	"tf_weapon_fireaxe",
+	"tf_weapon_club",
+	"tf_weapon_knife",
+	"tf_weapon_fists",
+	"tf_weapon_shovel",
+	"tf_weapon_wrench",
+	"tf_weapon_robot_arm",
+	"tf_weapon_bonesaw",
+	"tf_weapon_katana"
+	"tf_weapon_sword",
+	"tf_weapon_bat_fish",
+	"tf_weapon_breakable_sign",
+	"tf_weapon_slap",
+	"tf2c_weapon_anchor",
+	"tf2c_weapon_sycthe",
+	"tf2c_weapon_umbrella",
+	"tf2c_weapon_chains",
 	"tf2c_weapon_taser",
 ]
