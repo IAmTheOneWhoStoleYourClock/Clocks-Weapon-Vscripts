@@ -8,6 +8,9 @@
 
 IncludeScript("lib/clocksutils.nut");
 
+
+// No comments here, this should all be self explanatory tbh.
+
 ::DamageTypeOverrideEventTable <- {
 	function OnGameEvent_player_spawn(params)
 	{

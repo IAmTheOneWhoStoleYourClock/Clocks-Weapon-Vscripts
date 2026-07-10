@@ -269,7 +269,7 @@ Model: Valve, SpaceChem"
 			"mouse_pressed_sound"		"#ui/item_sandwich_drop.wav"
 			"drop_sound"				"#ui/item_sandwich_pickup.wav"
 		}
-
+		// Buffed buff banner
 		"3033"
 		{
 			"name"			"TF_WEAPON_BUFF"
@@ -327,6 +327,72 @@ Model: Valve, SpaceChem"
 			}
 			"mouse_pressed_sound"	"ui/item_pack_pickup.wav"
 			"drop_sound"		"ui/item_pack_drop.wav"
+		}
+
+		"23173"
+		{
+			"name"			"The Vita-Saw"
+			"item_class"	"tf2c_weapon_taser"
+			"item_slot"		"melee"
+			"show_in_armory"	"1"
+			"item_quality"	"unique"
+
+			"item_name"			"#TF_Unique_BattleSaw"
+			"item_type_name"	"#TF_Weapon_Bonesaw"
+			"item_description" 	"Yes, It needs to be that big! Vhat, you scared of a needle?"
+			"item_logname"		"battleneedle"
+			"item_iconname"		"battleneedle"
+
+			"image_inventory"	"backpack/workshop/weapons/c_models/c_uberneedle/c_uberneedle"
+			"model_player"	"models/workshop/weapons/c_models/c_uberneedle/c_uberneedle.mdl"
+			"attach_to_hands"	"1"
+
+			"propername"	"1"
+
+			"used_by_classes"
+			{
+				"medic"	"1"
+			}
+			"static_attrs"
+			{
+				"mult taser heal scale"					"0"
+				"crit mod disabled hidden"				"0"
+
+				"taser minicrits"						"6"
+				"taser tranqs"							"5"
+				// teammate
+				"taser cond"							"16"
+				"taser cond duration"					"6"
+				// enemy
+				"taser cond apply"						"136"
+				"taser cond apply duration"				"5"
+				"damage bonus HIDDEN"					"1.54"
+			}
+			"attributes"
+			{
+				"damage penalty"
+				{
+					"attribute_class"	"mult_dmg"
+					"value"				"0.8"
+				}
+				"effect bar recharge rate decreased"
+				{
+					"attribute_class"	"effectbar_recharge_rate"
+					"value"				"1.15"
+				}
+				"ubercharge rate penalty on wearer"
+				{
+					"attribute_class"	"mult_medigun_uberchargerate_wearer"
+					"value"				"0.75"
+				}
+			}
+			"visuals"
+			{
+				"sound_taunt"	"Taunt.MedicViolinUber"
+				"sound_melee_hit"	"Weapon_UberSaw.HitFlesh"
+			}
+			"mouse_pressed_sound"	"ui/item_metal_weapon_pickup.wav"
+			"drop_sound"		"ui/item_metal_weapon_drop.wav"
 		}
 
 		"5277"
@@ -695,6 +761,102 @@ of all damage taken in a 5-2 ratio"
 			"hidden" "1"
 			"effect_type" "negative"
 			"stored_as_integer" "0"
+		}
+
+		"15320"
+		{
+			"name"					"taser cap"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15321"
+		{
+			"name"					"taser cond"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15322"
+		{
+			"name"					"taser cond duration"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15323"
+		{
+			"name"					"taser minicrits"
+			"description_string"	"Teammates hit at max charge get minicrits for %s1 seconds"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"15324"
+		{
+			"name"					"taser cond apply"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"15325"
+		{
+			"name"	"ubercharge rate penalty VSCRIPT"
+			"attribute_class"	"mult_medigun_uberchargerate"
+			"description_string"	"#Attrib_UberchargeRate_Negative"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		"15326"
+		{
+			"name"					"taser cond apply duration"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"15327"
+		{
+			"name"					"taser tranqs"
+			"description_string"	"On Hit: Tranquilize based on charge, max %s1s"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"15328" // Old pre-steam attribute
+		{
+			"name"					"ubercharge rate penalty on wearer"
+			"attribute_class"		"mult_medigun_uberchargerate_wearer"
+			"description_string"	"%s1% ÜberCharge rate"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		"15329"
+		{
+			"name"					"effect bar recharge rate decreased"
+			"attribute_class"		"effectbar_recharge_rate"
+			"description_string"	"%s1% decrease in recharge rate"
+			"description_format"	"value_is_inverted_percentage"
+			"effect_type"			"negative"
+		}
+		"15338"
+		{
+			"name"	"add give health to teammate on hit self scale"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+		}
+		"17720"
+		{
+			"name"	"add civ boost to self fix"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17721"
+		{
+			"name"	"add civ boost to self fix time"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
 		}
 
 "EngieArmor.Break"
