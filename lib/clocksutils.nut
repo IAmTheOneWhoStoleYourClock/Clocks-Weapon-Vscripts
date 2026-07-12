@@ -11,7 +11,6 @@ ATTRIBSTOBECLEAREDWEARER <- array(MaxPlayers(), [])
 ATTRIBSTOBECLEARED <- array(MaxPlayers(), [])
 ATTRIBSTOBEADDED <- array(MaxPlayers(), [])
 NULLVECTOR <- Vector(0,0,0)
-activator <- null //Otherwise it just decides it DOESN'T WANT TO SHOW UP THE FIRST TIME IT'S CALLED
 
 BuildText <- SpawnEntityFromTable("game_text", {
 	message = "If you're seeing this, something's gone wrong",
