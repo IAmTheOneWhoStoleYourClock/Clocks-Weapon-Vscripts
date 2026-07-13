@@ -36,23 +36,29 @@ IncludeScript("lib/clocksutils.nut");
 		{
 			return
 		}
-		local weapon = GetWeaponByClassID(player, params.weaponid) // litterally just for this
+		local weapon = GetWeaponByClassID(player, params.weaponid)
 
 		local extrahitcondscale = weapon.GetAttribute("add condition on hit weapon scale", 0).tointeger()
 		if (extrahitcondscale)
 		{
 			local min = weapon.GetAttribute("add condition on hit weapon scale time min", 0)
-			local max = weapon.GetAttribute("add condition on hit weapon scale time max", 0)
-			local scale = clamp((params.damageamount - min)/(max - min),0,1)
-			self.AddCondEx(extrahitcondscale, weapon.GetAttribute("add condition on hit weapon scale time", 0)*scale, player)
+			if (params.damageamount >= min)
+			{
+				local max = weapon.GetAttribute("add condition on hit weapon scale time max", 0)
+				local scale = clamp((params.damageamount - min)/(max - min),0.25,1)
+				self.AddCondEx(extrahitcondscale, weapon.GetAttribute("add condition on hit weapon scale time", 0)*scale, player)
+			}
 		}
 		local extrahitselfcondscale = weapon.GetAttribute("add condition on hit self weapon scale", 0).tointeger()
 		if (extrahitselfcondscale)
 		{
 			local min = weapon.GetAttribute("add condition on hit self weapon scale time min", 0)
-			local max = weapon.GetAttribute("add condition on hit self weapon scale time max", 0)
-			local scale = clamp((params.damageamount - min)/(max - min),0,1)
-			player.AddCondEx(extrahitselfcondscale, weapon.GetAttribute("add condition on hit self weapon scale time", 0) * scale, player)
+			if (params.damageamount >= min)
+			{
+				local max = weapon.GetAttribute("add condition on hit self weapon scale time max", 0)
+				local scale = clamp((params.damageamount - min)/(max - min),0.25,1)
+				player.AddCondEx(extrahitselfcondscale, weapon.GetAttribute("add condition on hit self weapon scale time", 0) * scale, player)
+			}
 		}
 	}
 }

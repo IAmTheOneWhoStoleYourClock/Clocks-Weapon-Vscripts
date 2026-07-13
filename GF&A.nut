@@ -85,8 +85,6 @@ Convars.RegisterConvar("GFA_projdeteonatefrequency", "0.09", "How long the delay
 		}
 		else if (params.inflictor.GetClassname() == "tf_projectile_pipe")
 		{
-			local damage = params.inflictor.GetDamage()
-			local WCD = WEAPONCLASSBASEDAMAGE.rawget(params.weapon.GetClassname())
 			if (params.inflictor.GetContext("IsBrickExplodeFixPipe") == "yep")
 			{
 				params.inflictor = NetProps.GetPropEntity(params.inflictor, "m_hEffectEntity")
