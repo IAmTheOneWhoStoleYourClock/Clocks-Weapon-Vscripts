@@ -16,4 +16,5 @@ Current plugins:
 <br>superammo: Allows setting ammo types beyond the normal limits of TF2
 <br>sandvichthrowteamyes: Thrown sandviches are now team coloured.
 <br>linkeditemID: Emulates the previous "linked item id" attribute
+<br>mediguntargetsenemies: Allows you to target enemies and buildings with your medigun, among other things.
 <br>NOTE TO FUTURE SELF: PLEASE UPDATE THIS WITH THE ACTUAL ATTRIBUTES THAT EACH OF THESE CONTAIN I'M TOO LAZY TO DO IT RN!

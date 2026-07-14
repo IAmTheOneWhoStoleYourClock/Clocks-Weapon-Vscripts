@@ -1,0 +1,80 @@
+"Refract"
+{
+	"$normalmap" "dev/tfwater_normal"
+	
+	"$model" "1"
+	"$masked" "1"
+	"$refracttint" "[1 1 1]"
+	"$refractamount" ".1"
+	
+	"$fadeoutonsilhouette" "1"
+	
+	"$nowritez" "1"
+		
+	"$refractBase" ".1"
+	
+	"$distance" "0"
+	"$distanceMax" "512"
+	"$distanceScale" "0"
+	
+	"$distanceInner" "175"
+	
+	"$one" "1"
+	"$zero" "0"
+	
+	"$refractamountScaled" "0"
+
+	"Proxies"
+	{
+		"AnimatedTexture" 
+		{ 
+			"animatedTextureVar" "$normalmap" 
+			"animatedTextureFrameNumVar" "$bumpframe" 
+			"animatedTextureFrameRate" "24" 
+		}
+		
+		"PlayerProximity"
+		{
+			"scale" "1"
+			"resultVar" "$distance"
+		}
+		
+		"Clamp"
+		{
+			"min" "0"
+			"max" "$distanceMax"
+			"srcVar1" "$distance"
+			"resultVar" "$distance"
+		}
+		
+		"Divide"
+		{
+			"srcVar1" "$distance"
+			"srcVar2" "$distanceMax"
+			"resultVar" "$distanceScale"
+		}
+		
+		"Subtract"
+		{
+			"srcVar1" "$distanceScale"
+			"srcVar2" "$one"
+			"resultVar" "$distanceScale"
+		}
+		
+		"Multiply"
+		{
+			"srcVar1" "$refractBase"
+			"srcVar2" "$distanceScale"
+			"resultVar" "$refractamountScaled"
+		}
+		
+		"LessOrEqual"
+		{
+			"lessEqualVar" "$zero"
+			"greaterVar" "$refractamountScaled"
+			"srcVar1" "$distance"
+			"srcVar2" "$distanceInner"
+			"resultVar" "$refractamount"
+		}
+	}
+}

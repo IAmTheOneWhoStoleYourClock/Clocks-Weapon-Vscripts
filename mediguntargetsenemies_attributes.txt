@@ -1,0 +1,410 @@
+"medigun targets special"
+// Required for all of the following to function on the medigun:
+
+"medigun targets enemies rework"
+// The amount of damage the medigun/rejuvenator does. Needed for it to connect to enemies at all. If this connects to buildings, also allows you to connect to enemy buildings as well.
+// For mediguns, this is dealt once every "tick"
+"medigun targets buildings"
+// Allows you to heal buildings. Inputed value is healing per "tick". Medigun only.
+"medigun targets enemies uber damage mult"
+// A damage multiplier while using uber. Only applies to the medigun/rejuv itself.
+"medigun targets buildings uber mult"
+// Healing buildings is this multiplier more effective while using uber
+"medigun targets fire rate"
+// The amount of time a "tick" takes. Since the think function for this runs once every 0.1 seconds, only effective in multiples of 0.1.
+"medigun targets lockon delay"
+// The amount of time the first "tick" takes. Also applies to friendly buildings, because I am lazy. (Let me know if you want that changed and I can fix it.)
+"medigun targets enemies cond"
+// A condition to apply every "tick". Medigun only. (Use normal addcond for rejuv, normal addcond stuff might also work here tbh.)
+"medigun targets enemies cond time"
+// How long the condition from tthe previous attribute should last. Medigun only.
+"medigun targets enemies cond uber"
+// The same as the previous, but only happens while you are using Uber. This one works on the Rejuvenator uber if it does damage as well.
+"medigun targets enemies cond uber time"
+// How long the condition from the previous attribute should last.
+"medigun targets enemies uber per hit"
+// An amount of uber to gain per hit, where 1 is 100%. Scales with damage on the rejuv. Scales with minicrits on the medigun.
+"medigun targets enemies uber rate enemies"
+// Ubercharge rate while healing an opponent. Medigun only.
+"medigun targets buildings uber rate buildings"
+// How fast uber should build while healing a building. Medigun only.
+"cond while ubered"
+// Condition to give to yourself while ubercharged, applies even when the weapon is inactive.
+"heal mult during uber"
+// Multiply healing by this much while ubercharged. Works on both the medigun and rejuvinator now.
+"medigun fling enable"
+// Enables the fling mechanic. You'll go in the relatative direction that would cause you to face the opponent, if that makes sense.
+"medigun fling air only"
+// Toggle if the fling mechanic only has an effect while airborne (checks against z velocity)
+"medigun fling enemy power mult"
+// Power while flinging on an enemy (multiplies speed and reel)
+"medigun fling friendly power mult"
+// Power while flinging on a teammate (multiplies speed and reel)
+"medigun fling uber power mult"
+// Power multiplier while ubercharged (multiplies speed and reel)
+"medigun fling reel"
+// You will be pulled towards the target at a speed increasing with distance.
+"medigun fling constant reel"
+// Normalizes the vector used for reel, making the given speed no longer increase with distance. It this is used, reel should be set much higher.
+"medigun fling speed"
+// The speed at which you are pulled towards the target position for the fling.
+
+
+"heal grenade hit heal mult"
+// A multplier for heal grenade healing. Will likely replace this with a heal rate fix in GF&A at some point, I just can't be bothered rn.
+"medigun targets enemies generator damage"
+// How much damage does this generator do
+"medigun targets enemies generator ROF"
+// The rate of fire of the uber generator (or more accurately how often its think function is done)
+"special generator"
+// Swap out the rejuvinator uber's bubble with a different one, depending on index:
+1 - Colourable uber! change the colors of this with:
+"generator red" "generator blu" "generator grn" "generator ylw"
+input a decimal-converted rgb value (like halloween_footstep_type) to color it as you wish!
+2 - Rainbow uber
+Essenally the same as the previous, down to the ability to colour it, but the inside has a glitchy rainbow color. (May change colors randomly depending on how you look at it, it's a bug after all!)
+(More later when I can be bothered?)
+"medigun targets enemies no generator"
+// Removes the generator when using the rejuvinator's uber. Best paired with other uber attributes.
+"medigun targets enemies cond uber hit scale"
+"medigun targets enemies cond uber hit scale min"
+"medigun targets enemies cond uber hit scale max"
+"medigun targets enemies cond uber hit scale time"
+// Scaling add cond while ubered for the damaging rejuv, min is the minimum damage required to have an effect, and max is where the scaling caps out. Use extra conds for a generic verison.
+
+
+"ubercharge rate VSCRIPT"
+// Functional atribute, applied by the script. Required for "medigun targets enemies uber damage mult" to work correctly. Do not use manually.
+"heal rate VSCRIPT"
+// Functional atribute, applied by the script. Required for "heal mult during uber" to work correctly to work on mediguns. Do not use manually.
+
+        "17722"
+		{
+			"name"	"medigun targets enemies rework"
+			"description_string"	"Evil"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17723"
+		{
+			"name"	"medigun targets fire rate"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17724"
+		{
+			"name"	"medigun targets lockon delay"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17725"
+		{
+			"name"	"medigun targets enemies cond"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17726"
+		{
+			"name"	"medigun targets enemies cond time"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17727"
+		{
+			"name"	"medigun targets enemies cond uber"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17728"
+		{
+			"name"	"medigun targets enemies cond uber time"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17729"
+		{
+			"name"	"medigun targets enemies uber per hit"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17730"
+		{
+			"name"	"medigun targets enemies uber damage mult"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17731"
+		{
+			"name"	"medigun targets enemies generator damage"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17732"
+		{
+			"name"	"medigun targets enemies generator ROF"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17733"
+		{
+			"name"	"special generator"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17734"
+		{
+			"name"	"generator red"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17735"
+		{
+			"name"	"generator blu"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17736"
+		{
+			"name"	"generator grn"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17737"
+		{
+			"name"	"generator ylw"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17738"
+		{
+			"name"	"medigun targets enemies cond uber hit"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17739"
+		{
+			"name"	"medigun targets enemies cond uber hit time"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17740"
+		{
+			"name"	"medigun targets enemies cond uber hit scale"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17741"
+		{
+			"name"	"medigun targets enemies cond uber hit scale min"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17742"
+		{
+			"name"	"medigun targets enemies cond uber hit scale max"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17743"
+		{
+			"name"	"medigun targets enemies cond uber hit scale time"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17744"
+		{
+			"name"	"cond while ubered"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17745"
+		{
+			"name"	"heal mult during uber"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17746" // enables medigun fling
+		{
+			"name"	"medigun fling enable"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17747" // if set to 1, medigun fling only works in the air. (checks z velocity being == 0)
+		{
+			"name"	"medigun fling air only"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17748" // works as a portion of medigun range. 1 seems to work best, but feel free to change it.
+		{
+			"name"	"medigun fling target distance"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17749" // multiplier to fling speed, base is 1f which is really strong.
+		{
+			"name"	"medigun fling speed"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17750" // makes medigun fling reel you in, input is the speed. Speed can be made negative to push away instead, but that should be made constant to avoid weird behaviour.
+		{
+			"name"	"medigun fling reel"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17751" // makes reel speed constant, instead of becoming more powerful with distance.
+		{
+			"name"	"medigun fling constant reel"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17752" // fling power multiplier when healing a teammate. Applies to the fling AND reel.
+		{
+			"name"	"medigun fling friendly power mult"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17753" // fling power multiplier when attached to an enemy. Applies to the fling AND reel.
+		{
+			"name"	"medigun fling enemy power mult"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17754" // fling power multiplier when ubercharge is activated. Applies to the fling AND reel.
+		{
+			"name"	"medigun fling uber power mult"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17755"
+		{
+			"name"	"medigun targets special"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17756"
+		{
+			"name"	"medigun targets buildings"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17757"
+		{
+			"name"	"medigun targets buildings uber mult"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17758"
+		{
+			"name"	"ubercharge rate VSCRIPT"
+			"attribute_class"		"mult_medigun_uberchargerate"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17759"
+		{
+			"name"	"medigun targets enemies uber rate enemies"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17760"
+		{
+			"name"	"medigun targets buildings uber rate buildings"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17761"
+		{
+			"name"	"medigun targets enemies no generator"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17762"
+		{
+			"name"	"heal grenade hit heal mult"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}

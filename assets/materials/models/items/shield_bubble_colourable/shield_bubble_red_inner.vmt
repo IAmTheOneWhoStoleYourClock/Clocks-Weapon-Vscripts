@@ -1,0 +1,21 @@
+"UnlitGeneric"
+{
+	"$basetexture" "effects/caustic04"
+	"$basetexturetransform" "center .25 .25 scale 1.25 1.25 rotate 0 translate 0 0"
+	
+	"$translucent" "1"
+	
+	"$color2" "[1 1 1]"
+	
+	"$receiveflashlight" "0"
+	
+	"Proxies"
+	{	
+		"AnimatedTexture" 
+		{ 
+			"animatedTextureVar" "$basetexture" 
+			"animatedTextureFrameNumVar" "$frame" 
+			"animatedTextureFrameRate" "30" 
+		}
+	}
+}
