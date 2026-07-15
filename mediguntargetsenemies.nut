@@ -375,7 +375,7 @@ function MedigunEnemyChecker()
 	if (medigunscope.target && IsBuilding(medigunscope.target) && !medigunscope.isusinguber) // For enemy buildings, just use the building rate.
 	{
 		self.AddAttribute("ubercharge rate penalty VSCRIPT", 0, 0)
-		NetProps.SetPropFloat(self, "m_flChargeLevel", min(medigunscope.uber + (medigunscope.uberratebuildings)/381,100)) // 381 is a magic number
+		NetProps.SetPropFloat(self, "m_flChargeLevel", min(medigunscope.uber + (medigunscope.uberratebuildings)/381,1)) // 381 is a magic number
 		medigunscope.uber += (medigunscope.uberratebuildings)/381
 	}
 	else if (medigunscope.targetingenemy && !medigunscope.isusinguber)
@@ -455,7 +455,7 @@ function MedigunEnemyChecker()
 			// Normally this wouldn't apply to being crit boosted but i think that it applying to critboosting is fine in this case.
 			if (medigunscope.uberhitrate)
 			{
-				NetProps.SetPropFloat(self, "m_flChargeLevel", min(NetProps.GetPropFloat(self, "m_flChargeLevel") + medigunscope.uberhitrate * 1.35,100))
+				NetProps.SetPropFloat(self, "m_flChargeLevel", min(NetProps.GetPropFloat(self, "m_flChargeLevel") + medigunscope.uberhitrate * 1.35,1))
 			}
 		}
 		else
@@ -463,7 +463,7 @@ function MedigunEnemyChecker()
 			target.TakeDamageCustom(self, owner, self, Vector(0, 0, 0), targetspacecenter, medigunscope.damage, damagetype, customtype);
 			if (medigunscope.uberhitrate)
 			{
-				NetProps.SetPropFloat(self, "m_flChargeLevel", min(NetProps.GetPropFloat(self, "m_flChargeLevel") + medigunscope.uberhitrate,100))
+				NetProps.SetPropFloat(self, "m_flChargeLevel", min(NetProps.GetPropFloat(self, "m_flChargeLevel") + medigunscope.uberhitrate,1))
 			}
 		}
 
@@ -484,7 +484,7 @@ function MedigunEnemyChecker()
 
 function RestrictedConds(entity, comp)
 {
-	return (entity.InCond(3) && entity.GetDisguiseTeam() != comp.GetTeam()) || entity.InCond(4)
+	return (entity.InCond(3) && entity.GetDisguiseTeam() == comp.GetTeam()) || entity.InCond(4)
 }
 
 function MedibombEnemyChecker()
