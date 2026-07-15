@@ -253,7 +253,7 @@ function MedigunEnemyChecker()
 	{
 		medigunscope.holding = true
 		local eyepos = owner.EyePosition()
-		local trace = TraceLineComplex(eyepos, eyepos + AngleVectors(owner.EyeAngles()) * medigunscope.range, owner, MASK_SHOT, 0)
+		local trace = TraceLineComplex(eyepos, eyepos + (AngleVectors(owner.EyeAngles()) * medigunscope.range), owner, MASK_SHOT, 0)
 		local hitEnt = trace.Entity()
 		local hitEntspacecenter
 		if (hitEnt)
@@ -262,7 +262,7 @@ function MedigunEnemyChecker()
 			hitEntspacecenter.z += hitEnt.GetBoundingMaxs().z / 2 //Shouldn't need to consider Mins since that's always 0... I think.
 		}
 		if (trace.DidHit() && !trace.DidHitWorld() && !trace.StartSolid() && hitEnt && hitEnt.IsAlive() &&
-		(medigunscope.damage && hitEnt.IsPlayer() && hitEnt.GetTeam() != owner.GetTeam() && !RestrictedConds(hitEnt) || 
+		(medigunscope.damage && hitEnt.IsPlayer() && hitEnt.GetTeam() != owner.GetTeam() && !RestrictedConds(hitEnt, self) || 
 		medigunscope.buildings && IsBuilding(hitEnt) && hitEnt.GetTeam() == owner.GetTeam() ||
 		medigunscope.buildings && medigunscope.damage && IsBuilding(hitEnt)) &&
 		(TraceLine(owner.ShootPosition(), hitEntspacecenter, null) == 1 || TraceLine(owner.ShootPosition(), hitEnt.EyePosition(), null) == 1))
@@ -286,7 +286,7 @@ function MedigunEnemyChecker()
 	}
 
 	// "Healing" the target is still valid
-	if (medigunscope.targetingenemy && medigunscope.target && (!target.IsAlive() || (target.GetTeam() == owner.GetTeam() ) || (!IsBuilding(target) && RestrictedConds(target))))
+	if (medigunscope.targetingenemy && medigunscope.target && (!target.IsAlive() || (target.GetTeam() == owner.GetTeam() ) || (!IsBuilding(target) && RestrictedConds(target, self))))
 	{
 		medigunscope.target = null
 		medigunscope.targetingenemy = false
@@ -375,7 +375,7 @@ function MedigunEnemyChecker()
 	if (medigunscope.target && IsBuilding(medigunscope.target) && !medigunscope.isusinguber) // For enemy buildings, just use the building rate.
 	{
 		self.AddAttribute("ubercharge rate penalty VSCRIPT", 0, 0)
-		NetProps.SetPropFloat(self, "m_flChargeLevel", medigunscope.uber + (medigunscope.uberratebuildings)/381) // 381 is a magic number
+		NetProps.SetPropFloat(self, "m_flChargeLevel", min(medigunscope.uber + (medigunscope.uberratebuildings)/381,100)) // 381 is a magic number
 		medigunscope.uber += (medigunscope.uberratebuildings)/381
 	}
 	else if (medigunscope.targetingenemy && !medigunscope.isusinguber)
@@ -455,7 +455,7 @@ function MedigunEnemyChecker()
 			// Normally this wouldn't apply to being crit boosted but i think that it applying to critboosting is fine in this case.
 			if (medigunscope.uberhitrate)
 			{
-				NetProps.SetPropFloat(self, "m_flChargeLevel", max(NetProps.GetPropFloat(self, "m_flChargeLevel") + medigunscope.uberhitrate * 1.35,100))
+				NetProps.SetPropFloat(self, "m_flChargeLevel", min(NetProps.GetPropFloat(self, "m_flChargeLevel") + medigunscope.uberhitrate * 1.35,100))
 			}
 		}
 		else
@@ -463,7 +463,7 @@ function MedigunEnemyChecker()
 			target.TakeDamageCustom(self, owner, self, Vector(0, 0, 0), targetspacecenter, medigunscope.damage, damagetype, customtype);
 			if (medigunscope.uberhitrate)
 			{
-				NetProps.SetPropFloat(self, "m_flChargeLevel", max(NetProps.GetPropFloat(self, "m_flChargeLevel") + medigunscope.uberhitrate,100))
+				NetProps.SetPropFloat(self, "m_flChargeLevel", min(NetProps.GetPropFloat(self, "m_flChargeLevel") + medigunscope.uberhitrate,100))
 			}
 		}
 
@@ -482,14 +482,9 @@ function MedigunEnemyChecker()
 	return 0.1
 }
 
-function RestrictedConds(entity)
+function RestrictedConds(entity, comp)
 {
-	return entity.InCond(3) || entity.InCond(4)
-}
-
-function EnemyIsInvalid(entity)
-{
-	return hitEnt.IsAlive() && hitEnt.GetTeam() != owner.GetTeam() && !RestrictedConds(entity)
+	return (entity.InCond(3) && entity.GetDisguiseTeam() != comp.GetTeam()) || entity.InCond(4)
 }
 
 function MedibombEnemyChecker()
