@@ -133,7 +133,8 @@ function EntitySpawnMedigunDamager(entity)
 				generatorscope.damage <- damage
 				generatorscope.cond <- owner.GetActiveWeapon().GetAttribute("medigun targets enemies cond uber", 0)
 				generatorscope.condtime <- owner.GetActiveWeapon().GetAttribute("medigun targets enemies cond uber time", 0)
-				entity.SetThinkFunction("GeneratorEnemyChecker", owner.GetActiveWeapon().GetAttribute("medigun targets enemies generator ROF", 0))
+				generatorscope.ROF <- owner.GetActiveWeapon().GetAttribute("medigun targets enemies generator ROF", 0)
+				entity.SetThinkFunction("GeneratorEnemyChecker", generatorscope.ROF)
 			}
 		}
 	}
@@ -615,16 +616,16 @@ function OnTakeDamage(self,info)
 
 function GeneratorEnemyChecker()
 {
+	local generatorscope = self.GetOrCreatePrivateScriptScope()
 	if (!NetProps.GetPropBool(self, "m_bEnabled"))
 	{
-		return
+		return generatorscope.ROF
 	}
 	local entity = Entities.FindByClassnameWithin(null, "player", self.GetOrigin(), NetProps.GetPropFloat(self, "m_flRadius")*1.05)
 	while (entity)
 	{
 		if (entity.GetTeam() != self.GetTeam() && entity.IsAlive())
 		{
-			local generatorscope = self.GetOrCreatePrivateScriptScope()
 			local targetspacecenter = entity.GetOrigin()
 			targetspacecenter.z += entity.GetBoundingMaxs().z / 2 //Shouldn't need to consider mins since that's always 0... I think.
 			entity.TakeDamageCustom(self, self.GetOwner(), generatorscope.weapon, Vector(0, 0, 0), targetspacecenter, generatorscope.damage, 0, 0);
@@ -635,6 +636,7 @@ function GeneratorEnemyChecker()
 		}
 		entity = Entities.FindByClassnameWithin(entity, "player", self.GetOrigin(), NetProps.GetPropFloat(self, "m_flRadius")*1.05)
 	}
+	return generatorscope.ROF
 }
 
 function MedigunUberChecker()
