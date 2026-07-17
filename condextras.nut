@@ -6,7 +6,7 @@
 // None, which probably means it has some grevious issue I missed.
 //
 
-IncludeScript("lib/clocksutils.nut");
+IncludeScript("lib/clocksutils.nut")
 
 ::DamageTypeOverrideEventTable <- {
 	function OnGameEvent_player_spawn(params)
@@ -65,7 +65,7 @@ IncludeScript("lib/clocksutils.nut");
 
 __CollectGameEventCallbacks(DamageTypeOverrideEventTable)
 
-function OnTakeDamage()
+function OnTakeDamage(self,info)
 {
 	if (!self.IsPlayer() || info.GetAttacker() == self || !info.GetWeapon())
 	{
@@ -82,4 +82,8 @@ function OnTakeDamage()
 	{
 		info.GetAttacker().AddCondEx(extrahitselfcond, weapon.GetAttribute("add condition on hit self weapon extra time", 0), info.GetAttacker())
 	}
+
+	return info
 }
+
+IncludeScript("lib/mapbasehookcollector.nut")

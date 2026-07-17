@@ -48,6 +48,8 @@
 // Normalizes the vector used for reel, making the given speed no longer increase with distance. It this is used, reel should be set much higher.
 "medigun fling speed"
 // The speed at which you are pulled towards the target position for the fling.
+"medigun targets enemies fov cap"
+// The maximum amount in degrees you can look away from an enemy the medigun is attached to before it forcefully disconnects.
 
 
 "heal grenade hit heal mult"
@@ -405,6 +407,14 @@ Essenally the same as the previous, down to the ability to colour it, but the in
 			"name"	"heal grenade hit heal mult"
 			"description_format"	"value_is_percentage"
 			"hidden"	"1"
+			"effect_type"	"neutral"
+			"stored_as_integer"	"0"
+		}
+		"17765"
+		{
+			"name"	"medigun targets enemies fov cap"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
 			"effect_type"	"neutral"
 			"stored_as_integer"	"0"
 		}

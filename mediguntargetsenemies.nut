@@ -8,6 +8,7 @@
 
 LOSDISCONNECTTIME <- 0.2 // Very short compared to teammates
 
+IncludeScript("lib/clocksutils.nut")
 
 ::MediguntargetEnemiesEventTable <- {
 	function OnGameEvent_player_spawn(params)
@@ -60,6 +61,7 @@ function EntitySpawnMedigunDamager(entity)
 		medigunscope.uberratebuildings <- entity.GetAttribute("medigun targets buildings uber rate buildings", 1) // How fast uber should build while "healing" a building
 		medigunscope.condwhileubered <- entity.GetAttribute("cond while ubered", 0) // A condition to apply while ubered
 		medigunscope.healmultduringuber <- entity.GetAttribute("heal mult during uber", 1) // How much more to heal while using uber
+		medigunscope.fovcap <- (entity.GetAttribute("medigun targets enemies fov cap", 0)/360)*PI // How far from where you are looking the medibeam can be, in degrees (although we convert it to radians here)
 		medigunscope.fling <- entity.GetAttribute("medigun fling enable", 0)
 		if (medigunscope.fling)
 		{
@@ -89,18 +91,24 @@ function EntitySpawnMedigunDamager(entity)
 		local owner = entity.GetOwner()
 		if (owner && owner.IsPlayer())
 		{
-			local damage = owner.GetActiveWeapon().GetAttribute("medigun targets enemies rework", 0)
+			local weapon = owner.GetActiveWeapon()
+			local damage = weapon.GetAttribute("medigun targets enemies rework", 0)
+			local usinguber = NetProps.GetPropBool(weapon, "m_bChargeRelease")
 			if (damage)
 			{
 				local bombscope = entity.GetOrCreatePrivateScriptScope()
 				bombscope.explodinghealgrenade <- true
 				entity.SetThinkFunction("MedibombEnemyChecker", 0.01)
 				bombscope.damage <- damage
+				if (usinguber)
+				{
+					bombscope.damage *= weapon.GetAttribute("medigun targets enemies uber damage mult", 1)
+				}
 				bombscope.weapon <- owner.GetActiveWeapon()
 				bombscope.owner <- owner
 			}
 			local healmultduringuber = owner.GetActiveWeapon().GetAttribute("heal mult during uber", 1)
-			if (healmultduringuber != 1 && (NetProps.GetPropBool(owner.GetActiveWeapon(), "m_bChargeRelease")))
+			if (healmultduringuber != 1 && usinguber)
 			{
 				entity.SetDamage(entity.GetDamage()*healmultduringuber)
 			}
@@ -131,7 +139,6 @@ function EntitySpawnMedigunDamager(entity)
 	else if (entity.GetClassname() == "tf_weapon_generator_uber_shield")
 	{
 		local weapon = entity.GetOwner().GetOrCreatePrivateScriptScope().weapon // Our owner is the generator.
-		printl(weapon.GetAttribute("special generator", 0))
 		switch (weapon.GetAttribute("special generator", 0))
 		{
 			case 1:
@@ -308,24 +315,52 @@ function MedigunEnemyChecker()
 	// Checks for LOS.
 	if (medigunscope.targetingenemy)
 	{
-		// Calculate it in the same way the medigun does, check if we have a clear path from our eyes to either the target's eyes or centre.
-		local targetspacecenter = medigunscope.target.GetOrigin()
-		targetspacecenter.z += medigunscope.target.GetBoundingMaxs().z / 2 //Shouldn't need to consider mins since that's always 0... I think.
-		if (TraceLine(owner.ShootPosition(), targetspacecenter, null) != 1 && TraceLine(owner.ShootPosition(), target.EyePosition(), null) != 1)
+		if (!medigunscope.fovcap)
 		{
-			// If we don't have LOS, check if we haven't had LOS for over the amount of time we are allowed.
-			if (Time() - medigunscope.LOStime > LOSDISCONNECTTIME)
+			// Calculate it in the same way the medigun does, check if we have a clear path from our eyes to either the target's eyes or centre.
+			local targetspacecenter = medigunscope.target.GetOrigin()
+			targetspacecenter.z += medigunscope.target.GetBoundingMaxs().z / 2 //Shouldn't need to consider mins since that's always 0... I think.
+			if (TraceLine(owner.ShootPosition(), targetspacecenter, null) != 1 && TraceLine(owner.ShootPosition(), target.EyePosition(), null) != 1)
 			{
-				// If so, the connection is severed.
-				medigunscope.target = null
-				medigunscope.targetingenemy = false
-				NetProps.SetPropEntity(self, "m_hHealingTarget", null)
+				// If we don't have LOS, check if we haven't had LOS for over the amount of time we are allowed.
+				if (Time() - medigunscope.LOStime > LOSDISCONNECTTIME)
+				{
+					// If so, the connection is severed.
+					medigunscope.target = null
+					medigunscope.targetingenemy = false
+					NetProps.SetPropEntity(self, "m_hHealingTarget", null)
+				}
+			}
+			// If the LOS check does succeed, update LOStime.
+			else
+			{
+				medigunscope.LOStime = Time()
 			}
 		}
-		// If the LOS check does succeed, update LOStime.
 		else
 		{
-			medigunscope.LOStime = Time()
+			// Calculate it in the same way the medigun does, check if we have a clear path from our eyes to either the target's eyes or centre.
+			local targetspacecenter = medigunscope.target.GetOrigin()
+			targetspacecenter.z += medigunscope.target.GetBoundingMaxs().z / 2 //Shouldn't need to consider mins since that's always 0... I think.
+			local shoootpos = owner.ShootPosition()
+			if ((TraceLine(shoootpos, targetspacecenter, null) != 1 && TraceLine(shoootpos, target.EyePosition(), null) != 1) || 
+			(medigunscope.fovcap < acos(AngleVectors(owner.EyeAngles()).Dot(targetspacecenter-owner.EyePosition())/((targetspacecenter-owner.EyePosition()).Length() * (AngleVectors(owner.EyeAngles()).Length())))
+			&& medigunscope.fovcap < acos(AngleVectors(owner.EyeAngles()).Dot(target.EyePosition()-owner.EyePosition())/((target.EyePosition()-owner.EyePosition()).Length() * (AngleVectors(owner.EyeAngles()).Length())))))
+			{
+				// If we don't have LOS, check if we haven't had LOS for over the amount of time we are allowed.
+				if (Time() - medigunscope.LOStime > LOSDISCONNECTTIME)
+				{
+					// If so, the connection is severed.
+					medigunscope.target = null
+					medigunscope.targetingenemy = false
+					NetProps.SetPropEntity(self, "m_hHealingTarget", null)
+				}
+			}
+			// If the LOS check does succeed, update LOStime.
+			else
+			{
+				medigunscope.LOStime = Time()
+			}
 		}
 	}
 
@@ -505,7 +540,7 @@ function MedibombEnemyChecker()
 	return 0.01 // An acceptable time I think
 }
 
-function UpdateOnRemove()
+function UpdateOnRemove(self)
 {
 	local bombscope = self.GetScriptScope()
 
@@ -535,7 +570,7 @@ function UpdateOnRemove()
 	}
 }
 
-function OnTakeDamage()
+function OnTakeDamage(self,info)
 {
 	if (!self.IsPlayer() || !info.GetInflictor() || !info.GetAttacker() || self.GetTeam() == info.GetAttacker().GetTeam())
 	{
@@ -557,9 +592,7 @@ function OnTakeDamage()
 		}
 		else
 		{
-			info.SetDamage(info.GetDamage() * weapon.GetAttribute("medigun targets enemies uber damage mult", 1))
 			local cond = weapon.GetAttribute("medigun targets enemies cond uber hit", 0)
-			printl(cond)
 			if (cond)
 			{
 				self.AddCondEx(cond, weapon.GetAttribute("medigun targets enemies cond uber hit time", 0), info.GetAttacker())
@@ -636,3 +669,5 @@ function TouchingBBoxes(ent1, ent2)
 		return false
 	}
 }
+
+IncludeScript("lib/mapbasehookcollector.nut")

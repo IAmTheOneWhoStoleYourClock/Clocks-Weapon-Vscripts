@@ -315,7 +315,7 @@ function EntitySpawnValidateBanner(entity)
 }
 
 // If this makes its sound (meaning it is being used) and we're not allowed to hold it, set a think that will remove the ability to hold it.
-function ModifyEmitSoundParams()
+function ModifyEmitSoundParams(self,params)
 {
 	if (self.IsValid() && self.GetClassname() == "tf_weapon_buff_item" && self.GetAttribute("no banner hold", 0) != 0 && params.GetSoundName() != "Weapon_BuffBanner.Flag" && !startswith(params.GetSoundName(), "player/footsteps")) // Why is the BANNER making FOOTSTEP sounds!?!?!?!?!?
 	{
@@ -370,3 +370,5 @@ function ExplodeNowBanner(banner, owner)
 	NetProps.SetPropEntity(pipe, "m_hOriginalLauncher", owner) // Gives it the correct explosion effect.
 	pipe.AcceptInput("detonate", "", banner, owner)
 }
+
+IncludeScript("lib/mapbasehookcollector.nut")

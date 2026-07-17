@@ -18,7 +18,7 @@ IncludeScript("lib/clocksutils.nut");
 
 __CollectGameEventCallbacks(WeaponGroupEventTable)
 
-function OnTakeDamage()
+function OnTakeDamage(self,info)
 {
 	if (!self.IsPlayer() || info.GetAttacker() == self || !info.GetWeapon())
 	{
@@ -48,3 +48,5 @@ function OnTakeDamage()
 		}
 	}
 }
+
+IncludeScript("lib/mapbasehookcollector.nut")

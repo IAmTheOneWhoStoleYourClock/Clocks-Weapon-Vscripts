@@ -16,7 +16,7 @@ Constants.ETFDmgCustom.TF_DMG_CUSTOM_SUICIDE]
 
 PrecacheModel("models/weapons/c_models/c_engineer_arms_iron_fist.mdl") //Grand design arm model. I'm just going to pull a Volvo and manually hard code this.
 
-IncludeScript("lib/clocksutils.nut");
+IncludeScript("lib/clocksutils.nut")
 
 damageping <- false
 inflictorbuffer <- null
@@ -141,21 +141,23 @@ __CollectGameEventCallbacks(MyEventTable2)
 
 Entities.EnableEntityListening() //Don't know if this is needed but whatever.
 
-function OnTakeDamage()
+function OnTakeDamage(self,info)
 {
-	if (!(self.GetClassname() == "player") || !self.IsPlayer())
+	if (self.GetClassname() == "player")
 	{
-		return true
+		local armorprotection = GetWearableAttribute(self, "engie armor", 0)
+		// Don't run this if we don't have armor, It's a damage source we shouldn't be touching (and stomps), or if it's fall damage, drowning damage, train damage, and sawblade damage.
+		if (!damageping && armorprotection > 0 && IGNOREDDAMAGE.find(info.GetDamageCustom()) == null && !(info.GetDamageType() & 606256) && self.GetAmmoCount(3) != 0 && info.GetInflictor() && (info.GetWeapon() || info.GetInflictor().GetClassname() == "obj_sentrygun"))
+		{
+			// This is janky, but after much testing, I've found this to be the best way to get this working.
+			// Might still have some bugs. Oh well. Too bad ig. ¯\_(ツ)_/¯
+			self.AddContext("damageping", "yes", 0.1)
+			self.AddContext("hpbuffer", self.GetHealth().tostring(), 0.1)
+			self.AddContext("inflictorbuffer", info.GetInflictor().GetEntityIndex().tostring(), 0.1)
+			DispatchParticleEffect("arm_detonate_sparks", info.GetDamagePosition(), nullvector, self)
+		}
 	}
-	local armorprotection = GetWearableAttribute(self, "engie armor", 0)
-	// Don't run this if we don't have armor, It's a damage source we shouldn't be touching (and stomps), or if it's fall damage, drowning damage, train damage, and sawblade damage.
-	if (!damageping && armorprotection > 0 && IGNOREDDAMAGE.find(info.GetDamageCustom()) == null && !(info.GetDamageType() & 606256) && self.GetAmmoCount(3) != 0 && info.GetInflictor() && (info.GetWeapon() || info.GetInflictor().GetClassname() == "obj_sentrygun"))
-	{
-		// This is janky, but after much testing, I've found this to be the best way to get this working.
-		// Might still have some bugs. Oh well. Too bad ig. ¯\_(ツ)_/¯
-		self.AddContext("damageping", "yes", 0.1)
-		self.AddContext("hpbuffer", self.GetHealth().tostring(), 0.1)
-		self.AddContext("inflictorbuffer", info.GetInflictor().GetEntityIndex().tostring(), 0.1)
-		DispatchParticleEffect("arm_detonate_sparks", info.GetDamagePosition(), nullvector, self)
-	}
+	return
 }
+
+IncludeScript("lib/mapbasehookcollector.nut")

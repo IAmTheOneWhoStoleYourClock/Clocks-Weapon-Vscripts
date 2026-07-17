@@ -98,7 +98,7 @@ IncludeScript("lib/clocksutils.nut");
 
 __CollectGameEventCallbacks(TaserStuffEventTable)
 
-function OnTakeDamage()
+function OnTakeDamage(self,info)
 {
 	if (!(self.GetClassname() == "player") || !self.IsPlayer() || !info.GetWeapon() || !(info.GetDamageType() & 134217728))
 	{
@@ -141,3 +141,5 @@ function OnTakeDamage()
 	// Reset charge start time
 	weapon.AddContext("rechargestarttime", Time().tostring(), 0)
 }
+
+IncludeScript("lib/mapbasehookcollector.nut")
