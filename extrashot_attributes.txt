@@ -1,0 +1,51 @@
+"extra shot"
+// Does the weapon fire an extra shot?
+"extra shot range"
+// What is the range of the extra shot?
+"extra shot damage"
+// What is the damage of the extra shot.
+"extra shot bullet"
+// Bullet yes.
+"extra shot spread"
+// Spread.
+
+        "17766"
+		{
+			"name"	"extra shot"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17767"
+		{
+			"name"	"extra shot range"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17768"
+		{
+			"name"	"extra shot damage"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17769"
+		{
+			"name"	"extra shot bullet"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17770"
+		{
+			"name"	"extra shot spread"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
