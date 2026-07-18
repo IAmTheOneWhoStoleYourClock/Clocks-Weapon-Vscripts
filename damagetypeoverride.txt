@@ -1,0 +1,117 @@
+"damagetypeoverride"
+// Change the damage type the weapon deals to this. (Note: This preserves a couple of important damage types, such as critical damage.)
+// Yes, this is no longer misspelled. Update your scripts.
+"customtypeoverride"
+// Change the custom damage this weapon deals to this. (Note: This preserves headshots.)
+"no headshot"
+// Removes headshots. Does not need to be combined with the previous.
+"no crits"
+// The weapon cannot deal critical damage (at least by normal means, minicrits to crits and some conditional attributes would still work).
+"cond on damagetype"
+"cond on damagetype cond"
+"cond on damagetype time"
+// Apply a condition if the attack has this damage type, this is processed BEFORE the override attributes.
+"cond on customtype"
+"cond on customtype cond"
+"cond on customtype time"
+// Apply a condition if the attack has this custom type, this is processed BEFORE the override attributes. (Headshot is 1, and Backstab is 2 btw!)
+
+        "3281"
+		{
+			"name"	"no headshot"
+			"attribute_class"	"no_headshot"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		"15330"
+		{
+			"name"					"damagetypeoverride"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15331"
+		{
+			"name"					"customtypeoverride"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15332"
+		{
+			"name"					"cond on damagetype"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15333"
+		{
+			"name"					"cond on damagetype cond"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15334"
+		{
+			"name"					"cond on damagetype time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15335"
+		{
+			"name"					"cond on customtype"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15336"
+		{
+			"name"					"cond on customtype cond"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15337"
+		{
+			"name"					"cond on customtype time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15338"
+		{
+			"name"					"no crits"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15339"
+		{
+			"name"					"self cond on damagetype"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15340"
+		{
+			"name"					"self cond on damagetype cond"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15341"
+		{
+			"name"					"self cond on damagetype time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15342"
+		{
+			"name"					"self cond on customtype"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15343"
+		{
+			"name"					"self cond on customtype cond"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15344"
+		{
+			"name"					"self cond on customtype time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
