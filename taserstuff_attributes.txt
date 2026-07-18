@@ -1,25 +1,24 @@
 "taser cap"
-// The maximum amount of overheal a taser can give.
+// The maximum amount of overheal a taser can give. (1.5 meaning the normal overheal cap)
 "taser cond"
-// A condition to be added when healing with a taser.
 "taser cond duration"
-// The duration of the above.
+// A condition to be added when healing with a taser.
 "ubercharge rate penalty on wearer"
 // Changes the ubercharge rate on the wearer.
 "taser cond apply"
 "taser cond apply duration"
-// Apply inputted condition based on charge (condition is only applied after minimum 25% charge)
+// Apply inputted condition based on charge. (condition is only applied after minimum 25% charge)
 "taser cond apply full only"
 "taser cond apply full only duration"
-// Same as before but only at full charge
+// Same as before, but only at full charge.
 "add give health to teammate on hit self scale"
-// Scales how much health is taken by "add give health to teammate on hit" from you
+// Scales how much health is taken by "add give health to teammate on hit" from you.
 "add civ boost to self fix"
 "add civ boost to self fix time"
-// Fixed version of add civ boost to self
+// Fixed version of add civ boost to self.
 "civ boost extra cond"
 "civ boost extra cond time"
-// Apply an extra condition upon boosting a teammate
+// Apply an extra condition upon boosting a teammate with the umbrella.
 
 
 "ubercharge rate penalty VSCRIPT"
@@ -78,4 +77,58 @@
 			"description_string"	"On Hit: Tranquilize based on charge, max %s1s"
 			"description_format"	"value_is_additive"
 			"effect_type"			"positive"
+		}
+		"15328"
+		{
+			"name"					"taser cond apply full only"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"15329"
+		{
+			"name"					"taser cond apply full only duration"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"3215"
+		{
+			"name"	"ubercharge rate penalty on wearer"
+			"attribute_class"	"mult_medigun_uberchargerate_wearer"
+			"description_string"	"%s1% ÜberCharge rate"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		"17720"
+		{
+			"name"	"add civ boost to self fix"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17721"
+		{
+			"name"	"add civ boost to self fix time"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17722"
+		{
+			"name"	"civ boost extra cond"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17723"
+		{
+			"name"	"civ boost extra cond time"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
 		}
