@@ -1,0 +1,62 @@
+"weapon group"
+// The group this weapon is in. Bit flag.
+"weapon group crit"
+// Groups this weapon crits against. Bit flag.
+"weapon group damage"
+"weapon group damage mult"
+// Increases damage by the multiplier against this group. The group check is a Bit flag.
+"weapon group kill"
+// Instantly kill this group, also does the cyclops combo effect. Bit flag.
+"weapon group cond"
+"weapon group cond cond"
+"weapon group cond time"
+// Apply this cond against this group. The group is a bit flag, the condition and condition time are not.
+
+       "15584"
+		{
+			"name"					"weapon group"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"15585"
+		{
+			"name"					"weapon group kill"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"15586"
+		{
+			"name"					"weapon group damage"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"15587"
+		{
+			"name"					"weapon group damage mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"15588"
+		{
+			"name"					"weapon group crit"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"15589"
+		{
+			"name"					"weapon group cond"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"15590"
+		{
+			"name"					"weapon group cond cond"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"15591"
+		{
+			"name"					"weapon group cond time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
