@@ -130,7 +130,14 @@ function EntitySpawnMedigunDamager(entity)
 			if (damage)
 			{
 				local generatorscope = entity.GetOrCreatePrivateScriptScope()
-				generatorscope.damage <- damage
+				if (damage > 0)
+				{
+					generatorscope.damage <- damage
+				}
+				else
+				{
+					generatorscope.damage <- 0
+				}
 				generatorscope.cond <- owner.GetActiveWeapon().GetAttribute("medigun targets enemies cond uber", 0)
 				generatorscope.condtime <- owner.GetActiveWeapon().GetAttribute("medigun targets enemies cond uber time", 0)
 				generatorscope.ROF <- owner.GetActiveWeapon().GetAttribute("medigun targets enemies generator ROF", 0)
@@ -628,7 +635,10 @@ function GeneratorEnemyChecker()
 		{
 			local targetspacecenter = entity.GetOrigin()
 			targetspacecenter.z += entity.GetBoundingMaxs().z / 2 //Shouldn't need to consider mins since that's always 0... I think.
-			entity.TakeDamageCustom(self, self.GetOwner(), generatorscope.weapon, Vector(0, 0, 0), targetspacecenter, generatorscope.damage, 0, 0);
+			if (generatorscope.damage > 0)
+			{
+				entity.TakeDamageCustom(self, self.GetOwner(), generatorscope.weapon, Vector(0, 0, 0), targetspacecenter, generatorscope.damage, 0, 0);
+			}
 			if (generatorscope.cond != 0)
 			{
 				entity.AddCondEx(generatorscope.cond, generatorscope.condtime, self.GetOwner())
