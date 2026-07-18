@@ -1,0 +1,81 @@
+"taser cap"
+// The maximum amount of overheal a taser can give.
+"taser cond"
+// A condition to be added when healing with a taser.
+"taser cond duration"
+// The duration of the above.
+"ubercharge rate penalty on wearer"
+// Changes the ubercharge rate on the wearer.
+"taser cond apply"
+"taser cond apply duration"
+// Apply inputted condition based on charge (condition is only applied after minimum 25% charge)
+"taser cond apply full only"
+"taser cond apply full only duration"
+// Same as before but only at full charge
+"add give health to teammate on hit self scale"
+// Scales how much health is taken by "add give health to teammate on hit" from you
+"add civ boost to self fix"
+"add civ boost to self fix time"
+// Fixed version of add civ boost to self
+"civ boost extra cond"
+"civ boost extra cond time"
+// Apply an extra condition upon boosting a teammate
+
+
+"ubercharge rate penalty VSCRIPT"
+// Needed for "ubercharge rate penalty on wearer". Do not use manually.
+
+       "15320"
+		{
+			"name"					"taser cap"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15321"
+		{
+			"name"					"taser cond"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15322"
+		{
+			"name"					"taser cond duration"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"15323"
+		{
+			"name"					"taser minicrits"
+			"description_string"	"Teammates hit at max charge get minicrits for %s1 seconds"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"15324"
+		{
+			"name"					"taser cond apply"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"15325"
+		{
+			"name"	"ubercharge rate penalty VSCRIPT"
+			"attribute_class"	"mult_medigun_uberchargerate"
+			"description_string"	"#Attrib_UberchargeRate_Negative"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		"15326"
+		{
+			"name"					"taser cond apply duration"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"15327"
+		{
+			"name"					"taser tranqs"
+			"description_string"	"On Hit: Tranquilize based on charge, max %s1s"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
