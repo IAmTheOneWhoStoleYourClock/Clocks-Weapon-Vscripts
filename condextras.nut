@@ -8,7 +8,7 @@
 
 IncludeScript("lib/clocksutils.nut")
 
-::DamageTypeOverrideEventTable <- {
+::CondExtrasEventTable <- {
 	function OnGameEvent_player_spawn(params)
 	{
 		local player = GetPlayerFromUserID(params.userid)
@@ -60,10 +60,31 @@ IncludeScript("lib/clocksutils.nut")
 				player.AddCondEx(extrahitselfcondscale, weapon.GetAttribute("add condition on hit self weapon scale time", 0) * scale, player)
 			}
 		}
+		local addcondcrit = weapon.GetAttribute("add condition on crit", 0).tointeger()
+		// params.bonuseffect is broken in TF2C it seems...
+		if (addcondcrit && params.crit && !params.minicrit)
+		{
+			self.AddCondEx(addcondcrit, weapon.GetAttribute("add condition on crit time", 0), player)
+		}
+		local addcondcritself = weapon.GetAttribute("add condition on crit self", 0).tointeger()
+		if (addcondcritself && params.crit && !params.minicrit)
+		{
+			player.AddCondEx(addcondcritself, weapon.GetAttribute("add condition on crit self time", 0), player)
+		}
+		local addcondminicrit = weapon.GetAttribute("add condition on minicrit", 0).tointeger()
+		if (addcondminicrit && params.minicrit)
+		{
+			self.AddCondEx(addcondminicrit, weapon.GetAttribute("add condition on minicrit time", 0), player)
+		}
+		local addcondminicritself = weapon.GetAttribute("add condition on minicrit self", 0).tointeger()
+		if (addcondminicritself && params.minicrit)
+		{
+			player.AddCondEx(addcondminicritself, weapon.GetAttribute("add condition on minicrit self time", 0), player)
+		}
 	}
 }
 
-__CollectGameEventCallbacks(DamageTypeOverrideEventTable)
+__CollectGameEventCallbacks(CondExtrasEventTable)
 
 function OnTakeDamage(self,info)
 {
@@ -72,6 +93,16 @@ function OnTakeDamage(self,info)
 		return
 	}
 	local weapon = info.GetWeapon()
+	// The cooldown conds share a timer
+	local lastcond = weapon.GetContext("LastCond")
+	if (lastcond == "")
+	{
+		lastcond = 0
+	}
+	else
+	{
+		lastcond = lastcond.tofloat()
+	}
 	local extrahitcond = weapon.GetAttribute("add condition on hit weapon extra", 0).tointeger()
 	if (extrahitcond)
 	{
@@ -83,7 +114,18 @@ function OnTakeDamage(self,info)
 		info.GetAttacker().AddCondEx(extrahitselfcond, weapon.GetAttribute("add condition on hit self weapon extra time", 0), info.GetAttacker())
 	}
 
-	return info
+	local hitcondcooldown = weapon.GetAttribute("add condition on hit weapon cooldown", 0)
+	if (hitcondcooldown && Time() > lastcond + hitcondcooldown)
+	{
+		self.AddCondEx(weapon.GetAttribute("add condition on hit weapon cooldown cond", 0).tointeger(), weapon.GetAttribute("add condition on hit weapon cooldown time", 0), info.GetAttacker())
+		weapon.AddContext("LastCond", Time().tostring(), 0)
+	}
+	local hitselfcondcooldown = weapon.GetAttribute("add condition on hit self weapon cooldown", 0)
+	if (hitselfcondcooldown && Time() > lastcond + hitselfcondcooldown)
+	{
+		self.AddCondEx(weapon.GetAttribute("add condition on hit self weapon cooldown cond", 0).tointeger(), weapon.GetAttribute("add condition on hit self weapon cooldown time", 0), info.GetAttacker())
+		weapon.AddContext("LastCond", Time().tostring(), 0)
+	}
 }
 
 IncludeScript("lib/mapbasehookcollector.nut")

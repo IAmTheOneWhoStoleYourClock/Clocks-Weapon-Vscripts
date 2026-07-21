@@ -1,0 +1,207 @@
+"add condition on hit weapon extra"
+"add condition on hit weapon extra time"
+// An extra addcond
+"add condition on hit self weapon extra"
+"add condition on hit self weapon extra time"
+// Take a guess
+"add condition on hit weapon scale"
+"add condition on hit weapon scale time min"
+"add condition on hit weapon scale time max"
+"add condition on hit weapon scale time"
+// Add cond that scales with damage, min is the minimum ammount of damage it needs to deal to apply a condition at all, max is the damage at which the cond caps.
+// Scales from 25% duration to 100% of time.
+"add condition on hit self weapon scale"
+"add condition on hit self weapon scale time min"
+"add condition on hit self weapon scale time max"
+"add condition on hit self weapon scale time"
+// Same as above, but self for you.
+"add condition on hit weapon cooldown"
+"add condition on hit weapon cooldown cond"
+"add condition on hit weapon cooldown time"
+// Set a "cool down" for an add cond
+"add condition on hit self weapon cooldown"
+"add condition on hit self weapon cooldown cond"
+"add condition on hit self weapon cooldown time"
+// Same as above, but for you. The cooldown of these two is shared.
+"add condition on crit"
+"add condition on crit time"
+"add condition on crit self"
+"add condition on crit self time"
+"add condition on minicrit"
+"add condition on minicrit time"
+"add condition on minicrit self"
+"add condition on minicrit self time"
+// Should be obvious. Note that crit conds do not automatically cover minicrit conds, and vice versa.
+// These don't have weapon in the name cause I got lazy. They're still weapon locked.
+"add condition on kill extra"
+"add condition on kill extra time"
+// Extra on kill addcond
+
+        "17679"
+		{
+			"name"					"add condition on hit self weapon scale"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17680"
+		{
+			"name"					"add condition on hit self weapon scale time min"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17681"
+		{
+			"name"					"add condition on hit self weapon scale time max"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17682"
+		{
+			"name"					"add condition on hit self weapon scale time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17683"
+		{
+			"name"					"add condition on hit weapon scale"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17684"
+		{
+			"name"					"add condition on hit weapon scale time min"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17685"
+		{
+			"name"					"add condition on hit weapon scale time max"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17686"
+		{
+			"name"					"add condition on hit weapon scale time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17687"
+		{
+			"name"					"add condition on hit self weapon extra"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17688"
+		{
+			"name"					"add condition on hit self weapon extra time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17689"
+		{
+			"name"					"add condition on hit weapon extra"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17690"
+		{
+			"name"					"add condition on hit weapon extra time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17805"
+		{
+			"name"					"add condition on crit"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17806"
+		{
+			"name"					"add condition on crit time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17807"
+		{
+			"name"					"add condition on crit self"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17808"
+		{
+			"name"					"add condition on crit self time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17809"
+		{
+			"name"					"add condition on minicrit"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17810"
+		{
+			"name"					"add condition on minicrit time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17811"
+		{
+			"name"					"add condition on minicrit self"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17812"
+		{
+			"name"					"add condition on minicrit self time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17813"
+		{
+			"name"					"add condition on kill extra"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17814"
+		{
+			"name"					"add condition on kill extra time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17815"
+		{
+			"name"					"add condition on hit weapon cooldown"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17816"
+		{
+			"name"					"add condition on hit weapon cooldown cond"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17817"
+		{
+			"name"					"add condition on hit weapon cooldown time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17818"
+		{
+			"name"					"add condition on hit self weapon cooldown"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17819"
+		{
+			"name"					"add condition on hit self weapon cooldown cond"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17820"
+		{
+			"name"					"add condition on hit self weapon cooldown time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
