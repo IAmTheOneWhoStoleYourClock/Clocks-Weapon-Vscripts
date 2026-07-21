@@ -5,12 +5,13 @@
 // 
 // None.
 //
-
-MAXWEAPONS <- 8
-ATTRIBSTOBECLEAREDWEARER <- array(MaxPlayers(), [])
-ATTRIBSTOBECLEARED <- array(MaxPlayers(), [])
-ATTRIBSTOBEADDED <- array(MaxPlayers(), [])
-NULLVECTOR <- Vector(0,0,0)
+if (!("ATTRIBSTOBECLEAREDWEARER" in getroottable())) {
+	MAXWEAPONS <- 8
+	ATTRIBSTOBECLEAREDWEARER <- array(MaxPlayers(), [])
+	ATTRIBSTOBECLEARED <- array(MaxPlayers(), [])
+	ATTRIBSTOBEADDED <- array(MaxPlayers(), [])
+	NULLVECTOR <- Vector(0,0,0)
+}
 
 BuildText <- SpawnEntityFromTable("game_text", {
 	message = "If you're seeing this, something's gone wrong",
@@ -110,6 +111,44 @@ __CollectGameEventCallbacks(PlayerCleanup)
 		if (wearable.GetClassname() != "tf_wearable")
 			continue
 		wearable.RemoveAttribute(attribname)
+	}
+}
+
+::GetWeaponInSlot <- function(player, slot)
+{
+	for (local i = 0; i < MAXWEAPONS; i++)
+	{
+		local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
+		if (held_weapon == null)
+			continue
+		if (held_weapon.GetSlot() == slot)
+		{
+			return held_weapon
+		}
+	}
+	return null
+	// TO DO: MAKE THIS WORK
+	for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
+	{
+		if (wearable.GetClassname() != "tf_wearable")
+			continue
+		printl(NetProps.GetPropEntity(wearable, "m_hWeaponAssociatedWith"))
+		printl(NetProps.GetPropInt(wearable, "m_AttributeManager.m_Item.m_iItemDefinitionIndex"))
+	}
+	return null
+}
+
+::AttributeWeaponInSlot <- function(player, slot, attrib, value)
+{
+	local weapon = GetWeaponInSlot(player, slot)
+	if (weapon)
+	{
+		weapon.AddAttribute(attrib, value, 0)
+		return true
+	}
+	else
+	{
+		return false
 	}
 }
 

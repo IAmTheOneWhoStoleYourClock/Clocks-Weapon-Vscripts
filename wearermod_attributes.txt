@@ -1,0 +1,137 @@
+"{slot} clip size"
+// Self explanatory
+"{slot} damage"
+// Self explanatory
+"melee swing speed"
+// melee swing speed modifier for other weapons
+"heal on kill wearer"
+// Self explanatory
+"{type} VSCRIPT"
+// Functional attributes, do not use manually.
+
+        "17785"
+		{
+			"name"					"primary clip size"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17786"
+		{
+			"name"					"secondary clip size"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17787"
+		{
+			"name"					"melee clip size" // Why
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17788"
+		{
+			"name"					"pda clip size"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17789"
+		{
+			"name"					"pda2 clip size"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17790"
+		{
+			"name"					"utility clip size"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17791"
+		{
+			"name"					"primary damage"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17792"
+		{
+			"name"					"secondary damage"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17793"
+		{
+			"name"					"melee damage"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17794"
+		{
+			"name"					"pda damage"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17795"
+		{
+			"name"					"pda2 damage"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17796"
+		{
+			"name"					"utility damage"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17797"
+		{
+			"name"					"heal on kill wearer"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17798"
+		{
+			"name"					"clip size VSCRIPT"
+			"attribute_class"		"mult_clipsize"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17799"
+		{
+			"name"					"damage VSCRIPT"
+			"attribute_class"		"mult_dmg"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17800"
+		{
+			"name"					"heal on kill VSCRIPT"
+			"attribute_class"		"heal_on_kill"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17801"
+		{
+			"name"					"melee swing speed"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17802"
+		{
+			"name"					"swing speed VSCRIPT"
+			"attribute_class"		"mult_postfiredelay"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17803"
+		{
+			"name"					"melee damage increased"
+			"description_string"	"Melees deal %s1% more damage"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+		"17804"
+		{
+			"name"					"secondary damage decreased"
+			"description_string"	"Secondaries deal %s1% less damage"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"negative"
+		}
