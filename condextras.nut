@@ -8,6 +8,8 @@
 
 IncludeScript("lib/clocksutils.nut")
 
+BUILDINGS <- ["obj_sentrygun", "obj_dispenser", "obj_teleporter"]
+
 ::CondExtrasEventTable <- {
 	function OnGameEvent_player_spawn(params)
 	{
@@ -26,6 +28,32 @@ IncludeScript("lib/clocksutils.nut")
 		if (extrakillcond)
 		{
 			GetPlayerFromUserID(params.userid).AddCondEx(extrahitselfcond, weapon.GetAttribute("add condition on kill extra time", 0), player)
+		}
+	}
+	function OnGameEvent_npc_hurt(params)
+	{
+		local player = GetPlayerFromUserID(params.attacker_player)
+		local building = EntIndexToHScript(params.entindex)
+		if (!player || !player.IsPlayer() || !building || (BUILDINGS.find(building.GetClassname()) == null))
+		{
+			return
+		}
+		local weapon = GetWeaponByClassID(player, params.weaponid)
+		local disabletime = weapon.GetAttribute("disable buildings on hit", 0)
+		if (disabletime)
+		{
+			NetProps.SetPropInt(building, "m_bDisabled", 1)
+			local scriptscope = building.GetOrCreatePrivateScriptScope()
+			if (!("disabletime" in scriptscope))
+			{
+				scriptscope.disabletime <- Time() + disabletime
+			}
+			else
+			{
+				scriptscope.disabletime <- max(scriptscope.disabletime, Time() + disabletime)
+			}
+			NetProps.SetPropInt(building, "m_bDisabled", 1)
+			EntFireByHandle(building, "CallScriptFunction", "BuildingReenable", disabletime, null, null)
 		}
 	}
 	function OnGameEvent_player_hurt(params)
@@ -125,6 +153,15 @@ function OnTakeDamage(self,info)
 	{
 		self.AddCondEx(weapon.GetAttribute("add condition on hit self weapon cooldown cond", 0).tointeger(), weapon.GetAttribute("add condition on hit self weapon cooldown time", 0), info.GetAttacker())
 		weapon.AddContext("LastCond", Time().tostring(), 0)
+	}
+}
+
+function BuildingReenable()
+{
+	local scriptscope = self.GetOrCreatePrivateScriptScope()
+	if(!NetProps.GetPropInt(self, "m_bPlasmaDisable") && scriptscope.disabletime <= Time())
+	{
+		EntFireByHandle(self, "Enable", "", 0, null, null)
 	}
 }
 

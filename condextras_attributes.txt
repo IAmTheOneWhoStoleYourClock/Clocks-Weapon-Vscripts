@@ -36,6 +36,8 @@
 "add condition on kill extra"
 "add condition on kill extra time"
 // Extra on kill addcond
+"disable buildings on hit"
+// Disables buildings for the inputted amount of time on hit
 
         "17679"
 		{
@@ -204,4 +206,10 @@
 			"name"					"add condition on hit self weapon cooldown time"
 			"description_format"	"value_is_additive"
 			"effect_type"			"negative"
+		}
+		"17833"
+		{
+			"name"					"disable buildings on hit"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
 		}
