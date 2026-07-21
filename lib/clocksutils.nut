@@ -126,14 +126,14 @@ __CollectGameEventCallbacks(PlayerCleanup)
 			return held_weapon
 		}
 	}
-	return null
-	// TO DO: MAKE THIS WORK
 	for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
 	{
 		if (wearable.GetClassname() != "tf_wearable")
 			continue
-		printl(NetProps.GetPropEntity(wearable, "m_hWeaponAssociatedWith"))
-		printl(NetProps.GetPropInt(wearable, "m_AttributeManager.m_Item.m_iItemDefinitionIndex"))
+		if (wearable.GetAttribute("wearable slot " + slot.tostring(), 0))
+		{
+			return wearable
+		}
 	}
 	return null
 }
@@ -150,6 +150,41 @@ __CollectGameEventCallbacks(PlayerCleanup)
 	{
 		return false
 	}
+}
+
+::RemoveWeaponInSlot <- function(player, slot)
+{
+	for (local i = 0; i < MAXWEAPONS; i++)
+	{
+		local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
+		if (held_weapon == null)
+			continue
+		if (held_weapon.GetSlot() == slot)
+		{
+			NetProps.SetPropEntityArray(player, "m_hMyWeapons", null, i)
+			if (player.GetActiveWeapon() == held_weapon)
+			{
+				local newweap
+				local j = 0
+				while (!(newweap = NetProps.GetPropEntityArray(player, "m_hMyWeapons", j)))
+				{
+					j += 1
+				}
+				player.Weapon_Switch(newweap)
+			}
+			held_weapon.Destroy()
+		}
+	}
+	for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
+	{
+		if (wearable.GetClassname() != "tf_wearable")
+			continue
+		if (wearable.GetAttribute("wearable slot " + slot.tostring(), 0))
+		{
+			wearable.Destroy()
+		}
+	}
+	return null
 }
 
 // Suprisingly a pain

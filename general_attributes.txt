@@ -1,0 +1,39 @@
+"wearable slot {slot}"
+// Allows the plugin to actually figure out what slot a wearable is in, since wearables don't report their slot
+
+        "17821"
+		{
+			"name"					"wearable slot 1"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17822"
+		{
+			"name"					"wearable slot 2"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17823"
+		{
+			"name"					"wearable slot 3"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17824"
+		{
+			"name"					"wearable slot 4"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17825"
+		{
+			"name"					"wearable slot 5"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17826"
+		{
+			"name"					"wearable slot 6"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}

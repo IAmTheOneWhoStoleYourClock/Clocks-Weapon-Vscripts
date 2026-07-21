@@ -1,0 +1,44 @@
+"no primary"
+"no secondary"
+"no melee"
+"no pda"
+"no pda2"
+"no utility"
+// Obivous. NOTE THAT THIS HAS NO EFFECT ON WEARABLES UNLESS "wearable slot {slot}" IS USED (see generic attribs for more info)
+
+        "17827"
+		{
+			"name"					"no primary"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17828"
+		{
+			"name"					"no secondary"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17829"
+		{
+			"name"					"no melee"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17830"
+		{
+			"name"					"no pda"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17831"
+		{
+			"name"					"no pda2"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17832"
+		{
+			"name"					"no utility"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
