@@ -38,6 +38,8 @@
 // Extra on kill addcond
 "disable buildings on hit"
 // Disables buildings for the inputted amount of time on hit
+"moisten on hit"
+// Makes the enemy wet on hit. Lasts for a fixed time of about 3 seconds.
 
         "17679"
 		{

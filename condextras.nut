@@ -154,6 +154,11 @@ function OnTakeDamage(self,info)
 		self.AddCondEx(weapon.GetAttribute("add condition on hit self weapon cooldown cond", 0).tointeger(), weapon.GetAttribute("add condition on hit self weapon cooldown time", 0), info.GetAttacker())
 		weapon.AddContext("LastCond", Time().tostring(), 0)
 	}
+	local wet = weapon.GetAttribute("moisten on hit", 0)
+	if (wet)
+	{
+		NetProps.SetPropInt(self, "m_nWaterLevel", 1)
+	}
 }
 
 function BuildingReenable()
