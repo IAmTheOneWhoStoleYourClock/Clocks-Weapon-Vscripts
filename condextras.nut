@@ -155,10 +155,10 @@ function OnTakeDamage(self,info)
 		weapon.AddContext("LastCond", Time().tostring(), 0)
 	}
 	local wet = weapon.GetAttribute("moisten on hit", 0)
+	printl(wet)
 	if (wet && NetProps.GetPropInt(self, "m_nWaterLevel") ==  0)
 	{
 		NetProps.SetPropInt(self, "m_nWaterLevel", 1)
-		NetProps.SetPropInt(self, "m_nWaterLevel", 0)
 	}
 }
 
