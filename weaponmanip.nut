@@ -20,6 +20,7 @@ IncludeScript("lib/clocksutils.nut");
 		local nopda = GetWearableAttribute(player,"no pda", 0)
 		local nopda2 = GetWearableAttribute(player,"no pda2", 0)
 		local noutility = GetWearableAttribute(player,"no utility", 0)
+		local medievalmymode = GetWearableAttribute(player,"medieval my mode", 0)
 		if (noprimary)
 			RemoveWeaponInSlot(player, 0)
 		if (nosecondary)
@@ -32,6 +33,52 @@ IncludeScript("lib/clocksutils.nut");
 			RemoveWeaponInSlot(player, 4)
 		if (noutility)
 			RemoveWeaponInSlot(player, 5)
+		if (medievalmymode)
+			MedievalMyMode(player)
+	}
+}
+
+function MedievalMyMode(player)
+{
+	for (local i = 0; i < MAXWEAPONS; i++)
+	{
+		local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
+		if (held_weapon == null)
+			continue
+		local medieval = false
+		if (MeleeWeapons.find(held_weapon.GetClassname()) != null && !held_weapon.GetAttribute("banned in medieval mode", 0))
+		{
+			medieval = true
+		}
+		else if (held_weapon.GetAttribute("allowed in medieval mode", 0))
+		{
+			medieval = true
+		}
+
+		if (!medieval)
+		{
+			NetProps.SetPropEntityArray(player, "m_hMyWeapons", null, i)
+			if (player.GetActiveWeapon() == held_weapon)
+			{
+				local newweap
+				local j = 0
+				while (!(newweap = NetProps.GetPropEntityArray(player, "m_hMyWeapons", j)))
+				{
+					j += 1
+				}
+				player.Weapon_Switch(newweap)
+			}
+			held_weapon.Destroy()
+		}
+	}
+	for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
+	{
+		if (wearable.GetClassname() != "tf_wearable")
+			continue
+		if (!wearable.GetAttribute("allowed in medieval mode", 0) && NetProps.GetPropInt(wearable, "m_AttributeManager.m_Item.m_iItemDefinitionIndex") != 65535)
+		{
+			wearable.Destroy()
+		}
 	}
 }
 

@@ -5,6 +5,8 @@
 "no pda2"
 "no utility"
 // Obivous. NOTE THAT THIS HAS NO EFFECT ON WEARABLES UNLESS "wearable slot {slot}" IS USED (see generic attribs for more info)
+"medieval my mode"
+// Only allow weapons that are allowed in medieval mode (MAKE SURE THAT ANYTHING THAT HAS THIS IS ALSO MEDIEVAL MODE COMPATABLE, THE GAME WILL NOT APPRECIATE IT IF IT ISN'T)
 
         "17827"
 		{
@@ -39,6 +41,12 @@
 		"17832"
 		{
 			"name"					"no utility"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17834"
+		{
+			"name"					"medieval my mode"
 			"description_format"	"value_is_additive"
 			"effect_type"			"neutral"
 		}
