@@ -1,0 +1,18 @@
+"wall climb"
+// How far up a wall climb should boost you.
+"wall climb decay"
+// The percentage the power of each climb should decrease by every climb until touching the ground.
+
+       "17836"
+		{
+			"name"					"wall climb"
+			"description_string"	"Climb objects by hitting them"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17837"
+		{
+			"name"					"wall climb decay"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"neutral"
+		}

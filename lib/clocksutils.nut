@@ -10,6 +10,7 @@ if (!("ATTRIBSTOBECLEAREDWEARER" in getroottable())) {
 	ATTRIBSTOBECLEAREDWEARER <- array(MaxPlayers(), [])
 	ATTRIBSTOBECLEARED <- array(MaxPlayers(), [])
 	ATTRIBSTOBEADDED <- array(MaxPlayers(), [])
+	FLIGHTPROCS <- array(MaxPlayers(), [])
 	NULLVECTOR <- Vector(0,0,0)
 }
 
@@ -43,6 +44,55 @@ TimerText <- SpawnEntityFromTable("game_text", {
 }
 
 __CollectGameEventCallbacks(PlayerCleanup)
+
+// What a laggy piece of work
+// TO DO: OPTIMISE!
+Entities.First().SetThinkFunction("CheckMeleeSmack", 0)
+
+function CheckMeleeSmack()
+{
+	local entity = Entities.First()
+	local last = entity
+	entity = Entities.Next(entity)
+	while (entity != null && last != entity)
+	{
+		if (entity.IsWeapon() && MeleeWeapons.find(entity.GetClassname()) != null)
+		{
+			local scriptscope = entity.GetOrCreatePrivateScriptScope()
+			local owner = entity.GetOwner()
+			// when melee smacks, m_iNextMeleeCrit is 0
+			if (NetProps.GetPropInt(owner, "m_Shared.m_iNextMeleeCrit") == 0)
+			{
+				// when switching away from melee, m_iNextMeleeCrit will also be 0 so check for that case
+				if (owner.GetActiveWeapon() == entity)
+				{
+					owner.AcceptInput("fireuser1", "", null, null)
+				}
+
+				// continue smack detection
+				NetProps.SetPropInt(owner, "m_Shared.m_iNextMeleeCrit", -2)
+			}
+			local attacktime = NetProps.GetPropFloat(entity, "m_flNextPrimaryAttack")
+			if (attacktime > Time() && (!("swingtime" in scriptscope) || scriptscope.swingtime < attacktime))
+			{
+				// when switching away from melee, m_iNextMeleeCrit will also be 0 so check for that case
+				owner.AcceptInput("fireuser2", "", null, null)
+				scriptscope.swingtime <- attacktime
+			}
+		}
+		if (entity.IsPlayer() && NetProps.GetPropEntity(entity, "m_hGroundEntity") != null)
+		{
+			// stupid hack fix
+			FLIGHTPROCS[entity.GetEntityIndex()] = 0
+		}
+		
+		// Why does it not, just, like, return null when it's done. Stupid language. Stupid VScript.
+		last = entity
+		entity = Entities.Next(entity)
+	}
+
+	return -1
+}
 
 ::GetWearableAttribute <- function(player, attribname, basenum)
 {
@@ -441,6 +491,18 @@ __CollectGameEventCallbacks(PlayerCleanup)
 {
 	TimerText.AcceptInput("settext", "",self,null)
 	TimerText.AcceptInput("Display", "",self,null)
+}
+
+::StartsWithList <- function(value, list)
+{
+	foreach (i in list)
+	{
+		if (startswith(value,i))
+		{
+			return true
+		}
+	}
+	return false
 }
 
 

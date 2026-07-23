@@ -26,3 +26,5 @@ Current plugins:
 <br>bannerplus: Greatly expands banners in basically everyway, including allowing other classes to use them!
 <br>extrashot: fire an extra shot whenever you fire... kinda. Tbh this only here because I don't see a reason to get rid of it yet.
 <br>weaponmanip: Allows you to remove weapons based on slots. Janky soldier knights rejoice.
+<br>spyfix: Non-knife weapons now properly undisguise.
+<br>thatonevshwallclimbwhoopee: Self explanatory
