@@ -39,7 +39,7 @@
 "disable buildings on hit"
 // Disables buildings for the inputted amount of time on hit
 "moisten on hit"
-// Makes the enemy wet on hit. Lasts for a fixed time of about 3 seconds.
+// Makes the enemy wet on hit. Lasts for a fixed time of about 3 seconds. Value sets "water level" (1 and 2 have no particle effect, 3 does.)
 
         "17679"
 		{
