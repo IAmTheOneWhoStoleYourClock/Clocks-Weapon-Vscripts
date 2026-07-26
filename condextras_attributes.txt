@@ -40,6 +40,32 @@
 // Disables buildings for the inputted amount of time on hit
 "moisten on hit"
 // Makes the enemy wet on hit. Lasts for a fixed time of about 3 seconds. Value sets "water level" (1 and 2 have no particle effect, 3 does.)
+"add condition on hit weapon accumulate"
+"add condition on hit weapon accumulate time"
+"add condition on hit weapon accumulate cap"
+// Add a condition that accumlates (stacks) up to the cap
+"add condition on hit self weapon accumulate"
+"add condition on hit self weapon accumulate time"
+"add condition on hit self weapon accumulate cap"
+// The self version of the above
+"bleed on hit weapon accumulate time"
+"bleed on hit weapon accumulate cap"
+// A version just for bleed.
+// *What about afterburn? That would be great for pyro primaries!* Later. I'm tired.
+"add condition on hit weapon scale accumulate"
+"add condition on hit weapon scale accumulate time min"
+"add condition on hit weapon scale accumulate time max"
+"add condition on hit weapon scale accumulate time"
+"add condition on hit weapon scale accumulate cap"
+// Both scale and accumulate.
+"add condition on hit self weapon scale accumulate"
+"add condition on hit self weapon scale accumulate time min"
+"add condition on hit self weapon scale accumulate time max"
+"add condition on hit self weapon scale accumulate time"
+"add condition on hit self weapon scale accumulate cap"
+// The above but for self.
+// No, there's not a bleed version of this. Didn't work. ;(
+
 
         "17679"
 		{
@@ -212,6 +238,114 @@
 		"17833"
 		{
 			"name"					"disable buildings on hit"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17838"
+		{
+			"name"					"add condition on hit self weapon scale accumulate"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17839"
+		{
+			"name"					"add condition on hit self weapon scale accumulate time min"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17840"
+		{
+			"name"					"add condition on hit self weapon scale accumulate time max"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17841"
+		{
+			"name"					"add condition on hit self weapon scale accumulate time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17842"
+		{
+			"name"					"add condition on hit weapon scale accumulate"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17843"
+		{
+			"name"					"add condition on hit weapon scale accumulate time min"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17844"
+		{
+			"name"					"add condition on hit weapon scale accumulate time max"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17845"
+		{
+			"name"					"add condition on hit weapon scale accumulate time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17846"
+		{
+			"name"					"add condition on hit weapon scale accumulate cap"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17847"
+		{
+			"name"					"add condition on hit self weapon scale accumulate cap"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17848"
+		{
+			"name"					"add condition on hit weapon accumulate"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17849"
+		{
+			"name"					"add condition on hit weapon accumulate time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17850"
+		{
+			"name"					"add condition on hit weapon accumulate cap"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17851"
+		{
+			"name"					"add condition on hit self weapon accumulate"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17852"
+		{
+			"name"					"add condition on hit self weapon accumulate time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17853"
+		{
+			"name"					"add condition on hit self weapon accumulate cap"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17854"
+		{
+			"name"					"bleed on hit weapon accumulate time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17855"
+		{
+			"name"					"bleed on hit weapon accumulate cap"
 			"description_format"	"value_is_additive"
 			"effect_type"			"neutral"
 		}

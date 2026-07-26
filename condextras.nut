@@ -88,6 +88,30 @@ BUILDINGS <- ["obj_sentrygun", "obj_dispenser", "obj_teleporter"]
 				player.AddCondEx(extrahitselfcondscale, weapon.GetAttribute("add condition on hit self weapon scale time", 0) * scale, player)
 			}
 		}
+
+		local extrahitcondscaleaccumulate = weapon.GetAttribute("add condition on hit weapon scale accumulate", 0)
+		if (extrahitcondscaleaccumulate)
+		{
+			local mintime = weapon.GetAttribute("add condition on hit weapon scale accumulate time min", 0)
+			if (params.damageamount >= mintime)
+			{
+				local maxtime = weapon.GetAttribute("add condition on hit weapon scale accumulate time max", 0)
+				local scale = clamp((params.damageamount - mintime)/(maxtime - mintime),0.25,1)
+				self.AddCondEx(extrahitcondscaleaccumulate, min(weapon.GetAttribute("add condition on hit weapon scale accumulate time", 0)*scale + self.GetCondDuration(extrahitcondscaleaccumulate), weapon.GetAttribute("add condition on hit weapon scale accumulate cap", 0)), player)
+			}
+		}
+		local extrahitselfcondscaleaccumulate = weapon.GetAttribute("add condition on hit self weapon scale accumulate", 0)
+		if (extrahitselfcondscaleaccumulate)
+		{
+			local mintime = weapon.GetAttribute("add condition on hit self weapon scale accumulate time min", 0)
+			if (params.damageamount >= mintime)
+			{
+				local maxtime = weapon.GetAttribute("add condition on hit self weapon scale accumulate time max", 0)
+				local scale = clamp((params.damageamount - mintime)/(maxtime - mintime),0.25,1)
+				player.AddCondEx(extrahitselfcondscaleaccumulate, min(weapon.GetAttribute("add condition on hit self weapon scale accumulate time", 0)*scale + player.GetCondDuration(extrahitcondscaleaccumulate), weapon.GetAttribute("add condition on hit self weapon scale accumulate cap", 0)), player)
+			}
+		}
+		
 		local addcondcrit = weapon.GetAttribute("add condition on crit", 0).tointeger()
 		// params.bonuseffect is broken in TF2C it seems...
 		if (addcondcrit && params.crit && !params.minicrit)
@@ -158,6 +182,29 @@ function OnTakeDamage(self,info)
 	if (wet && NetProps.GetPropInt(self, "m_nWaterLevel") ==  0)
 	{
 		NetProps.SetPropInt(self, "m_nWaterLevel", wet)
+	}
+
+	local accumulatehitcond = weapon.GetAttribute("add condition on hit weapon accumulate", 0).tointeger()
+	if (accumulatehitcond)
+	{
+		self.AddCondEx(accumulatehitcond, max(weapon.GetAttribute("add condition on hit weapon accumulate time", 0) + self.GetCondDuration(accumulatehitcond), weapon.GetAttribute("add condition on hit weapon accumulate cap", 0)), info.GetAttacker())
+	}
+	local accumulateselfcond = weapon.GetAttribute("add condition on hit self weapon accumulate", 0).tointeger()
+	if (accumulateselfcond)
+	{
+		info.GetAttacker().AddCondEx(accumulateselfcond, max(weapon.GetAttribute("add condition on hit self weapon accumulate time", 0) + self.GetCondDuration(accumulateselfcond), weapon.GetAttribute("add condition on hit self weapon accumulate cap", 0)), info.GetAttacker())
+	}
+
+	local accumulatehitbleed = weapon.GetAttribute("bleed on hit weapon accumulate cap", 0)
+	if (accumulatehitbleed && info.GetDamageCustom() != 34)
+	{
+		local duration = (min(weapon.GetAttribute("bleed on hit weapon accumulate time", 0) + self.GetCondDuration(25), accumulatehitbleed))
+		weapon.AddAttribute("bleeding duration",duration,0)
+		self.AddCondEx(25, duration, info.GetAttacker())
+	}
+	else if (accumulatehitbleed)
+	{
+		weapon.AddAttribute("bleeding duration",0,0)
 	}
 }
 
