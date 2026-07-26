@@ -56,10 +56,10 @@ function CheckMeleeSmack()
 	entity = Entities.Next(entity)
 	while (entity != null && last != entity)
 	{
-		if (entity.IsWeapon() && MeleeWeapons.find(entity.GetClassname()) != null)
+		local owner = entity.GetOwner()
+		if (entity.IsWeapon() && MeleeWeapons.find(entity.GetClassname()) != null && owner)
 		{
 			local scriptscope = entity.GetOrCreatePrivateScriptScope()
-			local owner = entity.GetOwner()
 			// when melee smacks, m_iNextMeleeCrit is 0
 			if (NetProps.GetPropInt(owner, "m_Shared.m_iNextMeleeCrit") == 0)
 			{
@@ -73,7 +73,7 @@ function CheckMeleeSmack()
 				NetProps.SetPropInt(owner, "m_Shared.m_iNextMeleeCrit", -2)
 			}
 			local attacktime = NetProps.GetPropFloat(entity, "m_flNextPrimaryAttack")
-			if (attacktime > Time() && (!("swingtime" in scriptscope) || scriptscope.swingtime < attacktime))
+			if (attacktime > Time() && (!("swingtime" in scriptscope) || scriptscope.swingtime < attacktime) && entity.FireDuration())
 			{
 				// when switching away from melee, m_iNextMeleeCrit will also be 0 so check for that case
 				owner.AcceptInput("fireuser2", "", null, null)
