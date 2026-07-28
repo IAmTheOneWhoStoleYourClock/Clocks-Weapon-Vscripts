@@ -23,23 +23,24 @@
 "add condition on hit self weapon cooldown cond"
 "add condition on hit self weapon cooldown time"
 // Same as above, but for you. The cooldown of these two is shared.
-"add condition on crit"
-"add condition on crit time"
-"add condition on crit self"
-"add condition on crit self time"
-"add condition on minicrit"
-"add condition on minicrit time"
-"add condition on minicrit self"
-"add condition on minicrit self time"
+"add condition on crit weapon"
+"add condition on crit weapon time"
+"add condition on crit self weapon"
+"add condition on crit self weapon time"
+"add condition on minicrit weapon"
+"add condition on minicrit weapon time"
+"add condition on minicrit self weapon"
+"add condition on minicrit self weapon time"
 // Should be obvious. Note that crit conds do not automatically cover minicrit conds, and vice versa.
-// These don't have weapon in the name cause I got lazy. They're still weapon locked.
+// I had to get NOT lazy so the prior naming has now been changed to be standardized.
 "add condition on kill extra"
 "add condition on kill extra time"
 // Extra on kill addcond
 "disable buildings on hit"
 // Disables buildings for the inputted amount of time on hit
-"moisten on hit"
+"moisten on hit weapon"
 // Makes the enemy wet on hit. Lasts for a fixed time of about 3 seconds. Value sets "water level" (1 and 2 have no particle effect, 3 does.)
+// I had to get NOT lazy so the prior naming has now been changed to be standardized.
 "add condition on hit weapon accumulate"
 "add condition on hit weapon accumulate time"
 "add condition on hit weapon accumulate cap"
@@ -66,6 +67,10 @@
 // The above but for self.
 // No, there's not a bleed version of this. Didn't work. ;(
 
+//
+// There is also a non-weapon locked version of everything with "weapon" in the name, which can be used by simply removing weapon from the name. (ex. "add condition on hit extra")
+// No, I'm not writing out all of those individually.
+//
 
         "17679"
 		{
@@ -141,49 +146,49 @@
 		}
 		"17805"
 		{
-			"name"					"add condition on crit"
+			"name"					"add condition on crit weapon"
 			"description_format"	"value_is_additive"
 			"effect_type"			"positive"
 		}
 		"17806"
 		{
-			"name"					"add condition on crit time"
+			"name"					"add condition on crit weapon time"
 			"description_format"	"value_is_additive"
 			"effect_type"			"negative"
 		}
 		"17807"
 		{
-			"name"					"add condition on crit self"
+			"name"					"add condition on crit self weapon"
 			"description_format"	"value_is_additive"
 			"effect_type"			"positive"
 		}
 		"17808"
 		{
-			"name"					"add condition on crit self time"
+			"name"					"add condition on crit self weapon time"
 			"description_format"	"value_is_additive"
 			"effect_type"			"negative"
 		}
 		"17809"
 		{
-			"name"					"add condition on minicrit"
+			"name"					"add condition on minicrit weapon"
 			"description_format"	"value_is_additive"
 			"effect_type"			"positive"
 		}
 		"17810"
 		{
-			"name"					"add condition on minicrit time"
+			"name"					"add condition on minicrit weapon time"
 			"description_format"	"value_is_additive"
 			"effect_type"			"negative"
 		}
 		"17811"
 		{
-			"name"					"add condition on minicrit self"
+			"name"					"add condition on minicrit self weapon"
 			"description_format"	"value_is_additive"
 			"effect_type"			"positive"
 		}
 		"17812"
 		{
-			"name"					"add condition on minicrit self time"
+			"name"					"add condition on minicrit self weapon time"
 			"description_format"	"value_is_additive"
 			"effect_type"			"negative"
 		}
@@ -346,6 +351,292 @@
 		"17855"
 		{
 			"name"					"bleed on hit weapon accumulate cap"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17835"
+		{
+			"name"					"moisten on hit weapon"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+
+		
+
+
+
+
+
+
+
+		"17880"
+		{
+			"name"					"add condition on hit self scale"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17881"
+		{
+			"name"					"add condition on hit self scale time min"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17882"
+		{
+			"name"					"add condition on hit self scale time max"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17883"
+		{
+			"name"					"add condition on hit self scale time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17884"
+		{
+			"name"					"add condition on hit scale"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17885"
+		{
+			"name"					"add condition on hit scale time min"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17886"
+		{
+			"name"					"add condition on hit scale time max"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17887"
+		{
+			"name"					"add condition on hit scale time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17888"
+		{
+			"name"					"add condition on hit self extra"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17889"
+		{
+			"name"					"add condition on hit self extra time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17890"
+		{
+			"name"					"add condition on hit extra"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17891"
+		{
+			"name"					"add condition on hit extra time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17892"
+		{
+			"name"					"add condition on crit"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17893"
+		{
+			"name"					"add condition on crit time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17894"
+		{
+			"name"					"add condition on crit self"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17895"
+		{
+			"name"					"add condition on crit self time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17896"
+		{
+			"name"					"add condition on minicrit"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17897"
+		{
+			"name"					"add condition on minicrit time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17898"
+		{
+			"name"					"add condition on minicrit self"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17899"
+		{
+			"name"					"add condition on minicrit self time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		// suspicous hole that totally wasn't me making an oopsie
+		"17902"
+		{
+			"name"					"add condition on hit cooldown"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17903"
+		{
+			"name"					"add condition on hit cooldown cond"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17904"
+		{
+			"name"					"add condition on hit cooldown time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17905"
+		{
+			"name"					"add condition on hit self cooldown"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17906"
+		{
+			"name"					"add condition on hit self cooldown cond"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17907"
+		{
+			"name"					"add condition on hit self cooldown time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"negative"
+		}
+		"17908"
+		{
+			"name"					"add condition on hit self scale accumulate"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17909"
+		{
+			"name"					"add condition on hit self scale accumulate time min"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17910"
+		{
+			"name"					"add condition on hit self scale accumulate time max"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17911"
+		{
+			"name"					"add condition on hit self scale accumulate time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17912"
+		{
+			"name"					"add condition on hit scale accumulate"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17913"
+		{
+			"name"					"add condition on hit scale accumulate time min"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17914"
+		{
+			"name"					"add condition on hit scale accumulate time max"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17915"
+		{
+			"name"					"add condition on hit scale accumulate time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17916"
+		{
+			"name"					"add condition on hit scale accumulate cap"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17917"
+		{
+			"name"					"add condition on hit self scale accumulate cap"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17918"
+		{
+			"name"					"add condition on hit accumulate"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17919"
+		{
+			"name"					"add condition on hit accumulate time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17920"
+		{
+			"name"					"add condition on hit accumulate cap"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17921"
+		{
+			"name"					"add condition on hit self accumulate"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17922"
+		{
+			"name"					"add condition on hit self accumulate time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17923"
+		{
+			"name"					"add condition on hit self accumulate cap"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17924"
+		{
+			"name"					"bleed on hit accumulate time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17925"
+		{
+			"name"					"bleed on hit accumulate cap"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17926"
+		{
+			"name"					"moisten on hit"
 			"description_format"	"value_is_additive"
 			"effect_type"			"neutral"
 		}
