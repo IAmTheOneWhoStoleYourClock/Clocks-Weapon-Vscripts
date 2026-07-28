@@ -61,6 +61,10 @@ function EntitySpawnMedigunDamager(entity)
 		medigunscope.uberratebuildings <- entity.GetAttribute("medigun targets buildings uber rate buildings", 1) // How fast uber should build while "healing" a building
 		medigunscope.condwhileubered <- entity.GetAttribute("cond while ubered", 0) // A condition to apply while ubered
 		medigunscope.healmultduringuber <- entity.GetAttribute("heal mult during uber", 1) // How much more to heal while using uber
+		medigunscope.ammogive <- entity.GetAttribute("medigun give ammo", 0)
+		medigunscope.ammogivebuildings <- entity.GetAttribute("medigun give ammo buildings", 0)
+		medigunscope.ammogiveuber <- entity.GetAttribute("medigun give ammo uber mult", 0)
+		medigunscope.ammogivebuildingsuber <- entity.GetAttribute("medigun give ammo buildings uber mult", 0)
 		medigunscope.fovcap <- (entity.GetAttribute("medigun targets enemies fov cap", 0)/360)*PI // How far from where you are looking the medibeam can be, in degrees (although we convert it to radians here)
 		medigunscope.fling <- entity.GetAttribute("medigun fling enable", 0)
 		if (medigunscope.fling)
@@ -439,10 +443,20 @@ function MedigunEnemyChecker()
 		{
 			// Need to use the "AddHealth" input for buildings for some reason.
 			medigunscope.target.AcceptInput("AddHealth", (medigunscope.buildings * medigunscope.uberbuildingsmult).tostring(), null null)
+			if (medigunscope.ammogivebuildings && medigunscope.target.GetClassname() == "obj_sentrygun")
+			{
+				NetProps.SetPropInt(medigunscope.target, "m_iAmmoShells", NetProps.GetPropInt(medigunscope.target, "m_iAmmoShells") + (medigunscope.ammogivebuildings * medigunscope.ammogivebuildingsuber))
+				NetProps.SetPropInt(medigunscope.target, "m_iAmmoRockets", NetProps.GetPropInt(medigunscope.target, "m_iAmmoRockets") + (medigunscope.ammogivebuildings * medigunscope.ammogivebuildingsuber))
+			}
 		}
 		else
 		{
 			medigunscope.target.AcceptInput("AddHealth", (medigunscope.buildings).tostring(), null null)
+			if (medigunscope.ammogivebuildings && medigunscope.target.GetClassname() == "obj_sentrygun")
+			{
+				NetProps.SetPropInt(medigunscope.target, "m_iAmmoShells", NetProps.GetPropInt(medigunscope.target, "m_iAmmoShells") + (medigunscope.ammogivebuildings))
+				NetProps.SetPropInt(medigunscope.target, "m_iAmmoRockets", NetProps.GetPropInt(medigunscope.target, "m_iAmmoRockets") + (medigunscope.ammogivebuildings))
+			}
 		}
 		medigunscope.lastattack = Time()
 	}
@@ -521,6 +535,39 @@ function MedigunEnemyChecker()
 	else if (medigunscope.targetingenemy)
 	{
 		NetProps.SetPropEntity(self, "m_hHealingTarget", target)
+	}
+	else if (medigunscope.target && Time() - medigunscope.lastattack >= medigunscope.ROF && medigunscope.ammogive)
+	{
+		local i = 1
+		local playedsound = false
+		// For the three main ammo types
+		while (i < 4)
+		{
+			// Get their current ammo
+			local ammoprev = medigunscope.target.GetAmmoCount(i)
+			// Fill up their ammo to the maximum
+			local k = 1
+			while (k != 0)
+			{
+				k = medigunscope.target.GiveAmmo(1, i, true)
+			}
+			// Get the maximum
+			local max = medigunscope.target.GetAmmoCount(i)
+			// Set the ammo to 0
+			medigunscope.target.SetAmmoCount(i, 0)
+			// Give them back their ammo + their maximum ammo times the banner ammount. Also play the sound if we haven't yet.
+			if (!playedsound && ammoprev != max)
+			{
+				medigunscope.target.GiveAmmo(floor(min(ammoprev + max * medigunscope.ammogive, max)), i, false)
+				playedsound = true
+			}
+			else
+			{
+				medigunscope.target.GiveAmmo(floor(min(ammoprev + max * medigunscope.ammogive, max)), i, true)
+			}
+			i += 1
+		}
+		medigunscope.lastattack = Time()
 	}
 
 	return 0.1

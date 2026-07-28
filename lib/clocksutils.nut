@@ -96,6 +96,10 @@ function CheckMeleeSmack()
 
 ::GetWearableAttribute <- function(player, attribname, basenum)
 {
+	if (player == null || !player.IsPlayer())
+	{
+		return basenum
+	}
 	if (basenum != 0)
 	{
 		local returnvalue = basenum

@@ -230,7 +230,7 @@ BannerBoomOffset <- Vector(0, 0, 30)
 		}
 
 		// If this a banner that gives ammo, give it now.
-		local bannerammo = GetWearableAttribute(player,	"banner ammo", 0)
+		local bannerammo = GetWearableAttribute(owner,"banner ammo", 0)
 		if (bannerammo)
 		{
 			local i = 1
@@ -253,12 +253,12 @@ BannerBoomOffset <- Vector(0, 0, 30)
 				// Give them back their ammo + their maximum ammo times the banner ammount. Also play the sound if we haven't yet.
 				if (!playedsound && ammoprev != max)
 				{
-					player.GiveAmmo(floor(ceil(ammoprev + max * bannerammo, max)), i, false)
+					player.GiveAmmo(floor(min(ammoprev + max * bannerammo, max)), i, false)
 					playedsound = true
 				}
 				else
 				{
-					player.GiveAmmo(floor(ceil(ammoprev + max * bannerammo, max)), i, true)
+					player.GiveAmmo(floor(min(ammoprev + max * bannerammo, max)), i, true)
 				}
 				i += 1
 			}

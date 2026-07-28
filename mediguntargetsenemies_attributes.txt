@@ -50,6 +50,14 @@
 // The speed at which you are pulled towards the target position for the fling.
 "medigun targets enemies fov cap"
 // The maximum amount in degrees you can look away from an enemy the medigun is attached to before it forcefully disconnects.
+"medigun give ammo"
+// Ammo to give teammates every cycle. Affected by "medigun targets fire rate". Input as a precentage of ammo to be regained (ex. 0.05 -> 5%)
+"medigun give ammo uber mult"
+// Modifies the above by this percentage during uber
+"medigun give ammo buildings"
+// Ammo to give sentries every cycle. (Dispensers are unnaffected.) Input is the flat number of shells to give the sentry. (ex. 5 would allow it to fire 5 more times.)
+"medigun give ammo buildings uber mult"
+// Modifies the above by this percentage during uber
 
 
 "heal grenade hit heal mult"
@@ -417,4 +425,28 @@ Essenally the same as the previous, down to the ability to colour it, but the in
 			"hidden"	"0"
 			"effect_type"	"neutral"
 			"stored_as_integer"	"0"
+		}
+		"17928"
+		{
+			"name"					"medigun give ammo"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17929"
+		{
+			"name"					"medigun give ammo buildings"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17930"
+		{
+			"name"					"medigun give ammo uber mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"neutral"
+		}
+		"17931"
+		{
+			"name"					"medigun give ammo buildings uber mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"neutral"
 		}

@@ -108,7 +108,7 @@ BUILDINGS <- ["obj_sentrygun", "obj_dispenser", "obj_teleporter"]
 			{
 				local maxtime = weapon.GetAttribute("add condition on hit self weapon scale accumulate time max", 0)
 				local scale = clamp((params.damageamount - mintime)/(maxtime - mintime),0.25,1)
-				player.AddCondEx(extrahitselfcondscaleaccumulate, min(weapon.GetAttribute("add condition on hit self weapon scale accumulate time", 0)*scale + player.GetCondDuration(extrahitcondscaleaccumulate), weapon.GetAttribute("add condition on hit self weapon scale accumulate cap", 0)), player)
+				player.AddCondEx(extrahitselfcondscaleaccumulate, min(weapon.GetAttribute("add condition on hit self weapon scale accumulate time", 0)*scale + player.GetCondDuration(extrahitselfcondscaleaccumulate), weapon.GetAttribute("add condition on hit self weapon scale accumulate cap", 0)), player)
 			}
 		}
 		
@@ -155,6 +155,8 @@ __CollectGameEventCallbacks(CondExtrasEventTable)
 
 function PlayerHurtWearer(weapon,params)
 {
+	local player = GetPlayerFromUserID(params.attacker)
+	local self = GetPlayerFromUserID(params.userid)
 	local extrahitcondscale = weapon.GetAttribute("add condition on hit scale", 0).tointeger()
 	if (extrahitcondscale)
 	{
@@ -197,7 +199,7 @@ function PlayerHurtWearer(weapon,params)
 		{
 			local maxtime = weapon.GetAttribute("add condition on hit self scale accumulate time max", 0)
 			local scale = clamp((params.damageamount - mintime)/(maxtime - mintime),0.25,1)
-			player.AddCondEx(extrahitselfcondscaleaccumulate, min(weapon.GetAttribute("add condition on hit self scale accumulate time", 0)*scale + player.GetCondDuration(extrahitcondscaleaccumulate), weapon.GetAttribute("add condition on hit self scale accumulate cap", 0)), player)
+			player.AddCondEx(extrahitselfcondscaleaccumulate, min(weapon.GetAttribute("add condition on hit self scale accumulate time", 0)*scale + player.GetCondDuration(extrahitselfcondscaleaccumulate), weapon.GetAttribute("add condition on hit self scale accumulate cap", 0)), player)
 		}
 	}
 	
