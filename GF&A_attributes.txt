@@ -1,0 +1,186 @@
+//
+// UNIVERSAL CHANGES
+// All grenades now use their correct physics model, unless exempted with "no physics fix"
+// Bomblets now correctly use the weapon as their weapon, rather than the player. Yes, this is an issue.
+// The above also fixes the wearer splash radius issue.
+// The issue where explosion radius effects bomblet radius (and damage??!?!?!?! This wasn't an issue last time I checked, but apperently I fix it?!?!?!) on wearer is now also fixed.
+// MIRVs are now correctly effected by "fuse bonus"
+//
+
+"no physics fix"
+// No physics fix on all projectiles on this weapon.
+"brick explodes fixed"
+// brick explodes, but fixed.
+"brick custom projectile"
+// 1 - The brick becomes the model of the world model plus _projectile (ex. w_brick_fish.mdl -> w_brick_fish_projectile.mdl).
+// 2 - The brick becomes the model of the world model.
+"bomblet custom projectile"
+// 1 - The bomblet becomes the model of the bomb plus _bomblet (ex. w_brick_fish.mdl -> w_brick_fish_bomblet.mdl).
+// 2 - The bomblet becomes the model of the world model plus _bomblet (ex. w_brick_fish.mdl -> w_brick_fish_bomblet.mdl).
+// 3 - The bomblet becomes the model of the bomb.
+// 4 - The bomblet becomes the model of the world model.
+"bomblet fuse bonus"
+// bomblet fuse time multiplier
+"bomblet fuse flat"
+// Additive version of the above. Since bomblets inherently have some randomness on when they blow up, this can help reduce (or increase if you're evil) that.
+"bomblet damage"
+// bomblet damage multiplier
+"bomblet blast radius"
+// bomblet blast radius multiplier
+"mult bomblet velocity"
+// A multiplier to how fast the bomblets fly out
+"stickybomb explode time"
+// Time in seconds before a stickybomb is forced to explode
+"proj detonate with rocket radius fix"
+// Fix for "proj detonate with rocket radius"
+"proj detonate with rocket radius dmg"
+// Increases the damage the proejctile deal by this much when the above triggers
+"override grenade type"
+// Hard to explain. Basically makes the grenade pretend it's a different type of grenade? 1 for base grenade, 2 for sticky, 3 for "training stickies", 4 for cannonballs.
+"defensive bomb"
+// Makes the grenade glow like the scottish resistances. Can be negative to remove that effect.
+"grenades collide"
+// Allows grenades to collide with eachother.
+"explode on world"
+// Grenades will explode on contact with the world.
+"no gravity"
+// Grenades have no gravity.
+"scale bounding box"
+"BBoxWidth"
+"BBoxMaxZ"
+"BBoxMinZ"
+// Set various aspects of the grenades Bounding box (note that "scale bounding box" must be non-zero for the following three to have any affect)
+
+
+        "17856"
+		{
+			"name"					"no physics fix"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17857"
+		{
+			"name"					"brick explodes fixed"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17858"
+		{
+			"name"					"brick custom projectile"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17859"
+		{
+			"name"					"bomblet custom projectile"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17860"
+		{
+			"name"					"bomblet fuse bonus"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"neutral"
+		}
+		"17861"
+		{
+			"name"					"bomblet damage"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"neutral"
+		}
+		"17862"
+		{
+			"name"					"bomblet blast radius"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"neutral"
+		}
+		"17863"
+		{
+			"name"					"mult bomblet velocity"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"neutral"
+		}
+		"17864"
+		{
+			"name"					"bomblet fuse flat"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"neutral"
+		}
+		"17865"
+		{
+			"name"					"stickybomb explode time"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17866"
+		{
+			"name"					"proj detonate with rocket radius fix"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17867"
+		{
+			"name"					"proj detonate with rocket radius dmg"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17868"
+		{
+			"name"					"override grenade type"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17869"
+		{
+			"name"					"grenade not explode on impact true"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17870"
+		{
+			"name"					"defensive bomb"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17871"
+		{
+			"name"					"grenades collide"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17872"
+		{
+			"name"					"explode on world"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17873"
+		{
+			"name"					"no gravity"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17874"
+		{
+			"name"					"scale bounding box"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17875"
+		{
+			"name"					"BBoxWidth"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17876"
+		{
+			"name"					"BBoxMaxZ"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17877"
+		{
+			"name"					"BBoxMinZ"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}

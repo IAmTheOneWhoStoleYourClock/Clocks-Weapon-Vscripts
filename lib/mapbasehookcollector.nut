@@ -72,6 +72,16 @@ if ("ModifyEmitSoundParams" in getroottable())
 
 function OnTakeDamage()
 {
+	// Hack fix for bomblets.
+	// TO DO: ESTABLISH A PROPER SYSTEM FOR PREORDER FUNCTIONS FOR THINGS LIKE THIS!
+	if (info.GetWeapon() && info.GetWeapon().IsPlayer() && info.GetInflictor() && info.GetInflictor().GetClassname() == "tf_weapon_grenade_mirv_bomb")
+	{
+		local scriptscope = info.GetInflictor().GetOrCreatePrivateScriptScope()
+		if ("weapon" in scriptscope)
+		{
+			info.SetWeapon(scriptscope.weapon)
+		}
+	}
 	if (OnTakeDamageFUNCTIONS == [])
 	{
 		return

@@ -61,6 +61,8 @@ local WEAPONCLASSBASEDAMAGE=
 }
 local HIGHEST_SOLID_FLAG = 1028
 
+IncludeScript("lib/clocksutils.nut")
+
 Convars.RegisterConvar("GFA_projdeteonatefrequency", "0.09", "How long the delay should be between every ''proj detonate with rocket radius fix'' check.", 1)
 
 // Corrects the kill icon of brick explodes and the damage of the pipe
@@ -161,26 +163,26 @@ function EntitySpawn(entity)
 		{
 			return
 		}
-		local weapondata = split(bomb.GetContext("MirvLogWeaponDataGrenadeFix1"),",")
-		local bombreplace = weapondata[0].tofloat()
+		local weapondata = bomb.GetOrCreatePrivateScriptScope()
+		local bombreplace = weapondata.customproj
 		if (bombreplace > 0)
 		{
 			local projectilename = ""
 			if (bombreplace <= 1)
 			{
-				projectilename = bomb.GetContext("MirvLogMirvModel").slice(0,-4) + "_bomblet.mdl"
+				projectilename = weapondata.modelname.slice(0,-4) + "_bomblet.mdl"
 			}
 			else if (bombreplace <= 2)
 			{
-				projectilename = weapondata[1].slice(0,-4) + "_bomblet.mdl"
+				projectilename = weapondata.worldmodel.slice(0,-4) + "_bomblet.mdl"
 			}
 			else if (bombreplace <= 3)
 			{
-				projectilename = bomb.GetContext("MirvLogMirvModel")
+				projectilename = weapondata.modelname
 			}
 			else
 			{
-				projectilename = weapondata[1]
+				projectilename = weapondata.worldmodel
 			}
 
 			entity.SetModel(projectilename)
@@ -188,6 +190,14 @@ function EntitySpawn(entity)
 		}
 
 		// Bomblet versions of normal attribs go here
+		local bombletdata = entity.GetOrCreatePrivateScriptScope()
+		bombletdata.bombletfusemult <- weapondata.bombletfusemult
+		bombletdata.bombletdamage <- weapondata.bombletdamage
+		bombletdata.bombletradius <- weapondata.bombletfusemult
+		bombletdata.bombletfuseadd <- weapondata.bombletradius
+		bombletdata.bombletvelocity <- weapondata.bombletvelocity
+		bombletdata.bombletvelocity <- weapondata.bombletvelocity
+		bombletdata.weapon <- weapondata.weapon
 		entity.AddContext("BombletAttributesGrenadesFix", bomb.GetContext("MirvLogWeaponDataGrenadeFix2"), 0.02)
 		EntFireByHandle(entity, "CallScriptFunction", "BombletApplyAttribs", 0, null, null) // Wait a frame because it's not initalised yet
 
@@ -197,12 +207,19 @@ function EntitySpawn(entity)
 	{
 		// TO DO: There's gotta be a better way of doing this...
 		// Just incase this weapon gets removed, we still want to be able to access the data it had, so compile it all together now and add it as contexts to the MIRV
-		local weapondata1 = weapon.GetAttribute("bomblet custom projectile", 0).tostring() + "," + weapon.GetWorldModel()
-		local weapondata2 = weapon.GetAttribute("bomblet fuse bonus", 1).tostring() + "," + weapon.GetAttribute("bomblet damage", 1).tostring() + "," + weapon.GetAttribute("bomblet blast radius", 1).tostring() + "," + weapon.GetAttribute("bomblet fuse flat", 0).tostring() + "," + weapon.GetAttribute("mult bomblet velocity", 1).tostring()
-		local fuse = NetProps.GetPropFloat(entity, "m_flDetonateTime") - Time()
-		entity.AddContext("MirvLogWeaponDataGrenadeFix1", weapondata1, fuse + 0.1)
-		entity.AddContext("MirvLogWeaponDataGrenadeFix2", weapondata2, fuse + 0.1)
-		entity.AddContext("MirvLogMirvModel", entity.GetModelName(), fuse + 0.1) // It will have forgotten its own model when we're going to be looking for it with the bomblets.
+		local weapondata = entity.GetOrCreatePrivateScriptScope()
+		weapondata.customproj <- weapon.GetAttribute("bomblet custom projectile", 0)
+		weapondata.worldmodel <- weapon.GetWorldModel()
+		weapondata.bombletfusemult <- weapon.GetAttribute("bomblet fuse bonus", 1)
+		weapondata.bombletdamage <- weapon.GetAttribute("bomblet damage", 1)
+		weapondata.bombletradius <- weapon.GetAttribute("bomblet blast radius", 1)
+		weapondata.bombletfuseadd <- weapon.GetAttribute("bomblet fuse flat", 0)
+		weapondata.bombletvelocity <- weapon.GetAttribute("mult bomblet velocity", 1)
+		weapondata.modelname <- entity.GetModelName()
+		weapondata.weapon <- weapon
+		weapondata.fusemult <- weapon.GetAttribute("fuse bonus", 1)
+		EntFireByHandle(entity, "CallScriptFunction", "MirvFuseFix", 0, null, null) // Wait a frame because it's not initalised yet
+
 		// entity.ValidateScriptScope() // Should be unnessesary?
 	}
 	else if (classname == "tf_projectile_pipe_remote")
@@ -230,7 +247,7 @@ function EntitySpawn(entity)
 		NetProps.SetPropInt(entity, "m_iType", ceil(grenadetype) - 1)
 	}
 
-	local noexplode = weapon.GetAttribute("grenade not explode on impact", 0)
+	local noexplode = weapon.GetAttribute("grenade not explode on impact true", 0)
 	if (noexplode != 0){
 		NetProps.SetPropInt(entity, "m_bTouched", 1)
 	}
@@ -291,7 +308,10 @@ function EntitySpawn(entity)
 		entity.SetSize(minvec, maxvec)
 	}
 
-	EntFireByHandle(entity, "CallScriptFunction", "ReplacePhysics", 0, null, null) // Wait a frame or it'll get overriden.
+	if (!weapon.GetAttribute("no physics fix", 0))
+	{
+		EntFireByHandle(entity, "CallScriptFunction", "ReplacePhysics", 0, null, null) // Wait a frame or it'll get overriden.
+	}
 }
 
 //Cursed function because the one that's supposed to do this does not exist
@@ -312,30 +332,31 @@ function GetSolidFlags(entity)
 
 function BombletApplyAttribs()
 {
-	local weapondata = split(self.GetContext("BombletAttributesGrenadesFix"),",")
-
+	local bombletdata = self.GetOrCreatePrivateScriptScope()
 	local fuse = NetProps.GetPropFloat(self, "m_flDetonateTime") - Time()
-	local fuseadjust = weapondata[0].tofloat()
-	local fuseflat = weapondata[3].tofloat()
+	local fuseadjust = bombletdata.bombletfusemult
+	local fuseflat = bombletdata.bombletfuseadd
 	NetProps.SetPropFloat(self, "m_flDetonateTime", Time() + (fuse * fuseadjust) + fuseflat)
 
-	local damageadjust = weapondata[1].tofloat()
+	local damageadjust = bombletdata.bombletdamage
 	if (damageadjust != 1)
 	{
 		self.SetDamage(self.GetDamage()*damageadjust)
 	}
 
-	local radiusadjust = weapondata[2].tofloat()
+	local radiusadjust = bombletdata.bombletradius
+	
 	// mult_explosion_radius affects this on wearer for some reason, which gets done inside self.GetDamageRadius() (I think) during the explosion process,
 	// but since it multiplies with this I can just remove it now since doing self.GetDamageRadius() now gives me what it will be.
-	NetProps.SetPropFloat(self, "m_DmgRadius", (1369/(self.GetDamageRadius())*radiusadjust)) // 37/(self.GetDamageRadius()/37)
+	NetProps.SetPropFloat(self, "m_DmgRadius", ((1369/(self.GetDamageRadius()))*radiusadjust)) // 37/(self.GetDamageRadius()/37)
+	// NetProps.SetPropFloat(self, "m_DmgRadius", (37*radiusadjust))
 
-	if (weapondata[4] != "1")
+	if (bombletdata.bombletvelocity != 1)
 	{
 		local velocity = GetPhysVelocity(self.GetPhysicsObject())
-		velocity.x = velocity.x * weapondata[4].tofloat()
-		velocity.y = velocity.y * weapondata[4].tofloat()
-		velocity.z = velocity.z * weapondata[4].tofloat()
+		velocity.x = velocity.x * bombletdata.bombletvelocity
+		velocity.y = velocity.y * bombletdata.bombletvelocity
+		velocity.z = velocity.z * bombletdata.bombletvelocity
 		self.SetPhysVelocity(velocity)
 	}
 }
@@ -429,6 +450,12 @@ function VPhysicsCollision()
 function NoDefense()
 {
 	NetProps.SetPropInt(self, "m_bDefensiveBomb", 0)
+}
+
+function MirvFuseFix()
+{
+	local weapondata = self.GetOrCreatePrivateScriptScope()
+	NetProps.SetPropFloat(self, "m_flDetonateTime",((NetProps.GetPropFloat(self, "m_flDetonateTime") - Time()) * weapondata.fusemult)+Time())
 }
 
 function CheckBombNearRocket()
@@ -533,3 +560,5 @@ function IsWithinBounds(entity1, entity2)
 		return true
 	}
 }
+
+IncludeScript("lib/mapbasehookcollector.nut")
