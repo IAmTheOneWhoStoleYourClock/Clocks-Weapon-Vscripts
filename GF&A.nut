@@ -158,7 +158,7 @@ function EntitySpawn(entity)
 	{
 		// Unfortunately, bomblets do not remember their creators, so we have to keep track of which mirv this player most recently exploded.
 		// I dont think it's possible to mess this up? Even if it is, it should require a level of precision that would only ever come up intentionally and in extremely neiche circumstances.
-		local bomb = Entities.FindByClassnameNearest("tf_weapon_grenade_mirv_projectile", entity.GetOrigin(),10) // Interestingly, TF2 adds an additional 1 unit when spawning to the z axis, but TF2C seems to have removed this.
+		local bomb = Entities.FindByClassnameNearest("tf_weapon_grenade_mirv_projectile", entity.GetOrigin(),25) // Interestingly, TF2 adds an additional 1 unit when spawning to the z axis, but TF2C seems to have removed this.
 		if (bomb == null)
 		{
 			return
@@ -194,8 +194,7 @@ function EntitySpawn(entity)
 		bombletdata.bombletfusemult <- weapondata.bombletfusemult
 		bombletdata.bombletdamage <- weapondata.bombletdamage
 		bombletdata.bombletradius <- weapondata.bombletfusemult
-		bombletdata.bombletfuseadd <- weapondata.bombletradius
-		bombletdata.bombletvelocity <- weapondata.bombletvelocity
+		bombletdata.bombletfuseadd <- weapondata.bombletfuseadd
 		bombletdata.bombletvelocity <- weapondata.bombletvelocity
 		bombletdata.weapon <- weapondata.weapon
 		entity.AddContext("BombletAttributesGrenadesFix", bomb.GetContext("MirvLogWeaponDataGrenadeFix2"), 0.02)
