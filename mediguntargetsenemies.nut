@@ -538,7 +538,7 @@ function MedigunEnemyChecker()
 	{
 		NetProps.SetPropEntity(self, "m_hHealingTarget", target)
 	}
-	else if (medigunscope.target && medigunscope.target.IsPlayer() && medigunscope.ammogive && Time() - medigunscope.lastattack >= medigunscope.ROF && !medigunscope.target.GetActiveWeapon().GetAttribute("no primary ammo from dispensers while active", 0) && !medigunscope.target.GetActiveWeapon().GetAttribute("no metal from dispensers hidden VSCRIPT", 0))
+	else if (medigunscope.target && medigunscope.target.IsPlayer() && medigunscope.ammogive && Time() - medigunscope.lastattack >= medigunscope.ROF && !medigunscope.target.GetActiveWeapon().GetAttribute("no metal from dispensers while active", 0) && !medigunscope.target.GetActiveWeapon().GetAttribute("no metal from dispensers hidden VSCRIPT", 0))
 	{
 		local i = 1
 		local playedsound = false
