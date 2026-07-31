@@ -63,8 +63,8 @@ function EntitySpawnMedigunDamager(entity)
 		medigunscope.healmultduringuber <- entity.GetAttribute("heal mult during uber", 1) // How much more to heal while using uber
 		medigunscope.ammogive <- entity.GetAttribute("medigun give ammo", 0)
 		medigunscope.ammogivebuildings <- entity.GetAttribute("medigun give ammo buildings", 0)
-		medigunscope.ammogiveuber <- entity.GetAttribute("medigun give ammo uber mult", 0)
-		medigunscope.ammogivebuildingsuber <- entity.GetAttribute("medigun give ammo buildings uber mult", 0)
+		medigunscope.ammogiveuber <- entity.GetAttribute("medigun give ammo uber mult", 1)
+		medigunscope.ammogivebuildingsuber <- entity.GetAttribute("medigun give ammo buildings uber mult", 1)
 		medigunscope.fovcap <- (entity.GetAttribute("medigun targets enemies fov cap", 0)/360)*PI // How far from where you are looking the medibeam can be, in degrees (although we convert it to radians here)
 		medigunscope.fling <- entity.GetAttribute("medigun fling enable", 0)
 		if (medigunscope.fling)
@@ -445,8 +445,9 @@ function MedigunEnemyChecker()
 			medigunscope.target.AcceptInput("AddHealth", (medigunscope.buildings * medigunscope.uberbuildingsmult).tostring(), null null)
 			if (medigunscope.ammogivebuildings && medigunscope.target.GetClassname() == "obj_sentrygun")
 			{
-				NetProps.SetPropInt(medigunscope.target, "m_iAmmoShells", NetProps.GetPropInt(medigunscope.target, "m_iAmmoShells") + (medigunscope.ammogivebuildings * medigunscope.ammogivebuildingsuber))
-				NetProps.SetPropInt(medigunscope.target, "m_iAmmoRockets", NetProps.GetPropInt(medigunscope.target, "m_iAmmoRockets") + (medigunscope.ammogivebuildings * medigunscope.ammogivebuildingsuber))
+				local maxammo = (NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") - 1 ? 200 : 150) * GetWearableAttribute(medigunscope.target.GetOwner(), "mvm sentry ammo", 1)
+				NetProps.SetPropInt(medigunscope.target, "m_iAmmoShells", min(NetProps.GetPropInt(medigunscope.target, "m_iAmmoShells") + (medigunscope.ammogivebuildings * medigunscope.ammogivebuildingsuber),maxammo))
+				NetProps.SetPropInt(medigunscope.target, "m_iAmmoRockets", min(NetProps.GetPropInt(medigunscope.target, "m_iAmmoRockets") + (medigunscope.ammogivebuildings * medigunscope.ammogivebuildingsuber),20))
 			}
 		}
 		else
@@ -454,8 +455,9 @@ function MedigunEnemyChecker()
 			medigunscope.target.AcceptInput("AddHealth", (medigunscope.buildings).tostring(), null null)
 			if (medigunscope.ammogivebuildings && medigunscope.target.GetClassname() == "obj_sentrygun")
 			{
-				NetProps.SetPropInt(medigunscope.target, "m_iAmmoShells", NetProps.GetPropInt(medigunscope.target, "m_iAmmoShells") + (medigunscope.ammogivebuildings))
-				NetProps.SetPropInt(medigunscope.target, "m_iAmmoRockets", NetProps.GetPropInt(medigunscope.target, "m_iAmmoRockets") + (medigunscope.ammogivebuildings))
+				local maxammo = (NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") - 1 ? 200 : 150) * GetWearableAttribute(medigunscope.target.GetOwner(), "mvm sentry ammo", 1)
+				NetProps.SetPropInt(medigunscope.target, "m_iAmmoShells", min(NetProps.GetPropInt(medigunscope.target, "m_iAmmoShells") + (medigunscope.ammogivebuildings),maxammo))
+				NetProps.SetPropInt(medigunscope.target, "m_iAmmoRockets", min(NetProps.GetPropInt(medigunscope.target, "m_iAmmoRockets") + (medigunscope.ammogivebuildings),20)) // I don't think max rockets should ever change?
 			}
 		}
 		medigunscope.lastattack = Time()
@@ -536,7 +538,7 @@ function MedigunEnemyChecker()
 	{
 		NetProps.SetPropEntity(self, "m_hHealingTarget", target)
 	}
-	else if (medigunscope.target && Time() - medigunscope.lastattack >= medigunscope.ROF && medigunscope.ammogive)
+	else if (medigunscope.target && medigunscope.target.IsPlayer() && medigunscope.ammogive && Time() - medigunscope.lastattack >= medigunscope.ROF && !medigunscope.target.GetActiveWeapon().GetAttribute("no primary ammo from dispensers while active", 0) && !medigunscope.target.GetActiveWeapon().GetAttribute("no metal from dispensers hidden VSCRIPT", 0))
 	{
 		local i = 1
 		local playedsound = false
