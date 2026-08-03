@@ -307,7 +307,7 @@ function EntitySpawn(entity)
 		entity.SetSize(minvec, maxvec)
 	}
 
-	if (!weapon.GetAttribute("no physics fix", 0))
+	if (false) //(!weapon.GetAttribute("no physics fix", 0))
 	{
 		EntFireByHandle(entity, "CallScriptFunction", "ReplacePhysics", 0, null, null) // Wait a frame or it'll get overriden.
 	}
@@ -413,15 +413,17 @@ function ReplacePhysics()
 	if (oldphysics.GetName() == self.GetName())
 		return; //We have nothing more to do here
 
-	oldphysics.EnableCollisions(false)
+	//oldphysics.EnableCollisions(false)
 	local oldvelocity = GetPhysVelocity(oldphysics)
 	local angle = self.GetAbsAngles()
 	local oldavelocity = self.GetPhysAngularVelocity()
 	local solid = self.GetSolid()
 	local solidflags = GetSolidFlags(self)
-	self.PhysicsDestroyObject()
-	self.PhysicsInitNormal(solid,solidflags,false)
+	self.PrecacheModel(oldphysics.GetName())
+	self.PhysicsInitNormal(solid,solidflags,true)
 	local newphysics = self.GetPhysicsObject()
+	printl(self)
+	printl(newphysics)
 	SetPhysVelocity(newphysics, oldvelocity, oldavelocity)
 	self.SetAbsAngles(angle)
 	
