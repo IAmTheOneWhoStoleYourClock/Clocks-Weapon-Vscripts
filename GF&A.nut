@@ -307,7 +307,7 @@ function EntitySpawn(entity)
 		entity.SetSize(minvec, maxvec)
 	}
 
-	if (false) //(!weapon.GetAttribute("no physics fix", 0))
+	if (!weapon.GetAttribute("no physics fix", 0))
 	{
 		EntFireByHandle(entity, "CallScriptFunction", "ReplacePhysics", 0, null, null) // Wait a frame or it'll get overriden.
 	}
@@ -406,6 +406,7 @@ function ExplodeNowRocketDetonate(self)
 
 function ReplacePhysics()
 {
+	/*
 	local oldphysics = self.GetPhysicsObject()
 
 	self.AddContext("CurrentDamageForFix", self.GetDamage().tostring(), 0) // To fix grenade damage, feel free to remove if that's now fixed.
@@ -426,10 +427,11 @@ function ReplacePhysics()
 	printl(newphysics)
 	SetPhysVelocity(newphysics, oldvelocity, oldavelocity)
 	self.SetAbsAngles(angle)
+	*/
 	
 	if (self.GetContext("NoGravity") == "thumbsup")
 	{
-		newphysics.EnableGravity(false)
+		self.GetPhysicsObject().EnableGravity(false)
 	}
 }
 
