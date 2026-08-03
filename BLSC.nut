@@ -4,7 +4,9 @@
 // Known issues:
 // 
 // None, which probably means it has some grevious issue I missed, except probably not in this case I mean come on it just multiplies the speed of the laser projectiles.
-// 
+//
+
+Convars.SetFloat("tf_bison_tick_time", 0.1) // Gets rid of the weird bison multi-hit thing that it does.
 
 Entities.EnableEntityListening()
 Hooks.Add(this, "OnEntitySpawned", function(entity)
@@ -14,7 +16,7 @@ Hooks.Add(this, "OnEntitySpawned", function(entity)
 
 function EntitySpawnBLSC(entity)
 {
-	if (!entity.IsValid())
+	if (!entity || !entity.IsValid())
 	{
 		return
 	}
