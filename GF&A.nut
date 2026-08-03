@@ -186,7 +186,7 @@ function EntitySpawn(entity)
 			}
 
 			entity.SetModel(projectilename)
-			EntFireByHandle(entity, "CallScriptFunction", "ReplacePhysics", 0, null, null) // Wait a frame or it'll get overriden
+			//EntFireByHandle(entity, "CallScriptFunction", "ReplacePhysics", 0, null, null) // Wait a frame or it'll get overriden
 		}
 
 		// Bomblet versions of normal attribs go here
