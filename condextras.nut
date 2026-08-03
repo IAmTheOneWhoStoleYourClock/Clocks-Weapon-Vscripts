@@ -24,6 +24,10 @@ BUILDINGS <- ["obj_sentrygun", "obj_dispenser", "obj_teleporter"]
 			return
 		}
 		local weapon = GetWeaponByDefIndex(player, params.weapon_def_index) // litterally just for this
+		if (!weapon)
+		{
+			return
+		}
 		local extrakillcond = weapon.GetAttribute("add condition on kill extra", 0).tointeger()
 		if (extrakillcond)
 		{
@@ -65,6 +69,10 @@ BUILDINGS <- ["obj_sentrygun", "obj_dispenser", "obj_teleporter"]
 			return
 		}
 		local weapon = GetWeaponByClassID(player, params.weaponid)
+		if (!weapon)
+		{
+			return
+		}
 
 		local extrahitcondscale = weapon.GetAttribute("add condition on hit weapon scale", 0).tointeger()
 		if (extrahitcondscale)
