@@ -43,6 +43,10 @@ BUILDINGS <- ["obj_sentrygun", "obj_dispenser", "obj_teleporter"]
 			return
 		}
 		local weapon = GetWeaponByClassID(player, params.weaponid)
+		if (!weapon)
+		{
+			return
+		}
 		local disabletime = weapon.GetAttribute("disable buildings on hit", 0)
 		if (disabletime)
 		{
