@@ -130,6 +130,11 @@ function EntitySpawn(entity)
 
 	local weapon = entity.GetThrower().GetActiveWeapon()
 
+	if (!weapon)
+	{
+		return
+	}
+
 	if (NONEXPLODEYGRENADES.find(classname) != null)
 	{
 		weapon.AddAttribute("brick explodes", 0, 0) // Just in case people can't read

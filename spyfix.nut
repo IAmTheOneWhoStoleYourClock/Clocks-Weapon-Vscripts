@@ -20,7 +20,7 @@ __CollectGameEventCallbacks(SpyFixEventTable)
 
 function MeleeSwingSpyFix()
 {
-	if (!(self.GetActiveWeapon().GetAttribute("keep disguise on attack", 0)))
+	if (!self.GetActiveWeapon() || !(self.GetActiveWeapon().GetAttribute("keep disguise on attack", 0)))
 	{
 		self.RemoveCond(3)
 	}

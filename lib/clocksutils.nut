@@ -110,8 +110,10 @@ function CheckMeleeSmack()
 				continue
 			returnvalue *= held_weapon.GetAttribute(attribname, 1)
 		}
-		for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
+		local wd = 0
+		for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
 		{
+			wd += 1
 			if (wearable.GetClassname() != "tf_wearable")
 				continue
 			returnvalue *= wearable.GetAttribute(attribname, 1)
@@ -129,8 +131,10 @@ function CheckMeleeSmack()
 				continue
 			returnvalue += held_weapon.GetAttribute(attribname, 0)
 		}
-		for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
+		local wd = 0
+		for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
 		{
+			wd += 1
 			if (wearable.GetClassname() != "tf_wearable")
 				continue
 			returnvalue += wearable.GetAttribute(attribname, 0)
@@ -160,8 +164,10 @@ function CheckMeleeSmack()
 			continue
 		held_weapon.RemoveAttribute(attribname)
 	}
-	for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
+	local wd = 0
+	for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
 	{
+		wd += 1
 		if (wearable.GetClassname() != "tf_wearable")
 			continue
 		wearable.RemoveAttribute(attribname)
@@ -180,8 +186,10 @@ function CheckMeleeSmack()
 			return held_weapon
 		}
 	}
-	for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
+	local wd = 0
+	for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
 	{
+		wd += 1
 		if (wearable.GetClassname() != "tf_wearable")
 			continue
 		if (wearable.GetAttribute("wearable slot " + slot.tostring(), 0))
@@ -229,8 +237,10 @@ function CheckMeleeSmack()
 			held_weapon.Destroy()
 		}
 	}
-	for (local wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
+	local wd = 0
+	for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
 	{
+		wd += 1
 		if (wearable.GetClassname() != "tf_wearable")
 			continue
 		if (wearable.GetAttribute("wearable slot " + slot.tostring(), 0))
