@@ -552,12 +552,11 @@ function MedigunEnemyChecker()
 			// Get their current ammo
 			local ammoprev = medigunscope.target.GetAmmoCount(i)
 			// Fill up their ammo to the maximum
-			local k = 1
-			local total = 0
-			while (k != 0 && total < 100)
+			local k = 4096
+			while (k >= 1)
 			{
-				total += 1
-				k = medigunscope.target.GiveAmmo(1, i, true)
+				medigunscope.target.GiveAmmo(k, i, true)
+				k *= 0.5
 			}
 			// Get the maximum
 			local max = medigunscope.target.GetAmmoCount(i)

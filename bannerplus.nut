@@ -247,10 +247,11 @@ BannerBoomOffset <- Vector(0, 0, 30)
 				// Get their current ammo
 				local ammoprev = player.GetAmmoCount(i)
 				// Fill up their ammo to the maximum
-				while (k != 0 && total < 100)
+				local k = 4096
+				while (k >= 1)
 				{
-					total += 1
-					k = medigunscope.target.GiveAmmo(1, i, true)
+					medigunscope.target.GiveAmmo(k, i, true)
+					k *= 0.5
 				}
 				// Get the maximum
 				local max = player.GetAmmoCount(i)
