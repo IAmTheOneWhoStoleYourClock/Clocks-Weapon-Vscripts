@@ -34,15 +34,6 @@ TimerText <- SpawnEntityFromTable("game_text", {
 	holdtime = 9999.0
 });
 
-::PlayerCleanup <- {
-	function OnGameEvent_player_disconnect(params)
-	{
-		local index = GetPlayerFromUserID(params.userid).GetEntityIndex()
-		ATTRIBSTOBECLEAREDWEARER[index] = []
-		ATTRIBSTOBECLEARED[index] = []
-	}
-}
-
 __CollectGameEventCallbacks(PlayerCleanup)
 
 // What a laggy piece of work
