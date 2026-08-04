@@ -96,6 +96,10 @@ function EntitySpawnMedigunDamager(entity)
 		if (owner && owner.IsPlayer())
 		{
 			local weapon = owner.GetActiveWeapon()
+			if (!weapon)
+			{
+				return
+			}
 			local damage = weapon.GetAttribute("medigun targets enemies rework", 0)
 			local usinguber = NetProps.GetPropBool(weapon, "m_bChargeRelease")
 			if (damage)
@@ -549,8 +553,10 @@ function MedigunEnemyChecker()
 			local ammoprev = medigunscope.target.GetAmmoCount(i)
 			// Fill up their ammo to the maximum
 			local k = 1
-			while (k != 0)
+			local total = 0
+			while (k != 0 && total < 100)
 			{
+				total += 1
 				k = medigunscope.target.GiveAmmo(1, i, true)
 			}
 			// Get the maximum

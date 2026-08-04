@@ -229,6 +229,12 @@ BannerBoomOffset <- Vector(0, 0, 30)
 			player.AddCondEx(139, 1, owner) // Give it this condition so that there's a visual identifier!
 		}
 
+		local bannerdefense = GetWearableAttribute(owner,"banner defense", 1)
+		if (bannerdefense)
+		{
+			player.AddCustomAttribute("dmg taken increased", bannerdefense, 1)
+		}
+
 		// If this a banner that gives ammo, give it now.
 		local bannerammo = GetWearableAttribute(owner,"banner ammo", 0)
 		if (bannerammo)
@@ -241,10 +247,10 @@ BannerBoomOffset <- Vector(0, 0, 30)
 				// Get their current ammo
 				local ammoprev = player.GetAmmoCount(i)
 				// Fill up their ammo to the maximum
-				local k = 1
-				while (k != 0)
+				while (k != 0 && total < 100)
 				{
-					k = player.GiveAmmo(1, i, true)
+					total += 1
+					k = medigunscope.target.GiveAmmo(1, i, true)
 				}
 				// Get the maximum
 				local max = player.GetAmmoCount(i)
