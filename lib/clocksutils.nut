@@ -7,10 +7,11 @@
 //
 if (!("ATTRIBSTOBECLEAREDWEARER" in getroottable())) {
 	MAXWEAPONS <- 8
-	ATTRIBSTOBECLEAREDWEARER <- array(MaxPlayers(), [])
-	ATTRIBSTOBECLEARED <- array(MaxPlayers(), [])
-	ATTRIBSTOBEADDED <- array(MaxPlayers(), [])
-	FLIGHTPROCS <- array(MaxPlayers(), [])
+	PLAYERCAP = 100
+	ATTRIBSTOBECLEAREDWEARER <- array(PLAYERCAP, [])
+	ATTRIBSTOBECLEARED <- array(PLAYERCAP, [])
+	ATTRIBSTOBEADDED <- array(PLAYERCAP, [])
+	FLIGHTPROCS <- array(PLAYERCAP, [])
 	NULLVECTOR <- Vector(0,0,0)
 }
 
@@ -33,8 +34,6 @@ TimerText <- SpawnEntityFromTable("game_text", {
 	fadein = 0.2,
 	holdtime = 9999.0
 });
-
-__CollectGameEventCallbacks(PlayerCleanup)
 
 // What a laggy piece of work
 // TO DO: OPTIMISE!

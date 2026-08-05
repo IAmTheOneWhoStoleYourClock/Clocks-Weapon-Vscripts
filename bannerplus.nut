@@ -14,7 +14,6 @@ PrecacheModel("models/weapons/c_models/c_seige_buffbanner/c_seige_buffbanner.mdl
 PrecacheModel("models/weapons/c_models/c_backrack_buffbanner/c_backrack_buffbanner.mdl")
 PrecacheScriptSound(")player/pl_scout_dodge_can_drink.wav")
 
-MAXWEAPONS <- 8
 BannerBoomOffset <- Vector(0, 0, 30)
 
 ::BuffBannerEventTable <- {
