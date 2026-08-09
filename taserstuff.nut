@@ -100,7 +100,7 @@ __CollectGameEventCallbacks(TaserStuffEventTable)
 
 function OnTakeDamage(self,info)
 {
-	if (!(self.GetClassname() == "player") || !self.IsPlayer() || !info.GetWeapon() || !(info.GetDamageType() & 134217728))
+	if (!(self.GetClassname() == "player") || !self.IsPlayer() || !info.GetWeapon() || info.GetWeapon().GetClassname() != "tf2c_weapon_taser" || !(info.GetDamageType() & 134217728))
 	{
 		return true
 	}
