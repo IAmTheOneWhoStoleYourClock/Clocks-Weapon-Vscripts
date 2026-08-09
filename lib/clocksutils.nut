@@ -13,31 +13,15 @@ if (!("ATTRIBSTOBECLEAREDWEARER" in getroottable())) {
 	ATTRIBSTOBEADDED <- array(PLAYERCAP, [])
 	FLIGHTPROCS <- array(PLAYERCAP, [])
 	NULLVECTOR <- Vector(0,0,0)
+	BuildText <- null
+	TimerText <- null
 }
 
-BuildText <- SpawnEntityFromTable("game_text", {
-	message = "If you're seeing this, something's gone wrong",
-	x = 0.9,
-	y = 0.8,
-	effect = 0,
-	color = "12 255 12",
-	fadein = 0.5,
-	holdtime = 9999.0
-});
-
-TimerText <- SpawnEntityFromTable("game_text", {
-	message = "If you're seeing this, something's gone wrong",
-	x = 0.885,
-	y = 0.8,
-	effect = 0,
-	color = "100 12 12",
-	fadein = 0.2,
-	holdtime = 9999.0
-});
+ticks <- 0
 
 // What a laggy piece of work
 // TO DO: OPTIMISE!
-Entities.First().SetThinkFunction("CheckMeleeSmack", 0)
+// Entities.First().SetThinkFunction("CheckMeleeSmack", 0)
 
 function CheckMeleeSmack()
 {
@@ -75,13 +59,18 @@ function CheckMeleeSmack()
 			// stupid hack fix
 			FLIGHTPROCS[entity.GetEntityIndex()] = 0
 		}
-		
+	
 		// Why does it not, just, like, return null when it's done. Stupid language. Stupid VScript.
 		last = entity
 		entity = Entities.Next(entity)
 	}
 
 	return -1
+}
+
+::DebugFunc <- function()
+{
+	null
 }
 
 ::GetWearableAttribute <- function(player, attribname, basenum)
