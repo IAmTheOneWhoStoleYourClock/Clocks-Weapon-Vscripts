@@ -610,7 +610,7 @@ function UpdateOnRemove(self)
 	if ("explodinghealgrenade" in bombscope && bombscope.explodinghealgrenade)
 	{
 		local pipe = Entities.CreateByClassname("tf_projectile_pipe")
-		self.AcceptInput("detonate", "", null, null)
+		//self.AcceptInput("detonate", "", null, null)
 		NetProps.SetPropEntity(pipe, "m_hLauncher", NetProps.GetPropEntity(self,"m_hLauncher")) //Makes the following work correctly.
 		pipe.SetOrigin(self.GetOrigin()) // Set its position to that of the brick.
 		pipe.SetOwner(self.GetOwner()) // Set its owner to that of the brick.
