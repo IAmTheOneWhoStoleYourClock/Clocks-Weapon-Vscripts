@@ -7,6 +7,7 @@
 //
 
 LOSDISCONNECTTIME <- 0.2 // Very short compared to teammates
+LASTHEAL <- array(2048, 0)
 
 IncludeScript("lib/clocksutils.nut")
 
@@ -443,10 +444,20 @@ function MedigunEnemyChecker()
 
 	if (medigunscope.target && IsBuilding(medigunscope.target) && medigunscope.target.GetTeam() == owner.GetTeam() && (Time() - medigunscope.lastattack >= medigunscope.ROF))
 	{
+		local healthgiven = medigunscope.buildings
+		if (NetProps.GetPropInt(medigunscope.target, "m_nShieldLevel"))
+		{
+			healthgiven *= 0.34
+		}
+		if (LASTHEAL[medigunscope.target.GetEntityIndex()] > medigunscope.lastattack)
+		{
+			healthgiven *= pow((Time() - LASTHEAL[medigunscope.target.GetEntityIndex()]) / (Time() - medigunscope.lastattack), 0.7)
+		}
 		if (medigunscope.isusinguber)
 		{
+			healthgiven *= medigunscope.uberbuildingsmult
 			// Need to use the "AddHealth" input for buildings for some reason.
-			medigunscope.target.AcceptInput("AddHealth", (medigunscope.buildings * medigunscope.uberbuildingsmult).tostring(), null null)
+			medigunscope.target.AcceptInput("AddHealth", healthgiven.tostring(), null null)
 			if (medigunscope.ammogivebuildings && medigunscope.target.GetClassname() == "obj_sentrygun")
 			{
 				local maxammo = (NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") - 1 ? 200 : 150) * GetWearableAttribute(medigunscope.target.GetOwner(), "mvm sentry ammo", 1)
@@ -456,7 +467,7 @@ function MedigunEnemyChecker()
 		}
 		else
 		{
-			medigunscope.target.AcceptInput("AddHealth", (medigunscope.buildings).tostring(), null null)
+			medigunscope.target.AcceptInput("AddHealth", healthgiven.tostring(), null null)
 			if (medigunscope.ammogivebuildings && medigunscope.target.GetClassname() == "obj_sentrygun")
 			{
 				local maxammo = (NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") - 1 ? 200 : 150) * GetWearableAttribute(medigunscope.target.GetOwner(), "mvm sentry ammo", 1)
@@ -464,6 +475,7 @@ function MedigunEnemyChecker()
 				NetProps.SetPropInt(medigunscope.target, "m_iAmmoRockets", min(NetProps.GetPropInt(medigunscope.target, "m_iAmmoRockets") + (medigunscope.ammogivebuildings),20)) // I don't think max rockets should ever change?
 			}
 		}
+		LASTHEAL[medigunscope.target.GetEntityIndex()] = Time()
 		medigunscope.lastattack = Time()
 	}
 	// Actually do the attack
