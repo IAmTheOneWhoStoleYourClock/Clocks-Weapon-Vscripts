@@ -544,7 +544,7 @@ function MedigunEnemyChecker()
 	}
 	else if (medigunscope.target && medigunscope.target.IsPlayer() && medigunscope.ammogive && Time() - medigunscope.lastattack >= medigunscope.ROF && !medigunscope.target.GetActiveWeapon().GetAttribute("no metal from dispensers while active", 0) && !medigunscope.target.GetActiveWeapon().GetAttribute("no metal from dispensers hidden VSCRIPT", 0))
 	{
-		local i = 1
+		local i = (medigunscope.target.GetActiveWeapon().GetAttribute("no primary ammo from dispensers while active", 0) ? 1 : 2)
 		local playedsound = false
 		// For the three main ammo types
 		while (i < 4)
