@@ -12,6 +12,7 @@ if (!("ATTRIBSTOBECLEAREDWEARER" in getroottable())) {
 	ATTRIBSTOBECLEARED <- array(PLAYERCAP, [])
 	ATTRIBSTOBEADDED <- array(PLAYERCAP, [])
 	FLIGHTPROCS <- array(PLAYERCAP, [])
+	MELEEWEAPONSITERATE <- []
 	NULLVECTOR <- Vector(0,0,0)
 	BuildText <- null
 	TimerText <- null
@@ -19,26 +20,40 @@ if (!("ATTRIBSTOBECLEAREDWEARER" in getroottable())) {
 
 ticks <- 0
 
+::LibraryTable <- {
+	function OnGameEvent_weapon_equipped(params)
+	{
+		if (MeleeWeapons.find(EntIndexToHScript(params.entindex).GetClassname()))
+		{
+			MELEEWEAPONSITERATE.append(EntIndexToHScript(params.entindex))
+		}
+	}
+}
+
+__CollectGameEventCallbacks(LibraryTable)
+
 // What a laggy piece of work
 // TO DO: OPTIMISE!
-// Entities.First().SetThinkFunction("CheckMeleeSmack", 0)
+Entities.First().SetThinkFunction("CheckMeleeSmack", 0)
 
 function CheckMeleeSmack()
 {
-	local entity = Entities.First()
-	local last = entity
-	entity = Entities.Next(entity)
-	while (entity != null && last != entity)
+	foreach (weapon in MELEEWEAPONSITERATE)
 	{
-		local owner = entity.GetOwner()
-		if (entity.IsWeapon() && MeleeWeapons.find(entity.GetClassname()) != null && owner)
+		if (!weapon || !weapon.IsValid())
 		{
-			local scriptscope = entity.GetOrCreatePrivateScriptScope()
+			MELEEWEAPONSITERATE.remove(MELEEWEAPONSITERATE.find(weapon))
+			continue
+		}
+		local owner = weapon.GetOwner()
+		if (owner)
+		{
+			local scriptscope = weapon.GetOrCreatePrivateScriptScope()
 			// when melee smacks, m_iNextMeleeCrit is 0
 			if (NetProps.GetPropInt(owner, "m_Shared.m_iNextMeleeCrit") == 0)
 			{
 				// when switching away from melee, m_iNextMeleeCrit will also be 0 so check for that case
-				if (owner.GetActiveWeapon() == entity)
+				if (owner.GetActiveWeapon() == weapon)
 				{
 					owner.AcceptInput("fireuser1", "", null, null)
 				}
@@ -46,23 +61,18 @@ function CheckMeleeSmack()
 				// continue smack detection
 				NetProps.SetPropInt(owner, "m_Shared.m_iNextMeleeCrit", -2)
 			}
-			local attacktime = NetProps.GetPropFloat(entity, "m_flNextPrimaryAttack")
-			if (attacktime > Time() && (!("swingtime" in scriptscope) || scriptscope.swingtime < attacktime) && entity.FireDuration())
+			local attacktime = NetProps.GetPropFloat(weapon, "m_flNextPrimaryAttack")
+			if (attacktime > Time() && (!("swingtime" in scriptscope) || scriptscope.swingtime < attacktime) && weapon.FireDuration())
 			{
-				// when switching away from melee, m_iNextMeleeCrit will also be 0 so check for that case
 				owner.AcceptInput("fireuser2", "", null, null)
 				scriptscope.swingtime <- attacktime
 			}
+			if (owner.IsPlayer() && NetProps.GetPropEntity(owner, "m_hGroundEntity") != null)
+			{
+				// stupid hack fix
+				FLIGHTPROCS[owner.GetEntityIndex()] = 0
+			}
 		}
-		if (entity.IsPlayer() && NetProps.GetPropEntity(entity, "m_hGroundEntity") != null)
-		{
-			// stupid hack fix
-			FLIGHTPROCS[entity.GetEntityIndex()] = 0
-		}
-	
-		// Why does it not, just, like, return null when it's done. Stupid language. Stupid VScript.
-		last = entity
-		entity = Entities.Next(entity)
 	}
 
 	return -1
