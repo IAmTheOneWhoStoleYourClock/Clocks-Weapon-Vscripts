@@ -18,7 +18,11 @@ armoredplayer <- []
 		else if (player in armoredplayer)
 		{
 			NetProps.SetPropInt(player, "m_ArmorValue", 0)
-			armoredplayer.remove(player)
+			local playerindex = armoredplayer.find(player)
+			if (playerindex)
+			{
+				armoredplayer.remove(playerindex)
+			}
 		}
 	}
 	function OnGameEvent_ammo_pickup(params)
@@ -32,10 +36,18 @@ armoredplayer <- []
 		{
 			if (player.IsValid())
 			{
-				local metal = player.GetAmmoCount(3)
-				local newarmor = min(NetProps.GetPropInt(player, "m_ArmorValue") + (metal * GetWearableAttribute(player, "armor ratio", 1)),GetWearableAttribute(player, "armor cap", 0))
-				NetProps.SetPropInt(player, "m_ArmorValue", newarmor)
-				NetProps.SetPropIntArray(player, "m_iAmmo", 0, 3)
+				local cap = GetWearableAttribute(player, "armor cap", 0)
+				if (cap > 0)
+				{
+					local metal = player.GetAmmoCount(3)
+					local newarmor = min(NetProps.GetPropInt(player, "m_ArmorValue") + (metal * GetWearableAttribute(player, "armor ratio", 1)),cap)
+					NetProps.SetPropInt(player, "m_ArmorValue", newarmor)
+					NetProps.SetPropIntArray(player, "m_iAmmo", 0, 3)
+				}
+				else
+				{
+					armoredplayer.remove(armoredplayer.find(player))
+				}
 			}
 		}
 	}
