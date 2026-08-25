@@ -215,7 +215,7 @@ function ArmorWrench()
 {
 	local weapon = self.GetActiveWeapon()
 	local armorhit = 50 + weapon.GetAttribute("armor wrench", 0) 
-	if (armorhit)
+	if (armorhit && weapon.GetClassname() == "tf_weapon_wrench")
 	{
 		local eyeangles = AngleVectors(self.EyeAngles())
 		local boxmin = Vector(-18,-18,-18) * weapon.GetAttribute("melee bounds multiplier", 1)
