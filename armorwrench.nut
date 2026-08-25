@@ -44,7 +44,7 @@ function ArmorWrench()
 		{
 			local metal = NetProps.GetPropIntArray(self, "m_iAmmo", 3)
 			local oldarmor = NetProps.GetPropInt(trace.Entity(), "m_ArmorValue")
-			local newarmor = floor(min(oldarmor + min((metal / GetWearableAttribute(self, "armor wrench ratio", 1)), armorhit),max(GetWearableAttribute(self, "armor wrench cap", 0), GetWearableAttribute(trace.Entity(), "armor cap", 0))))
+			local newarmor = floor(min(oldarmor + min((metal / GetWearableAttribute(self, "armor wrench ratio", 1)), armorhit * GetWearableAttribute(trace.Entity(), "mult armor damage ratio", 1)),max(GetWearableAttribute(self, "armor wrench cap", 0), GetWearableAttribute(trace.Entity(), "armor cap", 0))))
 			if (newarmor > oldarmor)
 			{
 				NetProps.SetPropInt(trace.Entity(), "m_ArmorValue", newarmor)
