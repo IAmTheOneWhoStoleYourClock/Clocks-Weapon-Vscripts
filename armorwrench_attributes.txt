@@ -1,0 +1,29 @@
+"armor wrench"
+// How much armor this wrenchshould give to teammates per hit
+"armor wrench ratio"
+// How much metal is consumed per armor piece given
+"armor wrench cap"
+// The maximum amount of armor this can give
+// NOTE: if a player has "armor cap" from armorsys, this will use that as the cap instead!
+
+		"17953"
+		{
+			"name"					"armor wrench"
+			"description_string"	"On Teammate Hit: Add %s1 armor"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17954"
+		{
+			"name"					"armor wrench ratio"
+			"description_string"	"Armor uses %s1% of its value in metal"
+			"description_format"	"value_is_additive_percentage"
+			"effect_type"			"negative"
+		}
+		"17955"
+		{
+			"name"					"armor wrench cap"
+			"description_string"	"Can apply a maximum of %s1 armor"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}

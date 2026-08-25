@@ -29,3 +29,4 @@ Current plugins:
 <br>spyfix: Non-knife weapons now properly undisguise.
 <br>thatonevshwallclimbwhoopee: Self explanatory
 <br>armorsys: Allows for adding armor (This hyjacks metal, use engiearmor for engineer still!)
+<br>armorwrench: Allows wrenches (or other melees technically ig) to give armor in exchange for metal
