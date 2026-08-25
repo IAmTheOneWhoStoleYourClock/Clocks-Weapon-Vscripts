@@ -1,7 +1,7 @@
 "armor cap"
 // How high your armor should be allowed to go. This regenerates with ammo.
 // I have it at 1:1 because I set player_old_armor to 0, however, the plugin does not do this automatically for compatability reasons.
-// If player_old_armor is 1, it's 2:1 (2 damage per 1 armor)
+// If player_old_armor is 1, it's 1:2 (1 armor per 2 damage)
 "armor ratio"
 // Multiplies how much armor you should gain per ammo (compared to 200 max ammo, so 0.5 would make a medium heal 50 armor)
 // ARMOR GAIN IS MODIFIED BY METAL ATTRIBUTES
