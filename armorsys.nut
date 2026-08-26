@@ -7,6 +7,7 @@ playercurrarmor <- array(PLAYERCAP, [])
 
 Convars.RegisterConvar("cvs_armor_base_protection", "0.8", "How much protection armor provides baseline", 0)
 Convars.RegisterConvar("cvs_armor_base_ratio", "2", "How much damage it takes to consume an armor baseline", 0)
+Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damage explosives do to armor", 0)
 
 ::ArmorEventTable <- {
 	function OnGameEvent_player_spawn(params)
@@ -65,6 +66,12 @@ Convars.RegisterConvar("cvs_armor_base_ratio", "2", "How much damage it takes to
 			}
 		}
 	}
+	function OnGameEvent_player_death(params)
+	{
+		// Disables the mechanic where engineer's with low metal giving other engies low metal boo-hoo litterally not a single soul cares
+		local player = GetPlayerFromUserID(params.userid)
+		NetProps.SetPropIntArray(player, "m_iAmmo", 100, 3)
+	}
 	function OnGameEvent_player_hurt(params)
 	{
 		local player = GetPlayerFromUserID(params.userid)
@@ -86,7 +93,7 @@ Convars.RegisterConvar("cvs_armor_base_ratio", "2", "How much damage it takes to
 			// Actually I probably do but I am too lazy to look for it
 			if (scriptscope.damagetypebuffer & Constants.FDmgType.DMG_BLAST)
 			{
-				armorratio *= GetWearableAttribute(player, "mult armor blast ratio", 1) * 2
+				armorratio *= GetWearableAttribute(player, "mult armor blast ratio", 1) * Convars.GetFloat("cvs_armor_explosive_weakness")
 				armorprotection *= GetWearableAttribute(player, "mult armor blast protection", 1)
 			}
 			if (scriptscope.damagetypebuffer & Constants.FDmgType.DMG_BULLET)
@@ -127,8 +134,21 @@ Convars.RegisterConvar("cvs_armor_base_ratio", "2", "How much damage it takes to
 			local remaining = armor - (damagereduced*armorratio)
 
 			// Deal negative damage so the attacker still gets the right damage number. Hopefully.
-			player.TakeDamageEx(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, NULLVECTOR, -damagereduced - 1, 0) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
-			NetProps.SetPropInt(player, "m_ArmorValue", armor - (damagereduced*armorratio))
+			if ((scriptscope.hpbuffer - (damage - damagereduced)) > 0) // If false, we are dead regardless of the armor. RIP.
+			{
+				// Deal negative damage so the attacker still gets the right damage number. Hopefully.
+				player.TakeDamageEx(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, NULLVECTOR, -damagereduced - 1, 0) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
+				NetProps.SetPropInt(player, "m_ArmorValue", armor - (damagereduced*armorratio))
+				// (hInflictor, hAttacker, hWeapon, vecDamageForce, vecDamagePosition, flDamage, nDamageType)
+			}
+			else // In that case, do this to prevent death weirdness.
+			{
+				player.SetHealth(100)
+				NetProps.SetPropInt(player, "m_lifeState", 0)
+				player.TakeDamageEx(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, NULLVECTOR, -damagereduced - 1, 0) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
+				player.SetHealth(-1)
+				NetProps.SetPropInt(player, "m_lifeState", 2)
+			}
 			// (hInflictor, hAttacker, hWeapon, vecDamageForce, vecDamagePosition, flDamage, nDamageType)
 		}
 	}
@@ -159,7 +179,7 @@ function OnTakeDamage(self,info)
 		playercurrarmor[self.GetEntityIndex()] = NetProps.GetPropInt(self, "m_ArmorValue") // should probably just be in the script scope but uhhhhhh
 		NetProps.SetPropInt(self, "m_ArmorValue", 0)
 		scriptscope.hpbuffer <- self.GetHealth()
-		scriptscope.inflictorbuffer <- info.GetInflictor()
+		scriptscope.inflictorbuffer <- info.GetAttacker()
 		scriptscope.damagetypebuffer <- info.GetDamageType()
 		scriptscope.weaponbuffer <- info.GetWeapon()
 	}

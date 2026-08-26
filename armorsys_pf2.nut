@@ -60,6 +60,12 @@ if (!("durabiltylist" in getroottable())) {
 		}
 		player.ValidateScriptScope()
 	}
+	function OnGameEvent_player_death(params)
+	{
+		// Disables the mechanic where engineer's with low metal giving other engies low metal boo-hoo litterally not a single soul cares
+		local player = GetPlayerFromUserID(params.userid)
+		NetProps.SetPropIntArray(player, "m_iAmmo", 100, 3)
+	}
 	function OnGameEvent_ammo_pickup(params)
 	{
 		// The way replenishing super ammo types is handled.
@@ -159,9 +165,11 @@ if (!("durabiltylist" in getroottable())) {
 			}
 			else // In that case, do this to prevent death weirdness.
 			{
-				player.SetHealth(1)
+				player.SetHealth(100)
+				NetProps.SetPropInt(player, "m_lifeState", 0)
 				player.TakeDamageEx(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, NULLVECTOR, -damagereduced - 1, 0) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
 				player.SetHealth(-1)
+				NetProps.SetPropInt(player, "m_lifeState", 2)
 			}
 		}
 		else if (!("crit" in params))
@@ -205,7 +213,7 @@ function OnTakeDamage(self,info)
 		playercurrarmor[self.GetEntityIndex()] = NetProps.GetPropInt(self, "m_ArmorValue") // should probably just be in the script scope but uhhhhhh
 		NetProps.SetPropInt(self, "m_ArmorValue", 0)
 		scriptscope.hpbuffer <- self.GetHealth()
-		scriptscope.inflictorbuffer <- info.GetInflictor()
+		scriptscope.inflictorbuffer <- info.GetAttacker()
 		scriptscope.damagetypebuffer <- info.GetDamageType()
 		scriptscope.weaponbuffer <- info.GetWeapon()
 	}
@@ -223,7 +231,7 @@ function ArmorWrench()
 		local trace = TraceHullComplex(self.ShootPosition(), self.ShootPosition() + (eyeangles * 48 * weapon.GetAttribute("melee range multiplier", 1)), boxmin, boxmax, self, MASK_SOLID, 0)
 		if (trace.Entity() && trace.Entity().GetClassname() == "player" && trace.Entity().GetTeam() == self.GetTeam())
 		{
-			NetProps.SetPropInt(trace.Entity(), "m_ArmorValue", min(NetProps.GetPropInt(trace.Entity(), "m_ArmorValue") + armorhit, GetWearableAttribute(trace.Entity(), "armor cap", 0) + durabiltylist[trace.Entity().GetPlayerClass() - 1][0]))
+			NetProps.SetPropInt(trace.Entity(), "m_ArmorValue", min(NetProps.GetPropInt(trace.Entity(), "m_ArmorValue") + (armorhit * durabiltylist[trace.Entity().GetPlayerClass() - 1][7]), GetWearableAttribute(trace.Entity(), "armor cap", 0) + durabiltylist[trace.Entity().GetPlayerClass() - 1][0]))
 		}
 	}
 }
@@ -235,19 +243,26 @@ function EngieArmorRegen()
 		return
 	}
 	local lastdamage = playerlastdamage[self.GetEntityIndex()]
-	local healammount = 1
-	if (Time() - lastdamage > 10)
+	local healammount = 0
+	if (Time() - lastdamage > 12)
 	{
 		healammount = 3
 	}
-	else if (Time() - lastdamage > 5)
+	else if (Time() - lastdamage > 7)
 	{
 		healammount = 2
 	}
-	local cap = GetWearableAttribute(self, "armor cap", 0) + durabiltylist[8][0]
-	local newarmor = min(NetProps.GetPropInt(self, "m_ArmorValue") + (healammount),cap)
-	NetProps.SetPropInt(self, "m_ArmorValue", newarmor)
-	playerlastregen[self.GetEntityIndex()] = Time()
+	else if (Time() - lastdamage > 2)
+	{
+		healammount = 1
+	}
+	if (healammount > 0)
+	{
+		local cap = GetWearableAttribute(self, "armor cap", 0) + durabiltylist[8][0]
+		local newarmor = min(NetProps.GetPropInt(self, "m_ArmorValue") + (healammount),cap)
+		NetProps.SetPropInt(self, "m_ArmorValue", newarmor)
+		playerlastregen[self.GetEntityIndex()] = Time()
+	}
 	EntFireByHandle(self, "CallScriptFunction", "EngieArmorRegen", 1, null, null)
 }
 
