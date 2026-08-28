@@ -8,6 +8,8 @@ No 4 team asset support as of yet sadly. I am lazy. The plugins should all be 4 
 
 For individual attribute details, check out the plugin's associated _attributes.txt file.
 
+vscript_io goes directly into the tf2classified folder, it contains the configs for all of my plugins. You can which config is for what plugin cause they share names lol.
+
 Current plugins:
 <br>GF&A: Grenade fixes and additions, pretty self explanatory.
 <br>engiearmor: Allows engineer to use his metal meter like armor, amoungst a couple of other engineer utility stats.
