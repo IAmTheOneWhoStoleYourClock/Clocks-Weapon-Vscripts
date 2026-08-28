@@ -67,8 +67,8 @@ if (!FileExists("screwthatguyinparticular.cfg"))
 	]
 	// I am lazy so I will write this out manually
 	local configgenerator = "// This is the config for screwthatguyinparticular, Do not add or remove any lines! In the event of an update, you may need to update this! (but hopefully not!)\n"
-	configgenerator += "// Nerfs are called by ''header'' (ex. dmg taken from bullets increased instead of mult_dmgtaken_from_bullets) NOTE THAT WEAPON LOCKED ATTRIBUTES WILL APPEAR ON THE WEAPON!\n"
-	configgenerator += "// Person, [Nerf, nerf value, weaponlocked, additive]\n"
+	configgenerator += "// Nerfs are called by ''header'' (ex. dmg taken from bullets increased instead of mult_dmgtaken_from_bullets). Use an online looker to find SteamID3. NOTE THAT WEAPON LOCKED ATTRIBUTES WILL APPEAR ON THE WEAPON!\n"
+	configgenerator += "// Person (SteamID3), [Nerf, nerf value, weaponlocked, additive]\n"
 	configgenerator += "U:1:169802, [dmg taken from bullets increased, 1.2, false, false], [no crit boost, 1, true, true]\n"
 	configgenerator += "U:1:0, [dmg taken from bullets increased, 1.2, false, false]"
 	StringToFile("screwthatguyinparticular.cfg" configgenerator)
