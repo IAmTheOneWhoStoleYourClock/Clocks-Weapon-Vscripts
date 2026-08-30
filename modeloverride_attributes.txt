@@ -1,0 +1,11 @@
+"player model override"
+// Overrides the player model. Gwhao
+// This has no effect on the loadout screen, game limitation. Stuff in the loadout screen can't be touched by server vscript. (Probably for the best.)
+
+        "17974"
+		{
+			"name"					"player model override"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"			"you want to change into a different body? be somebody else? I gotta be honest man that's kinda gay"
+		}

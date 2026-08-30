@@ -133,6 +133,33 @@ function CheckMeleeSmack()
 	}
 }
 
+::GetWearableAttributeString <- function(player, attribname, fallback)
+{
+	if (player == null || !player.IsPlayer())
+	{
+		return fallback
+	}
+	local returnvalue = fallback
+	for (local i = 0; i < MAXWEAPONS; i++)
+	{
+		local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
+		if (held_weapon == null)
+			continue
+		printl(returnvalue)
+		returnvalue = held_weapon.GetAttributeString(attribname, returnvalue)
+	}
+	local wd = 0
+	for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
+	{
+		wd += 1
+		if (wearable.GetClassname() != "tf_wearable")
+			continue
+		printl(returnvalue)
+		returnvalue = wearable.GetAttributeString(attribname, returnvalue)
+	}
+	return returnvalue
+}
+
 ::AddWearerAttribute <- function(player, attribname, value)
 {
 	for (local i = 0; i < MAXWEAPONS; i++) // Doesn't bother with wearables atm, have no reason to.
@@ -141,6 +168,17 @@ function CheckMeleeSmack()
 		if (held_weapon == null)
 			continue
 		held_weapon.AddAttribute(attribname, value, 0)
+	}
+}
+
+::AddWearerAttributeString <- function(player, attribname, value)
+{
+	for (local i = 0; i < MAXWEAPONS; i++) // Doesn't bother with wearables atm, have no reason to.
+	{
+		local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
+		if (held_weapon == null)
+			continue
+		held_weapon.AddAttributeString(attribname, value)
 	}
 }
 
@@ -160,6 +198,25 @@ function CheckMeleeSmack()
 		if (wearable.GetClassname() != "tf_wearable")
 			continue
 		wearable.RemoveAttribute(attribname)
+	}
+}
+
+::RemoveWearerAttributeString <- function(player, attribname)
+{
+	for (local i = 0; i < MAXWEAPONS; i++)
+	{
+		local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
+		if (held_weapon == null)
+			continue
+		held_weapon.AddAttributeString(attribname, "")
+	}
+	local wd = 0
+	for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
+	{
+		wd += 1
+		if (wearable.GetClassname() != "tf_wearable")
+			continue
+		wearable.AddAttributeString(attribname, "")
 	}
 }
 
@@ -506,6 +563,28 @@ function CheckMeleeSmack()
 		}
 	}
 	return false
+}
+
+::Bingus <- function()
+{
+	EntFireByHandle(Entities.First(), "CallScriptFunction", "BingusHours", 60, null, null)
+}
+
+::BingusHours <- function()
+{
+	local player = Entities.FindByClassname(null, "player")
+	while (player)
+	{
+		if (player.IsAlive())
+		{
+			printl("bingus hours")
+			local infront = player.EyeAngles()
+			infront.z = 0
+			SpawnEntityFromTable("headless_hatman", { origin = player.GetOrigin() + infront })
+		}
+		player = Entities.FindByClassname(player, "player")
+	}
+	EntFireByHandle(Entities.First(), "CallScriptFunction", "BingusHours", 60, null, null)
 }
 
 
