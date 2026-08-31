@@ -7,5 +7,5 @@
 			"name"					"player model override"
 			"description_format"	"value_is_additive"
 			"attribute_type"		"string"
-			"effect_type"			"you want to change into a different body? be somebody else? I gotta be honest man that's kinda gay"
+			"effect_type"			"kindagay"
 		}

@@ -22,7 +22,7 @@ function Scopeshootthink()
 	{
 		local weapon = self.GetActiveWeapon()
 		local fireratemod = weapon.GetAttribute("scoped firerate penalty", 1)
-		if (fireratemod != 1)
+		if (fireratemod != 1 && weapon.GetClassname() == "tf2c_weapon_hunting_revolver")
 		{
 			local nextattack = NetProps.GetPropFloat(weapon,"m_flNextPrimaryAttack")
 			NetProps.SetPropFloat(weapon,"m_flNextPrimaryAttack", Time() + ((nextattack - Time()) * fireratemod))
