@@ -177,7 +177,7 @@ function EntitySpawnMedigunDamager(entity)
 						colordecimal = weapon.GetAttribute("generator ylw", 0)
 						break;
 				}
-				entity.SetRenderColor(colordecimal/65536,(colordecimal%65536)/256,colordecimal%256)
+				//entity.SetRenderColor(1,1,1)
 				break;
 			case 2:
 				entity.SetModelSimple("models/items/shield_bubble/shield_bubble_rainbow.mdl")
@@ -572,17 +572,19 @@ function MedigunEnemyChecker()
 			}
 			// Get the maximum
 			local max = medigunscope.target.GetAmmoCount(i)
-			// Set the ammo to 0
-			medigunscope.target.SetAmmoCount(i, 0)
 			// Give them back their ammo + their maximum ammo times the banner ammount. Also play the sound if we haven't yet.
-			if (!playedsound && ammoprev != max)
+			if (ammoprev != max)
 			{
-				medigunscope.target.GiveAmmo(floor(min(ammoprev + max * medigunscope.ammogive, max)), i, false)
-				playedsound = true
-			}
-			else
-			{
-				medigunscope.target.GiveAmmo(floor(min(ammoprev + max * medigunscope.ammogive, max)), i, true)
+				medigunscope.target.SetAmmoCount(i, ammoprev)
+				if (!playedsound)
+				{
+					medigunscope.target.GiveAmmo(floor(min(max * medigunscope.ammogive, max - ammoprev)), i, false)
+					playedsound = true
+				}
+				else
+				{
+					medigunscope.target.GiveAmmo(floor(min(max * medigunscope.ammogive, max - ammoprev)), i, true)
+				}
 			}
 			i += 1
 		}

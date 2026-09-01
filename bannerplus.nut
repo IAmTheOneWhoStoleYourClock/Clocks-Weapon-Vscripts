@@ -249,22 +249,24 @@ BannerBoomOffset <- Vector(0, 0, 30)
 				local k = 4096
 				while (k >= 1)
 				{
-					medigunscope.target.GiveAmmo(k, i, true)
+					player.GiveAmmo(k, i, true)
 					k *= 0.5
 				}
 				// Get the maximum
 				local max = player.GetAmmoCount(i)
-				// Set the ammo to 0
-				player.SetAmmoCount(i, 0)
 				// Give them back their ammo + their maximum ammo times the banner ammount. Also play the sound if we haven't yet.
-				if (!playedsound && ammoprev != max)
+				if (ammoprev != max)
 				{
-					player.GiveAmmo(floor(min(ammoprev + max * bannerammo, max)), i, false)
-					playedsound = true
-				}
-				else
-				{
-					player.GiveAmmo(floor(min(ammoprev + max * bannerammo, max)), i, true)
+					player.SetAmmoCount(i, ammoprev)
+					if (!playedsound)
+					{
+						player.GiveAmmo(floor(min(max * medigunscope.ammogive, max - ammoprev)), i, false)
+						playedsound = true
+					}
+					else
+					{
+						player.GiveAmmo(floor(min(max * medigunscope.ammogive, max - ammoprev)), i, true)
+					}
 				}
 				i += 1
 			}
