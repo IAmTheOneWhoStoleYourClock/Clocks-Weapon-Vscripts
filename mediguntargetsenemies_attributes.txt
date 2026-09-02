@@ -61,6 +61,9 @@
 "medigun give upgrade buildings"
 "medigun give upgrade buildings uber mult"
 // Gives buildings upgrade while being healed. I'mma be real I don't think this is a good idea but do as you will.
+"medigun buildings construction mult"
+"medigun buildings construction uber mult"
+// Multiplies construction speed of buildings being healed by this by this by this much (effects both dispensers and jumppads at the same time because it has to)
 
 
 "heal grenade hit heal mult"
@@ -462,6 +465,18 @@ Essenally the same as the previous, down to the ability to colour it, but the in
 		"17976"
 		{
 			"name"					"medigun give upgrade buildings uber mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"neutral"
+		}
+		"17977"
+		{
+			"name"					"medigun buildings construction mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"neutral"
+		}
+		"17978"
+		{
+			"name"					"medigun buildings construction uber mult"
 			"description_format"	"value_is_percentage"
 			"effect_type"			"neutral"
 		}

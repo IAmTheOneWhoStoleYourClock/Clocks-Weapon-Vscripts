@@ -3,7 +3,7 @@
 //
 // Known issues:
 // 
-// mult_dmgtaken I think breaks this. mult_dmgtaken_active also might.
+// "medigun buildings construction mult" affects both teleports/jumppads.
 //
 
 LOSDISCONNECTTIME <- 0.2 // Very short compared to teammates
@@ -68,6 +68,8 @@ function EntitySpawnMedigunDamager(entity)
 		medigunscope.ammogivebuildingsuber <- entity.GetAttribute("medigun give ammo buildings uber mult", 1)
 		medigunscope.upgradegive <- entity.GetAttribute("medigun give upgrade buildings", 0)
 		medigunscope.upgradegiveuber <- entity.GetAttribute("medigun give upgrade buildings uber mult", 1)
+		medigunscope.construction <- entity.GetAttribute("medigun buildings construction mult", 1)
+		medigunscope.constructionuber <- entity.GetAttribute("medigun buildings construction uber mult", 1)
 		medigunscope.fovcap <- (entity.GetAttribute("medigun targets enemies fov cap", 0)/360)*PI // How far from where you are looking the medibeam can be, in degrees (although we convert it to radians here)
 		medigunscope.fling <- entity.GetAttribute("medigun fling enable", 0)
 		if (medigunscope.fling)
@@ -467,7 +469,7 @@ function MedigunEnemyChecker()
 				NetProps.SetPropInt(medigunscope.target, "m_iAmmoRockets", min(NetProps.GetPropInt(medigunscope.target, "m_iAmmoRockets") + (medigunscope.ammogivebuildings * medigunscope.ammogivebuildingsuber),20))
 			}
 			
-			if (medigunscope.upgradegive && NetProps.GetPropInt(medigunscope.target, "m_bMiniBuilding") != 1 && NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") < 3)
+			if (medigunscope.upgradegive && NetProps.GetPropInt(medigunscope.target, "m_bMiniBuilding") != 1 && NetProps.GetPropInt(medigunscope.target, "m_bIsUpgradable") && NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") < 3 && !NetProps.GetPropInt(medigunscope.target, "m_bBuilding"))
 			{
 				local upgrade = NetProps.GetPropInt(medigunscope.target, "m_iUpgradeMetal")
 				local upgraderequire = NetProps.GetPropInt(medigunscope.target, "m_iUpgradeMetalRequired")
@@ -481,18 +483,41 @@ function MedigunEnemyChecker()
 					NetProps.SetPropInt(medigunscope.target, "m_iUpgradeMetal", upgrade + (medigunscope.upgradegive * medigunscope.upgradegiveuber))
 				}
 			}
+
+			if (medigunscope.construction != 1 && NetProps.GetPropInt(medigunscope.target, "m_bBuilding"))
+			{
+				local buildowner = NetProps.GetPropEntity(medigunscope.target, "m_hBuilder")
+				if (buildowner)
+				{
+					switch (medigunscope.target.GetClassname())
+					{
+						case "obj_sentrygun":
+							buildowner.AddCustomAttribute("engineer sentry build rate multiplier", medigunscope.construction * medigunscope.constructionuber, medigunscope.ROF)
+							break;
+						case "obj_dispenser":
+							buildowner.AddCustomAttribute("engineer dispenser build rate multiplier", medigunscope.construction * medigunscope.constructionuber, medigunscope.ROF)
+							break;
+						case "obj_teleporter":
+							buildowner.AddCustomAttribute("engineer teleporter build rate multiplier", medigunscope.construction * medigunscope.constructionuber, medigunscope.ROF)
+							break;
+						case "obj_jumppad":
+							buildowner.AddCustomAttribute("engineer jumppad build rate multiplier", medigunscope.construction * medigunscope.constructionuber, medigunscope.ROF)
+							break;
+					}
+				}
+			}
 		}
 		else
 		{
 			medigunscope.target.AcceptInput("AddHealth", healthgiven.tostring(), null null)
 			if (medigunscope.ammogivebuildings && medigunscope.target.GetClassname() == "obj_sentrygun")
 			{
-				local maxammo = (NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") - 1 ? 200 : 150) * GetWearableAttribute(medigunscope.target.GetOwner(), "mvm sentry ammo", 1)
+				local maxammo = (NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") - 1 ? 200 : 150) * GetWearableAttribute(NetProps.GetPropEntity(medigunscope.target, "m_hBuilder"), "mvm sentry ammo", 1)
 				NetProps.SetPropInt(medigunscope.target, "m_iAmmoShells", min(NetProps.GetPropInt(medigunscope.target, "m_iAmmoShells") + (medigunscope.ammogivebuildings),maxammo))
 				NetProps.SetPropInt(medigunscope.target, "m_iAmmoRockets", min(NetProps.GetPropInt(medigunscope.target, "m_iAmmoRockets") + (medigunscope.ammogivebuildings),20)) // I don't think max rockets should ever change?
 			}
 
-			if (medigunscope.upgradegive && NetProps.GetPropInt(medigunscope.target, "m_bMiniBuilding") != 1 && NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") < 3)
+			if (medigunscope.upgradegive && NetProps.GetPropInt(medigunscope.target, "m_bMiniBuilding") != 1 && NetProps.GetPropInt(medigunscope.target, "m_bIsUpgradable") && NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") < 3 && !NetProps.GetPropInt(medigunscope.target, "m_bBuilding"))
 			{
 				local upgrade = NetProps.GetPropInt(medigunscope.target, "m_iUpgradeMetal")
 				local upgraderequire = NetProps.GetPropInt(medigunscope.target, "m_iUpgradeMetalRequired")
@@ -504,6 +529,29 @@ function MedigunEnemyChecker()
 				else
 				{
 					NetProps.SetPropInt(medigunscope.target, "m_iUpgradeMetal", upgrade + (medigunscope.upgradegive))
+				}
+			}
+
+			if (medigunscope.construction != 1 && NetProps.GetPropInt(medigunscope.target, "m_bBuilding"))
+			{
+				local buildowner = NetProps.GetPropEntity(medigunscope.target, "m_hBuilder")
+				if (buildowner)
+				{
+					switch (medigunscope.target.GetClassname())
+					{
+						case "obj_sentrygun":
+							buildowner.AddCustomAttribute("engineer sentry build rate multiplier", medigunscope.construction, medigunscope.ROF)
+							break;
+						case "obj_dispenser":
+							buildowner.AddCustomAttribute("engineer dispenser build rate multiplier", medigunscope.construction, medigunscope.ROF)
+							break;
+						case "obj_teleporter":
+							buildowner.AddCustomAttribute("engineer teleporter build rate multiplier", medigunscope.construction, medigunscope.ROF)
+							break;
+						case "obj_jumppad":
+							buildowner.AddCustomAttribute("engineer jumppad build rate multiplier", medigunscope.construction, medigunscope.ROF)
+							break;
+					}
 				}
 			}
 		}
