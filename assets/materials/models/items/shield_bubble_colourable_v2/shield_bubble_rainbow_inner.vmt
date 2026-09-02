@@ -10,11 +10,6 @@
 	"$receiveflashlight" "1"
 
 	"$phong" "1"
-
-	"$blendtintbybasealpha"		"1"
-	"$blendtintcoloroverbase"		"1"
-	"$colortint_base"		"{230 230 230}"
-	"$colortint_tmp"		"[0 0 0]"
 	
 	"$rimlight" "1"
 	"$rimlightexponent" "15"

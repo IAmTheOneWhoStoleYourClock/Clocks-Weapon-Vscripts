@@ -4,22 +4,17 @@
 	
 	"$additive" "1"
 	
-	"$color2" "[0.2 0.2 0.2]"
+	"$color2" "[1 1 1]"
 	"$phongtint" "[0.3 0.03 0.03]"
 	"$selfillumtint" "[0.09 0.03 0.03]"
 
 	"$phong" "1"
 
-	"$basealphaenvmapmask" "dev/tfwater_normal"
+	"$bumpmap" "dev/tfwater_normal"
 		
-	"$phongexponent" "1"
-	"$phongboost" "1"
+	"$phongexponent" "0"
+	"$phongboost" "0"
 	"$phongfresnelranges" "[0 0 0]"
-
-	"$blendtintbybasealpha"		"1"
-	"$blendtintcoloroverbase"		"0"
-	"$colortint_base"		"{230 230 230}"
-	"$colortint_tmp"		"[0 0 0]"
 	
 	"$rimlight" "1"
 	"$rimlightexponent" "15"

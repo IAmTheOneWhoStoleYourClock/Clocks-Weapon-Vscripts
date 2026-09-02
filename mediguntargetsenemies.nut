@@ -66,6 +66,8 @@ function EntitySpawnMedigunDamager(entity)
 		medigunscope.ammogivebuildings <- entity.GetAttribute("medigun give ammo buildings", 0)
 		medigunscope.ammogiveuber <- entity.GetAttribute("medigun give ammo uber mult", 1)
 		medigunscope.ammogivebuildingsuber <- entity.GetAttribute("medigun give ammo buildings uber mult", 1)
+		medigunscope.upgradegive <- entity.GetAttribute("medigun give upgrade buildings", 0)
+		medigunscope.upgradegiveuber <- entity.GetAttribute("medigun give upgrade buildings uber mult", 1)
 		medigunscope.fovcap <- (entity.GetAttribute("medigun targets enemies fov cap", 0)/360)*PI // How far from where you are looking the medibeam can be, in degrees (although we convert it to radians here)
 		medigunscope.fling <- entity.GetAttribute("medigun fling enable", 0)
 		if (medigunscope.fling)
@@ -160,7 +162,7 @@ function EntitySpawnMedigunDamager(entity)
 		switch (weapon.GetAttribute("special generator", 0))
 		{
 			case 1:
-				entity.SetModelSimple("models/items/shield_bubble/shield_bubble_colourable.mdl")
+				entity.SetModelSimple("models/items/shield_bubble/shield_bubble_colourable_v2.mdl")
 				local colordecimal = 0
 				switch (weapon.GetTeam() -2)
 				{
@@ -177,10 +179,10 @@ function EntitySpawnMedigunDamager(entity)
 						colordecimal = weapon.GetAttribute("generator ylw", 0)
 						break;
 				}
-				//entity.SetRenderColor(1,1,1)
+				entity.SetRenderColor(colordecimal/65536,(colordecimal%65536)/256,colordecimal%256)
 				break;
 			case 2:
-				entity.SetModelSimple("models/items/shield_bubble/shield_bubble_rainbow.mdl")
+				entity.SetModelSimple("models/items/shield_bubble/shield_bubble_rainbow_v2.mdl")
 				local colordecimal = 0
 				switch (weapon.GetTeam() -2)
 				{
@@ -464,6 +466,21 @@ function MedigunEnemyChecker()
 				NetProps.SetPropInt(medigunscope.target, "m_iAmmoShells", min(NetProps.GetPropInt(medigunscope.target, "m_iAmmoShells") + (medigunscope.ammogivebuildings * medigunscope.ammogivebuildingsuber),maxammo))
 				NetProps.SetPropInt(medigunscope.target, "m_iAmmoRockets", min(NetProps.GetPropInt(medigunscope.target, "m_iAmmoRockets") + (medigunscope.ammogivebuildings * medigunscope.ammogivebuildingsuber),20))
 			}
+			
+			if (medigunscope.upgradegive && NetProps.GetPropInt(medigunscope.target, "m_bMiniBuilding") != 1 && NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") < 3)
+			{
+				local upgrade = NetProps.GetPropInt(medigunscope.target, "m_iUpgradeMetal")
+				local upgraderequire = NetProps.GetPropInt(medigunscope.target, "m_iUpgradeMetalRequired")
+				if (upgrade + (medigunscope.upgradegive * medigunscope.upgradegiveuber) >= upgraderequire)
+				{
+					NetProps.SetPropInt(medigunscope.target, "m_iHighestUpgradeLevel", min(NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") + 1,3))
+					NetProps.SetPropInt(medigunscope.target, "m_iUpgradeMetal", 0)
+				}
+				else
+				{
+					NetProps.SetPropInt(medigunscope.target, "m_iUpgradeMetal", upgrade + (medigunscope.upgradegive * medigunscope.upgradegiveuber))
+				}
+			}
 		}
 		else
 		{
@@ -473,6 +490,21 @@ function MedigunEnemyChecker()
 				local maxammo = (NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") - 1 ? 200 : 150) * GetWearableAttribute(medigunscope.target.GetOwner(), "mvm sentry ammo", 1)
 				NetProps.SetPropInt(medigunscope.target, "m_iAmmoShells", min(NetProps.GetPropInt(medigunscope.target, "m_iAmmoShells") + (medigunscope.ammogivebuildings),maxammo))
 				NetProps.SetPropInt(medigunscope.target, "m_iAmmoRockets", min(NetProps.GetPropInt(medigunscope.target, "m_iAmmoRockets") + (medigunscope.ammogivebuildings),20)) // I don't think max rockets should ever change?
+			}
+
+			if (medigunscope.upgradegive && NetProps.GetPropInt(medigunscope.target, "m_bMiniBuilding") != 1 && NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") < 3)
+			{
+				local upgrade = NetProps.GetPropInt(medigunscope.target, "m_iUpgradeMetal")
+				local upgraderequire = NetProps.GetPropInt(medigunscope.target, "m_iUpgradeMetalRequired")
+				if (upgrade + (medigunscope.upgradegive) >= upgraderequire)
+				{
+					NetProps.SetPropInt(medigunscope.target, "m_iHighestUpgradeLevel", min(NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") + 1,3))
+					NetProps.SetPropInt(medigunscope.target, "m_iUpgradeMetal", 0)
+				}
+				else
+				{
+					NetProps.SetPropInt(medigunscope.target, "m_iUpgradeMetal", upgrade + (medigunscope.upgradegive))
+				}
 			}
 		}
 		LASTHEAL[medigunscope.target.GetEntityIndex()] = Time()

@@ -58,6 +58,9 @@
 // Ammo to give sentries every cycle. (Dispensers are unnaffected.) Input is the flat number of shells to give the sentry. (ex. 5 would allow it to fire 5 more times.)
 "medigun give ammo buildings uber mult"
 // Modifies the above by this percentage during uber
+"medigun give upgrade buildings"
+"medigun give upgrade buildings uber mult"
+// Gives buildings upgrade while being healed. I'mma be real I don't think this is a good idea but do as you will.
 
 
 "heal grenade hit heal mult"
@@ -447,6 +450,18 @@ Essenally the same as the previous, down to the ability to colour it, but the in
 		"17931"
 		{
 			"name"					"medigun give ammo buildings uber mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"neutral"
+		}
+		"17975"
+		{
+			"name"					"medigun give upgrade buildings"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}
+		"17976"
+		{
+			"name"					"medigun give upgrade buildings uber mult"
 			"description_format"	"value_is_percentage"
 			"effect_type"			"neutral"
 		}
