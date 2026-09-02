@@ -46,7 +46,7 @@ function MedievalMyMode(player)
 		if (held_weapon == null)
 			continue
 		local medieval = false
-		if (MeleeWeapons.find(held_weapon.GetClassname()) != null && !held_weapon.GetAttribute("banned in medieval mode", 0))
+		if (MedievalWeapons.find(held_weapon.GetClassname()) != null && !held_weapon.GetAttribute("banned in medieval mode", 0))
 		{
 			medieval = true
 		}

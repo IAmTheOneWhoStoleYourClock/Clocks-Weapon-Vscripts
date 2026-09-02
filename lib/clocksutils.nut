@@ -839,5 +839,33 @@ function CheckMeleeSmack()
 	"tf2c_weapon_sycthe",
 	"tf2c_weapon_umbrella",
 	"tf2c_weapon_chains",
+	"tf2c_weapon_taser"
+]
+
+::MedievalWeapons <-
+[
+	"tf_weapon_bat",
+	"tf_weapon_bat_wood",
+	"tf_weapon_bottle",
+	"tf_weapon_fireaxe",
+	"tf_weapon_club",
+	"tf_weapon_knife",
+	"tf_weapon_fists",
+	"tf_weapon_shovel",
+	"tf_weapon_wrench",
+	"tf_weapon_robot_arm",
+	"tf_weapon_bonesaw",
+	"tf_weapon_katana"
+	"tf_weapon_sword",
+	"tf_weapon_bat_fish",
+	"tf_weapon_breakable_sign",
+	"tf_weapon_slap",
+	"tf2c_weapon_anchor",
+	"tf2c_weapon_sycthe",
+	"tf2c_weapon_umbrella",
+	"tf2c_weapon_chains",
 	"tf2c_weapon_taser",
+	"tf_weapon_spellbook",
+	"tf_weapon_grapplinghook"
+	"tf_weapon_builder"
 ]
