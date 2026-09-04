@@ -104,15 +104,16 @@ MAXWEAPONS <- 8
 				//Why?
 				return false
 			}
+			local scriptscope = player.GetOrCreatePrivateScriptScope()
 			local armor = player.GetAmmoCount(3)
 			local armorprotection = GetWearableAttribute(player, "engie armor", 0)
 			local armorratio = GetWearableAttribute(player, "engie armor ratio", 1)
 			local damagereduced = floor(min(damage*armorprotection, armor/armorratio))
 			local remaining = armor - (damagereduced*armorratio)
-			if ((player.GetContext("hpbuffer").tointeger() - (damage - damagereduced)) > 0) // If false, we are dead regardless of the armor. RIP. Don't deal the negative damage at all in this senario since it tends to mess up death stuff.
+			if ((scriptscope.hpbuffer - (damage - damagereduced)) > 0) // If false, we are dead regardless of the armor. RIP.
 			{
 				// Deal negative damage so the attacker still gets the right damage number. Hopefully.
-				player.TakeDamageEx(EntIndexToHScript(player.GetContext("inflictorbuffer").tointeger()), params.attacker, null, nullvector, nullvector, -damagereduced - 1, 0) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
+				player.TakeDamageEx(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, player.GetOrigin() + Vector(0,0,16), -damagereduced - 1, 0) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
 				// (hInflictor, hAttacker, hWeapon, vecDamageForce, vecDamagePosition, flDamage, nDamageType)
 			
 				if (remaining >= ceil(1*armorratio - 1))
@@ -133,13 +134,19 @@ MAXWEAPONS <- 8
 					player.EmitSound("EngieArmor.Break")
 				}
 			}
+			else // In that case, do this to prevent death weirdness.
+			{
+				player.SetHealth(100)
+				NetProps.SetPropInt(player, "m_lifeState", 0)
+				player.TakeDamageCustom(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, player.GetOrigin() + Vector(0,0,16), -damagereduced - 1, 0, 27) // Do Rune Reflect Type Damage. Don't question it, this works.
+				player.SetHealth(0)
+				NetProps.SetPropInt(player, "m_lifeState", 2)
+			}
 		}
 	}
 }
 
 __CollectGameEventCallbacks(MyEventTable2)
-
-Entities.EnableEntityListening() //Don't know if this is needed but whatever.
 
 function OnTakeDamage(self,info)
 {
@@ -152,8 +159,9 @@ function OnTakeDamage(self,info)
 			// This is janky, but after much testing, I've found this to be the best way to get this working.
 			// Might still have some bugs. Oh well. Too bad ig. ¯\_(ツ)_/¯
 			self.AddContext("damageping", "yes", 0.1)
-			self.AddContext("hpbuffer", self.GetHealth().tostring(), 0.1)
-			self.AddContext("inflictorbuffer", info.GetInflictor().GetEntityIndex().tostring(), 0.1)
+			local scriptscope = self.GetOrCreatePrivateScriptScope()
+			scriptscope.hpbuffer <- self.GetHealth()
+			scriptscope.inflictorbuffer <- info.GetAttacker()
 			DispatchParticleEffect("arm_detonate_sparks", info.GetDamagePosition(), nullvector, self)
 		}
 	}
