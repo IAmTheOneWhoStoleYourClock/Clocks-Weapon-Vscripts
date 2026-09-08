@@ -145,7 +145,6 @@ function CheckMeleeSmack()
 		local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
 		if (held_weapon == null)
 			continue
-		printl(returnvalue)
 		returnvalue = held_weapon.GetAttributeString(attribname, returnvalue)
 	}
 	local wd = 0
@@ -154,7 +153,6 @@ function CheckMeleeSmack()
 		wd += 1
 		if (wearable.GetClassname() != "tf_wearable")
 			continue
-		printl(returnvalue)
 		returnvalue = wearable.GetAttributeString(attribname, returnvalue)
 	}
 	return returnvalue
