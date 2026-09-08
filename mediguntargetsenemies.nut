@@ -446,7 +446,7 @@ function MedigunEnemyChecker()
 		medigunscope.uber <- NetProps.GetPropFloat(self, "m_flChargeLevel")
 	}
 
-	if (medigunscope.target && IsBuilding(medigunscope.target) && medigunscope.target.GetTeam() == owner.GetTeam() && (Time() - medigunscope.lastattack >= medigunscope.ROF))
+	if (medigunscope.target && IsBuilding(medigunscope.target) && medigunscope.target.GetTeam() == owner.GetTeam() && (Time() - medigunscope.lastattack >= medigunscope.ROF) && !NetProps.GetPropInt(medigunscope.target, "m_bHasSapper") && !NetProps.GetPropInt(medigunscope.target, "m_bPlasmaDisable"))
 	{
 		local healthgiven = medigunscope.buildings
 		if (NetProps.GetPropInt(medigunscope.target, "m_nShieldLevel"))
@@ -455,7 +455,7 @@ function MedigunEnemyChecker()
 		}
 		if (LASTHEAL[medigunscope.target.GetEntityIndex()] > medigunscope.lastattack)
 		{
-			healthgiven *= pow((Time() - LASTHEAL[medigunscope.target.GetEntityIndex()]) / (Time() - medigunscope.lastattack), 0.7)
+			healthgiven *= (Time() - LASTHEAL[medigunscope.target.GetEntityIndex()]) / (Time() - medigunscope.lastattack)
 		}
 		if (medigunscope.isusinguber)
 		{
