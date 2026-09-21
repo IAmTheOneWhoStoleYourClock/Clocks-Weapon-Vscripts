@@ -103,7 +103,7 @@ function CheckMeleeSmack()
 		for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
 		{
 			wd += 1
-			if (wearable.GetClassname() != "tf_wearable")
+			if (!startswith(wearable.GetClassname(),"tf_wearable") || NetProps.GetPropInt(wearable, "m_bDisguiseWearable"))
 				continue
 			returnvalue *= wearable.GetAttribute(attribname, 1)
 		}
@@ -124,7 +124,7 @@ function CheckMeleeSmack()
 		for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
 		{
 			wd += 1
-			if (wearable.GetClassname() != "tf_wearable")
+			if (!startswith(wearable.GetClassname(),"tf_wearable") || NetProps.GetPropInt(wearable, "m_bDisguiseWearable"))
 				continue
 			returnvalue += wearable.GetAttribute(attribname, 0)
 		}
@@ -151,7 +151,7 @@ function CheckMeleeSmack()
 	for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
 	{
 		wd += 1
-		if (wearable.GetClassname() != "tf_wearable")
+		if (!startswith(wearable.GetClassname(),"tf_wearable") || NetProps.GetPropInt(wearable, "m_bDisguiseWearable"))
 			continue
 		returnvalue = wearable.GetAttributeString(attribname, returnvalue)
 	}
@@ -193,7 +193,7 @@ function CheckMeleeSmack()
 	for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
 	{
 		wd += 1
-		if (wearable.GetClassname() != "tf_wearable")
+		if (!startswith(wearable.GetClassname(),"tf_wearable")) // It really shouldn't matter if attributes get removed from disguise wearables should it?
 			continue
 		wearable.RemoveAttribute(attribname)
 	}
@@ -212,7 +212,7 @@ function CheckMeleeSmack()
 	for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
 	{
 		wd += 1
-		if (wearable.GetClassname() != "tf_wearable")
+		if (!startswith(wearable.GetClassname(),"tf_wearable")) // It really shouldn't matter if attributes get removed from disguise wearables should it?
 			continue
 		wearable.AddAttributeString(attribname, "")
 	}
@@ -234,7 +234,7 @@ function CheckMeleeSmack()
 	for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
 	{
 		wd += 1
-		if (wearable.GetClassname() != "tf_wearable")
+		if (!startswith(wearable.GetClassname(),"tf_wearable") || NetProps.GetPropInt(wearable, "m_bDisguiseWearable"))
 			continue
 		if (wearable.GetAttribute("wearable slot " + slot.tostring(), 0))
 		{
@@ -285,7 +285,7 @@ function CheckMeleeSmack()
 	for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
 	{
 		wd += 1
-		if (wearable.GetClassname() != "tf_wearable")
+		if (!startswith(wearable.GetClassname(),"tf_wearable") || NetProps.GetPropInt(wearable, "m_bDisguiseWearable"))
 			continue
 		if (wearable.GetAttribute("wearable slot " + slot.tostring(), 0))
 		{
@@ -864,6 +864,6 @@ function CheckMeleeSmack()
 	"tf2c_weapon_chains",
 	"tf2c_weapon_taser",
 	"tf_weapon_spellbook",
-	"tf_weapon_grapplinghook"
+	"tf_weapon_grapplinghook",
 	"tf_weapon_builder"
 ]

@@ -158,7 +158,7 @@ BUILDINGS <- ["obj_sentrygun", "obj_dispenser", "obj_teleporter"]
 		for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
 		{
 			wd += 1
-			if (wearable.GetClassname() != "tf_wearable")
+			if (!startswith(wearable.GetClassname(),"tf_wearable") || NetProps.GetPropInt(wearable, "m_bDisguiseWearable"))
 				continue
 			PlayerHurtWearer(wearable,params)
 		}
@@ -320,7 +320,7 @@ function OnTakeDamage(self,info)
 	for (local wearable = self.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
 	{
 		wd += 1
-		if (wearable.GetClassname() != "tf_wearable")
+		if (!startswith(wearable.GetClassname(),"tf_wearable") || NetProps.GetPropInt(wearable, "m_bDisguiseWearable"))
 			continue
 		OnTakeDamageWearer(self,info,wearable)
 	}
