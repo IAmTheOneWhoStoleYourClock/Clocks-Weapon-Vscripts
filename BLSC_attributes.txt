@@ -1,0 +1,2 @@
+"Projectile speed secondary"
+// Reused vanilia attribute, modifies how fast bison lasers fired by this weapon go.
