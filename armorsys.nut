@@ -345,4 +345,44 @@ function OnTakeDamage(self,info)
 	}
 }
 
+function TouchingBBox(ent1, ent2)
+{
+	// Okay so, let me be clear. THIS IS HORRENDOUS!
+	// DO. NOT. DO. THIS.
+	// Unfortunately, due to, persumably, an issue in how the origin is reported, this is, in fact, 100% nessesary. FOR THIS SPECIFIC SENARIO.
+	// THIS IS THE WRONG WAY TO DO THIS!
+	// BIG RED X!
+	// Yes I need this again yes I hate it again I HATE IT HERE!
+	// Okay anyways
+
+	local bboxmax1 = ent1.GetBoundingMaxs()
+	local bboxmin1 = ent1.GetBoundingMins()
+
+	local bboxmax2 = ent2.GetBoundingMaxs()
+	local bboxmin2 = ent2.GetBoundingMins()
+	
+	// Look back through all of the entities to find one that's in a bounding box created like... that.
+	// The math reason i'm doing that is because if a box calculated as such contains the origin, the boxes should intersect.
+	local entity = Entities.FindByClassnameWithinBox(null, "player", bboxmin1 - bboxmax2 + ent1.GetOrigin(), bboxmax1 - bboxmin2 + ent1.GetOrigin())
+	local start = entity
+	local ran = false
+	while (entity != null && entity != ent2 && (entity != start || !ran))
+	{
+		entity = Entities.FindByClassnameWithinBox(entity, "player", bboxmin1 - bboxmax2 + ent1.GetOrigin(), bboxmax1 - bboxmin2 + ent1.GetOrigin())
+		ran = true
+	}
+
+	// If we've found an entity in that box that is the one we are looking for, great job! It's in it!
+	if (entity == ent2)
+	{
+		return true
+	}
+
+	else
+	{
+		return false
+	}
+}
+
+
 IncludeScript("lib/mapbasehookcollector.nut");
