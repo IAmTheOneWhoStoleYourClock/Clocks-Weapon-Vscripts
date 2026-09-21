@@ -2,7 +2,7 @@
 
 IncludeScript("lib/clocksutils.nut");
 
-armoredplayer <- []
+armoredplayers <- []
 playercurrarmor <- array(PLAYERCAP, [])
 
 Convars.RegisterConvar("cvs_armor_base_protection", "0.8", "How much protection armor provides baseline", 0)
@@ -23,19 +23,19 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 		{
 			NetProps.SetPropInt(player, "m_ArmorValue", armor)
 			player.SetContextThink("NOMETAL", NOMETAL, 0.1)
-			armoredplayer.append(player)
+			armoredplayers.append(player)
 			if (player.GetPlayerClass() == 9) // Engineer get grenades 1 overriden instead... because he regenerates that from ammo for some reason.
 			{
 				player.AddCustomAttribute("maxammo grenades1 increased", 200, 0)
 			}
 		}
-		else if (player in armoredplayer)
+		else if (player in armoredplayers)
 		{
 			NetProps.SetPropInt(player, "m_ArmorValue", 0)
-			local playerindex = armoredplayer.find(player)
+			local playerindex = armoredplayers.find(player)
 			if (playerindex)
 			{
-				armoredplayer.remove(playerindex)
+				armoredplayers.remove(playerindex)
 			}
 		}
 	}
@@ -118,7 +118,7 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 			}
 			else
 			{
-				armoredplayer.remove(armoredplayers.find(player))
+				armoredplayers.remove(armoredplayers.find(player))
 			}
 		}
 	}
