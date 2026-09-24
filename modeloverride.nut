@@ -8,6 +8,10 @@
 
 IncludeScript("lib/clocksutils.nut")
 
+if (!("currentmodel" in getroottable())) {
+	currentmodel <- array(PLAYERCAP, [])
+}
+
 BASEMODELS <- [
 	"models/player/scout.mdl", //Scout
 	"models/player/sniper.mdl", //Sniper
@@ -22,6 +26,11 @@ BASEMODELS <- [
 ]
 
 ::ModelOverrideTable <- {
+	function OnGameEvent_player_spawn(params)
+	{
+		local player = GetPlayerFromUserID(params.userid)
+		player.ConnectOutput("OnUser3" "SwitchModelCheck")
+	}
 	function OnGameEvent_weapon_equipped(params)
 	{
 		local weapon = EntIndexToHScript(params.entindex)
@@ -34,6 +43,7 @@ BASEMODELS <- [
 		if (model != "")
 		{
 			player.SetCustomModelWithClassAnimations(model) // The "with class animations" version for some reason applies the animations of the model, whereas the normal one leaves them with no animations whatsoever?
+			currentmodel[owner.GetEntityIndex()] = model
 		}
 	}
 	function OnGameEvent_post_inventory_application(params)
@@ -42,8 +52,31 @@ BASEMODELS <- [
 		local model = GetWearableAttributeString(player, "player model override", "")
 		if (model == "")
 		{
-			player.SetCustomModelWithClassAnimations(BASEMODELS[player.GetPlayerClass() - 1]) // The "with class animations" version for some reason applies the animations of the model, whereas the normal one leaves them with no animations whatsoever?
+			local activemodel = player.GetActiveWeapon().GetAttributeString("player model override active", "")
+			if (activemodel != "")
+			{
+				player.SetCustomModelWithClassAnimations(activemodel) // The "with class animations" version for some reason applies the animations of the model, whereas the normal one leaves them with no animations whatsoever?
+				currentmodel[player.GetEntityIndex()] = BASEMODELS[player.GetPlayerClass() - 1]
+			}
+			else
+			{
+				player.SetCustomModelWithClassAnimations(BASEMODELS[player.GetPlayerClass() - 1]) // The "with class animations" version for some reason applies the animations of the model, whereas the normal one leaves them with no animations whatsoever?
+				currentmodel[player.GetEntityIndex()] = BASEMODELS[player.GetPlayerClass() - 1]
+			}
 		}
+	}
+}
+
+function SwitchModelCheck()
+{
+	local activeoverride = self.GetActiveWeapon().GetAttributeString("player model override active", "")
+	if (activeoverride != "")
+	{
+		self.SetCustomModelWithClassAnimations(activeoverride)
+	}
+	else
+	{
+		self.SetCustomModelWithClassAnimations(currentmodel[self.GetEntityIndex()])
 	}
 }
 

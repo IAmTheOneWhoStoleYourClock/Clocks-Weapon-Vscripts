@@ -12,6 +12,7 @@ if (!("ATTRIBSTOBECLEAREDWEARER" in getroottable())) {
 	ATTRIBSTOBECLEARED <- array(PLAYERCAP, [])
 	ATTRIBSTOBEADDED <- array(PLAYERCAP, [])
 	FLIGHTPROCS <- array(PLAYERCAP, [])
+	CURRENTWEAPON <- array(PLAYERCAP, [])
 	MELEEWEAPONSITERATE <- []
 	NULLVECTOR <- Vector(0,0,0)
 	BuildText <- null
@@ -23,7 +24,7 @@ ticks <- 0
 ::LibraryTable <- {
 	function OnGameEvent_weapon_equipped(params)
 	{
-		if (MeleeWeapons.find(EntIndexToHScript(params.entindex).GetClassname()))
+		if (MeleeWeapons.find(EntIndexToHScript(params.entindex).GetClassname()) != null)
 		{
 			MELEEWEAPONSITERATE.append(EntIndexToHScript(params.entindex))
 		}
@@ -71,6 +72,11 @@ function CheckMeleeSmack()
 			{
 				// stupid hack fix
 				FLIGHTPROCS[owner.GetEntityIndex()] = 0
+				if (owner.GetActiveWeapon() != CURRENTWEAPON[owner.GetEntityIndex()])
+				{
+					owner.AcceptInput("fireuser3", "", null, null)
+					CURRENTWEAPON[owner.GetEntityIndex()] = owner.GetActiveWeapon()
+				}
 			}
 		}
 	}
