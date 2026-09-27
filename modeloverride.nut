@@ -9,7 +9,7 @@
 IncludeScript("lib/clocksutils.nut")
 
 if (!("currentmodel" in getroottable())) {
-	currentmodel <- array(PLAYERCAP, [])
+	currentmodel <- array(PLAYERCAP, "")
 }
 
 BASEMODELS <- [
@@ -73,7 +73,11 @@ BASEMODELS <- [
 
 function SwitchModelCheck()
 {
-	local activeoverride = self.GetActiveWeapon().GetAttributeString("player model override active", "")
+	local activemodel = ""
+	if (player.GetActiveWeapon())
+	{
+		activemodel = player.GetActiveWeapon().GetAttributeString("player model override active", "")
+	}
 	if (activeoverride != "")
 	{
 		local animation = self.GetSequence()
