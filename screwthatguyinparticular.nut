@@ -93,11 +93,15 @@ else
 	{
 		local player = GetPlayerFromUserID(params.userid)
 		local ID = NetProps.GetPropString(player, "m_szNetworkIDString")
+		if (!ID || ID.len() < 5)
+		{
+			return
+		}
 		foreach (i in nerflist)
 		{
 			if (i[0] == ID.slice(1,-1))
 			{
-				// I am tried it's time for utter GARBAGE
+				// I am tired it's time for utter GARBAGE
 				local k = 1
 				while (k < i.len())
 				{

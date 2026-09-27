@@ -357,8 +357,9 @@ function EntitySpawnSandvichThrow(entity)
 		{
 			entity.SetThinkFunction("AreWeThereYet", 0)
 		}
-		entity.ValidateScriptScope()
-		entity.SetOrigin(entity.GetOrigin())
+		local scriptscope = entity.GetOrCreatePrivateScriptScope()
+		scriptscope.weapon <- owner.GetActiveWeapon()
+		entity.SetOrigin(entity.GetOrigin()) // Wait why do I do this was this just some overtired thing I did or is there a legitimate reason to do this
 	}
 }
 
@@ -488,7 +489,12 @@ function ThrownLunchboxAcquired(self, pickeruper)
 	}
 
 	// We actually don't check this for much, pretty much everything we care about should be on wearer
-	local weapon = GetWeaponByClass(owner,"tf_weapon_lunchbox")
+	local scriptscope = self.GetOrCreatePrivateScriptScope()
+	local weapon = scriptscope.weapon
+	if (!weapon || !weapon.IsWeapon())
+	{
+		return
+	}
 
 	// However, if it's the same as our true owner, that means this is a thrown sandvich. Apply the thing. I guess.
 	local healtotal
@@ -567,7 +573,7 @@ function ThrownLunchboxAcquired(self, pickeruper)
 
 	if (healtotal < 0)
 	{
-		pickeruper.TakeDamageEx(self, owner, GetWeaponByClass(owner,"tf_weapon_lunchbox"), NULLVECTOR, pickeruper.GetOrigin(), -healtotal, 0)
+		pickeruper.TakeDamageEx(self, owner, weapon, NULLVECTOR, pickeruper.GetOrigin(), -healtotal, 0)
 		self.Destroy()
 	}
 	else if (healtotal == 0)
