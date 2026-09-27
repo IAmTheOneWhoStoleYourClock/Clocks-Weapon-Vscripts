@@ -52,13 +52,10 @@ BASEMODELS <- [
 		local model = GetWearableAttributeString(player, "player model override", "")
 		if (model == "")
 		{
+			local activemodel = ""
 			if (player.GetActiveWeapon())
 			{
-				local activemodel = player.GetActiveWeapon().GetAttributeString("player model override active", "")
-			}
-			else
-			{
-				local activemodel = ""
+				activemodel = player.GetActiveWeapon().GetAttributeString("player model override active", "")
 			}
 			if (activemodel != "")
 			{
