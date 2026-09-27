@@ -52,7 +52,14 @@ BASEMODELS <- [
 		local model = GetWearableAttributeString(player, "player model override", "")
 		if (model == "")
 		{
-			local activemodel = player.GetActiveWeapon().GetAttributeString("player model override active", "")
+			if (player.GetActiveWeapon())
+			{
+				local activemodel = player.GetActiveWeapon().GetAttributeString("player model override active", "")
+			}
+			else
+			{
+				local activemodel = ""
+			}
 			if (activemodel != "")
 			{
 				player.SetCustomModelWithClassAnimations(activemodel) // The "with class animations" version for some reason applies the animations of the model, whereas the normal one leaves them with no animations whatsoever?
@@ -72,11 +79,15 @@ function SwitchModelCheck()
 	local activeoverride = self.GetActiveWeapon().GetAttributeString("player model override active", "")
 	if (activeoverride != "")
 	{
+		local animation = self.GetSequence()
 		self.SetCustomModelWithClassAnimations(activeoverride)
+		self.ResetSequence(animation)
 	}
 	else
 	{
+		local animation = self.GetSequence()
 		self.SetCustomModelWithClassAnimations(currentmodel[self.GetEntityIndex()])
+		self.ResetSequence(animation)
 	}
 }
 
