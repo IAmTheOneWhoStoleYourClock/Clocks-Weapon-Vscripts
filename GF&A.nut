@@ -12,6 +12,8 @@
 local GRENADES = ["tf_weapon_grenade_mirv_projectile", "tf_weapon_grenade_mirv_bomb", "tf_projectile_pipe", "tf_projectile_pipe_remote", "tf2c_projectile_brick", "tf2c_projectile_grenade_cyclops", "tf_projectile_ball_attributed", "tf_projectile_ball_ornament", "tf_projectile_stun_ball"];
 local GRENADEDETONATORS = ["tf_projectile_arrow", "tf_projectile_energy_ring", "tf_projectile_flare", "tf_projectile_healing_bolt", "tf_projectile_balloffire", "tf_projectile_rocket", "tf_projectile_syringe", "tf2c_projectile_arrow", "tf2c_projectile_coil", "tf2c_projectile_dart", "tf2c_projectile_nail"];
 local NONEXPLODEYGRENADES = ["tf2c_projectile_brick","tf_projectile_ball_attributed", "tf_projectile_ball_ornament", "tf_projectile_stun_ball"]
+local PROJECTILES = ["tf_weapon_grenade_mirv_projectile", "tf_weapon_grenade_mirv_bomb", "tf_projectile_pipe", "tf_projectile_pipe_remote", "tf2c_projectile_brick", "tf2c_projectile_grenade_cyclops", "tf_projectile_ball_attributed", "tf_projectile_ball_ornament", "tf_projectile_stun_ball","tf_projectile_arrow", "tf_projectile_energy_ring", "tf_projectile_flare", "tf_projectile_healing_bolt", "tf_projectile_balloffire", "tf_projectile_rocket", "tf_projectile_syringe", "tf2c_projectile_arrow", "tf2c_projectile_coil", "tf2c_projectile_dart", "tf2c_projectile_nail"];
+local DESTRUCTABLEPROJECTILES = ["tf_weapon_grenade_mirv_bomb", "tf_projectile_pipe", "tf_projectile_pipe_remote", "tf2c_projectile_brick", "tf2c_projectile_grenade_cyclops", "tf_projectile_ball_attributed", "tf_projectile_ball_ornament", "tf_projectile_stun_ball","tf_projectile_arrow", "tf_projectile_energy_ring", "tf_projectile_flare", "tf_projectile_healing_bolt", "tf_projectile_balloffire", "tf_projectile_rocket", "tf_projectile_syringe", "tf2c_projectile_arrow", "tf2c_projectile_coil", "tf2c_projectile_dart", "tf2c_projectile_nail"];
 local SNIPERRIFLES = ["tf_weapon_sniperrifle","tf_weapon_sniperrifle_classic", "tf_weapon_sniperrifle_decap"]
 local WEAPONCLASSBASEDAMAGE=
 {
@@ -143,20 +145,10 @@ function EntitySpawn(entity)
 		{
 			EntFireByHandle(entity, "CallScriptFunction", "ExplodeNow", brickexplodesfix, null, null)
 		}
-		local brickreplace = weapon.GetAttribute("brick custom projectile", 0)
-		if (brickreplace > 0)
+		local brickreplace = weapon.GetAttributeString("brick custom projectile", "")
+		if (brickreplace != "")
 		{
-			local projectilename = ""
-			if (brickreplace <= 1)
-			{
-				projectilename = weapon.GetWorldModel().slice(0,-4) + "_projectile.mdl"
-			}
-			else
-			{
-				projectilename = weapon.GetWorldModel()
-			}
-
-			entity.SetModel(projectilename)
+			entity.SetModel(brickreplace)
 		}
 	}
 	else if (classname == "tf_weapon_grenade_mirv_bomb")
@@ -170,27 +162,9 @@ function EntitySpawn(entity)
 		}
 		local weapondata = bomb.GetOrCreatePrivateScriptScope()
 		local bombreplace = weapondata.customproj
-		if (bombreplace > 0)
+		if (bombreplace != "")
 		{
-			local projectilename = ""
-			if (bombreplace <= 1)
-			{
-				projectilename = weapondata.modelname.slice(0,-4) + "_bomblet.mdl"
-			}
-			else if (bombreplace <= 2)
-			{
-				projectilename = weapondata.worldmodel.slice(0,-4) + "_bomblet.mdl"
-			}
-			else if (bombreplace <= 3)
-			{
-				projectilename = weapondata.modelname
-			}
-			else
-			{
-				projectilename = weapondata.worldmodel
-			}
-
-			entity.SetModel(projectilename)
+			entity.SetModel(bombreplace)
 			//EntFireByHandle(entity, "CallScriptFunction", "ReplacePhysics", 0, null, null) // Wait a frame or it'll get overriden
 		}
 
@@ -212,7 +186,7 @@ function EntitySpawn(entity)
 		// TO DO: There's gotta be a better way of doing this...
 		// Just incase this weapon gets removed, we still want to be able to access the data it had, so compile it all together now and add it as contexts to the MIRV
 		local weapondata = entity.GetOrCreatePrivateScriptScope()
-		weapondata.customproj <- weapon.GetAttribute("bomblet custom projectile", 0)
+		weapondata.customproj <- weapon.GetAttributeString("bomblet custom projectile", "")
 		weapondata.worldmodel <- weapon.GetWorldModel()
 		weapondata.bombletfusemult <- weapon.GetAttribute("bomblet fuse bonus", 1)
 		weapondata.bombletdamage <- weapon.GetAttribute("bomblet damage", 1)
@@ -249,6 +223,11 @@ function EntitySpawn(entity)
 	local grenadetype = weapon.GetAttribute("override grenade type", 0)
 	if (grenadetype != 0){
 		NetProps.SetPropInt(entity, "m_iType", ceil(grenadetype) - 1)
+	}
+
+	local destroyallondetonate = weapon.GetAttribute("destroy all on detonate", 0)
+	if (destroyallondetonate != 0){
+		entity.AddContext("DPOE", destroyallondetonate.tostring(), 0)
 	}
 
 	local noexplode = weapon.GetAttribute("grenade not explode on impact true", 0)
@@ -428,8 +407,6 @@ function ReplacePhysics()
 	self.PrecacheModel(oldphysics.GetName())
 	self.PhysicsInitNormal(solid,solidflags,true)
 	local newphysics = self.GetPhysicsObject()
-	printl(self)
-	printl(newphysics)
 	SetPhysVelocity(newphysics, oldvelocity, oldavelocity)
 	self.SetAbsAngles(angle)
 	*/
@@ -451,6 +428,33 @@ function VPhysicsCollision()
 		else
 		{
 			ExplodeNow(self)
+		}
+	}
+}
+
+Hooks.Add(this, "OnEntityDeleted", function(entity)
+{
+	DestroyAllProjectiles(entity)
+}, "DestroyAllProjectiles" );
+
+function DestroyAllProjectiles(entity)
+{
+	local DPOE = entity.GetContext("DPOE")
+	if (DPOE != "" && NetProps.GetPropFloat(entity, "m_flDetonateTime") < Time())
+	{
+		DPOE = DPOE.tofloat()
+		local wd = 0
+		local entityorigin = entity.GetOrigin()
+		for (local projectile = Entities.First(); projectile != null && wd < 2048; projectile = Entities.Next(projectile))
+		{
+			wd += 1
+			if (DESTRUCTABLEPROJECTILES.find(projectile.GetClassname()) == null || projectile == entity || projectile.GetTeam() == entity.GetTeam())
+				continue
+			if ((projectile.GetOrigin() - entityorigin).Length() <= DPOE)
+			{
+				DispatchParticleEffect("arm_detonate_sparks", projectile.GetOrigin(), nullvector, null)
+				projectile.Kill()
+			}
 		}
 	}
 }

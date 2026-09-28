@@ -12,13 +12,9 @@
 "brick explodes fixed"
 // brick explodes, but fixed.
 "brick custom projectile"
-// 1 - The brick becomes the model of the world model plus _projectile (ex. w_brick_fish.mdl -> w_brick_fish_projectile.mdl).
-// 2 - The brick becomes the model of the world model.
+// overrides the brick's model, takes the path to the model
 "bomblet custom projectile"
-// 1 - The bomblet becomes the model of the bomb plus _bomblet (ex. w_brick_fish.mdl -> w_brick_fish_bomblet.mdl).
-// 2 - The bomblet becomes the model of the world model plus _bomblet (ex. w_brick_fish.mdl -> w_brick_fish_bomblet.mdl).
-// 3 - The bomblet becomes the model of the bomb.
-// 4 - The bomblet becomes the model of the world model.
+// overrides the bomblet's model, takes the path to the model
 "bomblet fuse bonus"
 // bomblet fuse time multiplier
 "bomblet fuse flat"
@@ -50,9 +46,11 @@
 "BBoxMaxZ"
 "BBoxMinZ"
 // Set various aspects of the grenades Bounding box (note that "scale bounding box" must be non-zero for the following three to have any affect)
+"destroy all on detonate"
+// Destroys all enemy projectiles in a radius equal to the inputted value upon detonation
 
 
-        "17856"
+		"17856"
 		{
 			"name"					"no physics fix"
 			"description_format"	"value_is_additive"
@@ -68,12 +66,14 @@
 		{
 			"name"					"brick custom projectile"
 			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
 			"effect_type"			"neutral"
 		}
 		"17859"
 		{
 			"name"					"bomblet custom projectile"
 			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
 			"effect_type"			"neutral"
 		}
 		"17860"
@@ -183,4 +183,11 @@
 			"name"					"BBoxMinZ"
 			"description_format"	"value_is_additive"
 			"effect_type"			"neutral"
+		}
+		"17976"
+		{
+			"name"					"destroy all on detonate"
+			"description_string"	"Destroys all enemy projectiles in a radius on detonation"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
 		}
