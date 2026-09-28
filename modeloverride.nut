@@ -78,10 +78,10 @@ function SwitchModelCheck()
 	{
 		activemodel = self.GetActiveWeapon().GetAttributeString("player model override active", "")
 	}
-	if (activeoverride != "")
+	if (activemodel != "")
 	{
 		local animation = self.GetSequence()
-		self.SetCustomModelWithClassAnimations(activeoverride)
+		self.SetCustomModelWithClassAnimations(activemodel)
 		self.ResetSequence(animation)
 	}
 	else
