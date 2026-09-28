@@ -74,9 +74,9 @@ BASEMODELS <- [
 function SwitchModelCheck()
 {
 	local activemodel = ""
-	if (player.GetActiveWeapon())
+	if (self.GetActiveWeapon())
 	{
-		activemodel = player.GetActiveWeapon().GetAttributeString("player model override active", "")
+		activemodel = self.GetActiveWeapon().GetAttributeString("player model override active", "")
 	}
 	if (activeoverride != "")
 	{
