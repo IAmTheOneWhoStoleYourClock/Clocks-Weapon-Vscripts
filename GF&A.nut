@@ -452,7 +452,7 @@ function DestroyAllProjectiles(entity)
 				continue
 			if ((projectile.GetOrigin() - entityorigin).Length() <= DPOE)
 			{
-				DispatchParticleEffect("arm_detonate_sparks", projectile.GetOrigin(), nullvector, null)
+				DispatchParticleEffect("arm_detonate_sparks", projectile.GetOrigin(), NULLVECTOR, null)
 				projectile.Kill()
 			}
 		}
