@@ -21,7 +21,6 @@ IncludeScript("lib/clocksutils.nut")
 damageping <- false
 inflictorbuffer <- null
 hpbuffer <- 0
-nullvector <- Vector(0,0,0)
 MAXWEAPONS <- 8
 
 ::MyEventTable2 <- {
@@ -162,7 +161,7 @@ function OnTakeDamage(self,info)
 			local scriptscope = self.GetOrCreatePrivateScriptScope()
 			scriptscope.hpbuffer <- self.GetHealth()
 			scriptscope.inflictorbuffer <- info.GetAttacker()
-			DispatchParticleEffect("arm_detonate_sparks", info.GetDamagePosition(), nullvector, self)
+			DispatchParticleEffect("arm_detonate_sparks", info.GetDamagePosition(), NULLVECTOR, self)
 		}
 	}
 	return
