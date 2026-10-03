@@ -139,7 +139,7 @@ function CheckMeleeSmack()
 				}
 
 				// continue smack detection
-				//NetProps.SetPropInt(owner, "m_Shared.m_iNextMeleeCrit", -2)
+				NetProps.SetPropInt(owner, "m_Shared.m_iNextMeleeCrit", -2)
 			}
 			local attacktime = NetProps.GetPropFloat(weapon, "m_flNextPrimaryAttack")
 			if (attacktime > Time() && (!("swingtime" in scriptscope) || scriptscope.swingtime < attacktime) && weapon.FireDuration())
@@ -154,7 +154,7 @@ function CheckMeleeSmack()
 				{
 					FLIGHTPROCS[owner.GetEntityIndex()] = 0
 				}
-				if (owner.GetActiveWeapon() != CURRENTWEAPON[owner.GetEntityIndex()])
+				if (owner.GetActiveWeapon() != CURRENTWEAPON[owner.GetEntityIndex()] && owner.GetActiveWeapon() != null)
 				{
 					owner.AcceptInput("fireuser3", "", null, null)
 					CURRENTWEAPON[owner.GetEntityIndex()] = owner.GetActiveWeapon()
