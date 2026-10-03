@@ -1,0 +1,50 @@
+"linked item id"
+// Give the player the item with this ID when this weapon is equipped. Can be chained. Needs "linked item class" to function.
+"linked item class"
+// The class of the linked item, as a string. (Yes you have to do this, technical reasons)
+"tactician bonus enable"
+// Enables "linked item id tactician"
+"linked item id tactician"
+// "linked item id" but it only works when a weapon has "tactician bonus enable"
+// Still uses "linked item class"
+
+//
+// FAIR WARNING, LIKE THE ATTRIBUTE THIS IS EMULATING, THIS IS *EXTREMELY* JANKY!
+// I'll likely tone down the jankyness of it at some point when I can, but there's only so much I can do.
+//
+
+        "10000"
+		{
+			"name"	"linked item id"
+			//"attribute_class"	"linked_item_id"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"stored_as_integer"	"0"
+		}
+		"10001"
+		{
+			"name"	"linked item class"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		"10002"
+		{
+			"name"	"linked item id tactician"
+			//"attribute_class"	"linked_item_id"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"stored_as_integer"	"0"
+		}
+		"10003"
+		{
+			"name"	"tactician bonus enable"
+			"description_string"	"Grants tactician bonus 
+(enables extra perks depending on melee)"
+			"description_format"	"value_is_additive"
+			"custom_color"			"163 118 14 255"
+			"effect_type"	"neutral"
+		}
+

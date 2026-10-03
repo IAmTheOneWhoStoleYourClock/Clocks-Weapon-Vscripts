@@ -14,6 +14,9 @@ if (!("ATTRIBSTOBECLEAREDWEARER" in getroottable())) {
 	FLIGHTPROCS <- array(PLAYERCAP, [])
 	CURRENTWEAPON <- array(PLAYERCAP, [])
 	MELEEWEAPONSITERATE <- []
+	FUNCTIONTRACKER <- []
+	REAPEATINGTRACKER <- []
+	BUILDINGSPLAYER <- []
 	NULLVECTOR <- Vector(0,0,0)
 	BuildText <- null
 	TimerText <- null
@@ -35,7 +38,83 @@ __CollectGameEventCallbacks(LibraryTable)
 
 // What a laggy piece of work
 // TO DO: OPTIMISE!
-Entities.First().SetThinkFunction("CheckMeleeSmack", 0)
+Entities.First().SetThinkFunction("TimerTracker", 0)
+
+::TimerTracker <- function()
+{
+	local i = 0
+	while (i < FUNCTIONTRACKER.len() && FUNCTIONTRACKER[i][0] <= Time())
+	{
+		if (FUNCTIONTRACKER[i][1].getinfos().name != null)
+		{
+			local params = clone FUNCTIONTRACKER[i][2]
+			FUNCTIONTRACKER[i][1].acall([this].extend(params))
+		}
+		FUNCTIONTRACKER.remove(i)
+	}
+	i = 0
+	while (i < REAPEATINGTRACKER.len())
+	{
+		if (REAPEATINGTRACKER[i][0] <= Time())
+		{
+			REAPEATINGTRACKER[i][0] += REAPEATINGTRACKER[i][2]
+			if (REAPEATINGTRACKER[i][0] < Time())
+			{
+				REAPEATINGTRACKER[i][0] = Time() + 0.01 // Not nessesary, but adds a bit of internal consistency
+			}
+			local params = clone REAPEATINGTRACKER[i][3]
+			local removal = REAPEATINGTRACKER[i][1].acall([this].extend(params))
+			if (removal == false)
+			{
+				REAPEATINGTRACKER.remove(i)
+			}
+			else
+			{
+				i += 1
+			}
+		}
+		else
+		{
+			i += 1	
+		}
+	}
+
+	return -1
+}
+
+::FunctionInTime <- function(timedfunction, time, params=[])
+{
+	if (time <= 0) // DON'T EXECUTE IT THIS FRAME OR IT COULD CAUSE AN INFINITE LOOP
+	{
+		time = 0.0001
+	}
+	FUNCTIONTRACKER.append([time + Time(), timedfunction, params])
+}
+::ReapeatingFunctionInTime <- function(timedfunction, time, params=[])
+{
+	if (time <= 0) // DON'T EXECUTE IT THIS FRAME OR IT COULD CAUSE AN INFINITE LOOP
+	{
+		time = 0.0001
+	}
+	REAPEATINGTRACKER.append([time + Time(), timedfunction, time, params])
+}
+::UniqueRepeatingFunctionInTime <- function(timedfunction, time, params=[])
+{
+	foreach (data in REAPEATINGTRACKER)
+	{
+		if (data[1].getinfos().name == timedfunction.getinfos().name)
+		{
+			data[1] = timedfunction
+			return false
+		}
+	}
+	if (time <= 0) // DON'T EXECUTE IT THIS FRAME OR IT COULD CAUSE AN INFINITE LOOP
+	{
+		time = 0.0001
+	}
+	REAPEATINGTRACKER.append([time + Time(), timedfunction, time, params])
+	return true
+}
 
 function CheckMeleeSmack()
 {
@@ -60,7 +139,7 @@ function CheckMeleeSmack()
 				}
 
 				// continue smack detection
-				NetProps.SetPropInt(owner, "m_Shared.m_iNextMeleeCrit", -2)
+				//NetProps.SetPropInt(owner, "m_Shared.m_iNextMeleeCrit", -2)
 			}
 			local attacktime = NetProps.GetPropFloat(weapon, "m_flNextPrimaryAttack")
 			if (attacktime > Time() && (!("swingtime" in scriptscope) || scriptscope.swingtime < attacktime) && weapon.FireDuration())
@@ -68,10 +147,13 @@ function CheckMeleeSmack()
 				owner.AcceptInput("fireuser2", "", null, null)
 				scriptscope.swingtime <- attacktime
 			}
-			if (owner.IsPlayer() && NetProps.GetPropEntity(owner, "m_hGroundEntity") != null)
+			if (owner.IsPlayer())
 			{
 				// stupid hack fix
-				FLIGHTPROCS[owner.GetEntityIndex()] = 0
+				if (NetProps.GetPropEntity(owner, "m_hGroundEntity") != null)
+				{
+					FLIGHTPROCS[owner.GetEntityIndex()] = 0
+				}
 				if (owner.GetActiveWeapon() != CURRENTWEAPON[owner.GetEntityIndex()])
 				{
 					owner.AcceptInput("fireuser3", "", null, null)
@@ -83,6 +165,8 @@ function CheckMeleeSmack()
 
 	return -1
 }
+
+UniqueRepeatingFunctionInTime(CheckMeleeSmack, 0)
 
 ::DebugFunc <- function()
 {
@@ -325,6 +409,28 @@ function CheckMeleeSmack()
 	RemoveWearerAttribute(self, attribname)
 }
 
+// Suprisingly a pain
+CTFPlayer.AddTimedWearerAttributeString <- function(attribname, value, time)
+{
+	local truetime = time + Time()
+	AddWearerAttributeString(this, attribname, value) //Sadly, the float that's supposed to determine how long it lasts does not, infact, do that.
+	// "Wait the amount of time and then run the function" SHOULD NOT BE THIS MUCH OF A PAIN.
+	local playerarray = ATTRIBSTOBECLEAREDWEARER[this.GetEntityIndex()]
+	local i = 0
+	while (i < playerarray.len() && playerarray[i][1] < truetime)
+	{
+		i += 1
+	}
+	playerarray.insert(i,[attribname, truetime])
+	FunctionInTime(this.__RemoveTimedWearerAttributeString, truetime, [attribname])
+}
+
+// For those unfamiliar, __ before a functions means "DON'T USE THIS", so like, don't use this.
+CTFPlayer.__RemoveTimedWearerAttributeString <- function(attribname)
+{
+	RemoveWearerAttributeString(self, attribname)
+}
+
 ::AddTimedAttribute <- function(weapon, attribname, value, time)
 {
 	local truetime = time + Time()
@@ -418,6 +524,17 @@ function CheckMeleeSmack()
 		if (held_weapon.GetClassname() == weaponclass)
 		{
 			return held_weapon
+		}
+	}
+	local wd = 0
+	for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
+	{
+		wd += 1
+		if (!startswith(wearable.GetClassname(),"tf_wearable") || NetProps.GetPropInt(wearable, "m_bDisguiseWearable"))
+			continue
+		if (wearable.GetClassname() == weaponclass)
+		{
+			wearable.Destroy()
 		}
 	}
 	return null
