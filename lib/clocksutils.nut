@@ -534,7 +534,7 @@ CTFPlayer.__RemoveTimedWearerAttributeString <- function(attribname)
 			continue
 		if (wearable.GetClassname() == weaponclass)
 		{
-			wearable.Destroy()
+			return wearable
 		}
 	}
 	return null
