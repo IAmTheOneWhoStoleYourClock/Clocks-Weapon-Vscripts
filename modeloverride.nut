@@ -68,6 +68,14 @@ BASEMODELS <- [
 				currentmodel[player.GetEntityIndex()] = BASEMODELS[player.GetPlayerClass() - 1]
 			}
 		}
+		else
+		{
+			if (currentmodel[player.GetEntityIndex()] == BASEMODELS[player.GetPlayerClass() - 1])
+			{
+				player.SetCustomModelWithClassAnimations(model) // The "with class animations" version for some reason applies the animations of the model, whereas the normal one leaves them with no animations whatsoever?
+				currentmodel[player.GetEntityIndex()] = model
+			}
+		}
 	}
 }
 
