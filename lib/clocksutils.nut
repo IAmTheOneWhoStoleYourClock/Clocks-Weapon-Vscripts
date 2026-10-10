@@ -13,7 +13,8 @@ if (!("ATTRIBSTOBECLEAREDWEARER" in getroottable())) {
 	ATTRIBSTOBEADDED <- array(PLAYERCAP, [])
 	FLIGHTPROCS <- array(PLAYERCAP, [])
 	CURRENTWEAPON <- array(PLAYERCAP, [])
-	MELEEWEAPONSITERATE <- []
+	LASTATTACK <- array(PLAYERCAP, [])
+	PLAYERITERATE <- []
 	FUNCTIONTRACKER <- []
 	REAPEATINGTRACKER <- []
 	BUILDINGSPLAYER <- []
@@ -25,12 +26,9 @@ if (!("ATTRIBSTOBECLEAREDWEARER" in getroottable())) {
 ticks <- 0
 
 ::LibraryTable <- {
-	function OnGameEvent_weapon_equipped(params)
+	function OnGameEvent_player_spawn(params)
 	{
-		if (MeleeWeapons.find(EntIndexToHScript(params.entindex).GetClassname()) != null)
-		{
-			MELEEWEAPONSITERATE.append(EntIndexToHScript(params.entindex))
-		}
+		PLAYERITERATE.append(GetPlayerFromUserID(params.userid))
 	}
 }
 
@@ -116,49 +114,60 @@ Entities.First().SetThinkFunction("TimerTracker", 0)
 	return true
 }
 
-function CheckMeleeSmack()
+function FrameCheck()
 {
-	foreach (weapon in MELEEWEAPONSITERATE)
+	foreach (player in PLAYERITERATE)
 	{
-		if (!weapon || !weapon.IsValid())
+		if (!player || !player.IsValid())
 		{
-			MELEEWEAPONSITERATE.remove(MELEEWEAPONSITERATE.find(weapon))
+			PLAYERITERATE.remove(PLAYERITERATE.find(player))
 			continue
 		}
-		local owner = weapon.GetOwner()
-		if (owner)
-		{
-			local scriptscope = weapon.GetOrCreatePrivateScriptScope()
-			// when melee smacks, m_iNextMeleeCrit is 0
-			if (NetProps.GetPropInt(owner, "m_Shared.m_iNextMeleeCrit") == 0)
-			{
-				// when switching away from melee, m_iNextMeleeCrit will also be 0 so check for that case
-				if (owner.GetActiveWeapon() == weapon)
-				{
-					owner.AcceptInput("fireuser1", "", null, null)
-				}
+		local weapon = player.GetActiveWeapon()
 
-				// continue smack detection
-				NetProps.SetPropInt(owner, "m_Shared.m_iNextMeleeCrit", -2)
-			}
-			local attacktime = NetProps.GetPropFloat(weapon, "m_flNextPrimaryAttack")
-			if (attacktime > Time() && (!("swingtime" in scriptscope) || scriptscope.swingtime < attacktime) && weapon.FireDuration())
+		// stupid hack fix
+		if (NetProps.GetPropEntity(player, "m_hGroundEntity") != null)
+		{
+			FLIGHTPROCS[player.GetEntityIndex()] = 0
+		}
+		if (player.GetActiveWeapon() != CURRENTWEAPON[player.GetEntityIndex()] && weapon)
+		{
+			player.AcceptInput("fireuser3", "", null, null)
+			CURRENTWEAPON[player.GetEntityIndex()] = player.GetActiveWeapon()
+		}
+
+		if (!weapon)
+		{
+			continue
+		}
+		// when melee smacks, m_iNextMeleeCrit is 0
+		if (NetProps.GetPropInt(player, "m_Shared.m_iNextMeleeCrit") == 0)
+		{
+			// when switching away from melee, m_iNextMeleeCrit will also be 0 so check for that case
+			if (player.GetActiveWeapon() == weapon)
 			{
-				owner.AcceptInput("fireuser2", "", null, null)
-				scriptscope.swingtime <- attacktime
+				player.AcceptInput("fireuser1", "", null, null)
 			}
-			if (owner.IsPlayer())
+
+			// continue smack detection
+			NetProps.SetPropInt(player, "m_Shared.m_iNextMeleeCrit", -2)
+		}
+		local attacktime = NetProps.GetPropFloat(weapon, "m_flLastFireTime")
+		if (attacktime == Time())
+		{
+			player.AcceptInput("fireuser2", "", null, null)
+		}
+		else
+		{
+			local attacktime = max(NetProps.GetPropFloat(weapon, "m_flNextPrimaryAttack"), NetProps.GetPropFloat(weapon, "m_flNextSecondaryAttack"))
+			if (attacktime > Time() && (LASTATTACK[player.GetEntityIndex()] != attacktime && weapon.FireDuration()))
 			{
-				// stupid hack fix
-				if (NetProps.GetPropEntity(owner, "m_hGroundEntity") != null)
-				{
-					FLIGHTPROCS[owner.GetEntityIndex()] = 0
-				}
-				if (owner.GetActiveWeapon() != CURRENTWEAPON[owner.GetEntityIndex()] && owner.GetActiveWeapon() != null)
-				{
-					owner.AcceptInput("fireuser3", "", null, null)
-					CURRENTWEAPON[owner.GetEntityIndex()] = owner.GetActiveWeapon()
-				}
+				player.AcceptInput("fireuser2", "", null, null)
+				LASTATTACK[player.GetEntityIndex()] = attacktime
+			}
+			else if (!weapon.FireDuration())
+			{
+				LASTATTACK[player.GetEntityIndex()] = -1 // Likely unnessesary, but I'd like to be sure.
 			}
 		}
 	}
@@ -166,7 +175,7 @@ function CheckMeleeSmack()
 	return -1
 }
 
-UniqueRepeatingFunctionInTime(CheckMeleeSmack, 0)
+UniqueRepeatingFunctionInTime(FrameCheck, 0)
 
 ::DebugFunc <- function()
 {
@@ -538,6 +547,27 @@ CTFPlayer.__RemoveTimedWearerAttributeString <- function(attribname)
 		}
 	}
 	return null
+}
+
+CTFPlayer.IsInValidState <- function()
+{
+	if (GetRoundState == 3)
+	{
+		return false
+	}
+	else if (GetWinningTeam() != 0 && GetWinningTeam() != this.GetTeam())
+	{
+		return false
+	}
+	else if (this.InCond(15))
+	{
+		return false
+	}
+	else if (this.IsTaunting())
+	{
+		return false
+	}
+	return true
 }
 
 ::DisplayStackBuildText <- function(player, text)
