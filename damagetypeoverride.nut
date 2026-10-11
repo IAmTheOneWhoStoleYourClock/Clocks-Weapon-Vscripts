@@ -56,14 +56,6 @@ function OnTakeDamage(self,info)
 		{
 			info.SetDamageCustom(CTO | (info.GetDamageCustom() & 1)) // Lets it keep a couple of important damage types
 		}
-		if (weapon.GetAttribute("no headshot", 0) && info.GetDamageCustom() & 1)
-		{
-			if (!info.GetAttacker().IsCritBoosted() && info.GetDamageType() & 1048576)
-			{
-				info.SetDamageType(info.GetDamageType() - 1048576)
-			}
-			info.SetDamageCustom(info.GetDamageCustom() - 1)
-		}
 		if (weapon.GetAttribute("no crits", 0) && info.GetDamageType() & 1048576)
 		{
 			info.SetDamageType(info.GetDamageType() - 1048576)
