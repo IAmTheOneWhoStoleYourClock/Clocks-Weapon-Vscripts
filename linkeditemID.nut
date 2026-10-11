@@ -58,7 +58,7 @@ function EntitySpawnLinkedIDWearablesCatch(entity)
 	{
 		EntFireByHandle(entity, "Kill", "", 0, null, null)
 	}
-	if (startswith(wearable.GetClassname(),"tf_wearable") && NetProps.GetPropInt(entity, "m_AttributeManager.m_Item.m_iItemDefinitionIndex") != 65535) // The later is succifient to check if this is an extra wearable.
+	if (startswith(entity.GetClassname(),"tf_wearable") && NetProps.GetPropInt(entity, "m_AttributeManager.m_Item.m_iItemDefinitionIndex") != 65535) // The later is succifient to check if this is an extra wearable.
 	{
 		local eventable = { entindex = entity.GetEntityIndex() }
 		eventable.rawset("class", "tf_wearable") // Need to do it this way since I can't just put it in the table normally because class is a reserved keyword by squirrel
