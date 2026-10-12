@@ -1,0 +1,12 @@
+"loadout weapon"
+// Bit flag, if there are multiple weapons with this attribute and their bit flags do not all have at least 1 match, they will be deleted and replaced with stock weapons.
+// Stock weapons are defined in the "fallbacklist.cfg" config files.
+// This attribute completely ignores weapons that do not have the attribute at all.
+
+		"10000"
+		{
+			"name"					"loadout weapon"
+			"description_format"	"value_is_additive"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
