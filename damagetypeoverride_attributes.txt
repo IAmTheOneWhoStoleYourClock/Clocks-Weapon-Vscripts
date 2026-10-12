@@ -3,8 +3,8 @@
 // Yes, this is no longer misspelled. Update your scripts.
 "customtypeoverride"
 // Change the custom damage this weapon deals to this. (Note: This preserves headshots.)
-"no headshot"
-// Removes headshots. Does not need to be combined with the previous.
+"no non boosted crits"
+// Removes crits that happen without being crit boosted. (at least by normal means, minicrits to crits and some conditional attributes would still work)
 "no crits"
 // The weapon cannot deal critical damage (at least by normal means, minicrits to crits and some conditional attributes would still work).
 "cond on damagetype"
