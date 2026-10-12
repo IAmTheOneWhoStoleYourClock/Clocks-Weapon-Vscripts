@@ -16,15 +16,6 @@
 "cond on customtype time"
 // Apply a condition if the attack has this custom type, this is processed BEFORE the override attributes. (Headshot is 1, and Backstab is 2 btw!)
 
-        "3281"
-		{
-			"name"	"no headshot"
-			"attribute_class"	"no_headshot"
-			"description_format"	"value_is_additive"
-			"hidden"	"0"
-			"effect_type"	"negative"
-			"stored_as_integer"	"0"
-		}
 		"15330"
 		{
 			"name"					"damagetypeoverride"
@@ -114,4 +105,11 @@
 			"name"					"self cond on customtype time"
 			"description_format"	"value_is_additive"
 			"effect_type"			"neutral"
+		}
+		"15345"
+		{
+			"name"					"no non boosted crits"
+			"description_format"	"value_is_additive"
+			"hidden"				"1"
+			"effect_type"			"negative"
 		}
