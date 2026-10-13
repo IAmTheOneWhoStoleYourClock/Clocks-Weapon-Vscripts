@@ -32,16 +32,19 @@ local CHARGESOUNDS = ["Charge.Scout","Charge.Sniper","Charge.Soldier","Charge.De
 {
 	return GetWearableAttribute(this,"charge time increased", 0) + GetWearableAttribute(this,"charge time decreased", 0) + 1.5
 }
+::CTFBot.GetChargeTime <- CTFPlayer.GetChargeTime
 
 ::CTFPlayer.GetChargeRechargeTime <- function()
 {
 	return GetWearableAttribute(this,"charge recharge rate increased", 1) * GetWearableAttribute(this,"charge recharge rate decreased", 1)
 }
+::CTFBot.GetChargeRechargeTime <- CTFPlayer.GetChargeRechargeTime
 
 ::CTFPlayer.GetChargePower <- function()
 {
 	return GetWearableAttribute(this,"charge speed increased", 1) * GetWearableAttribute(this,"charge speed decreased", 1)
 }
+::CTFBot.GetChargePower <- CTFPlayer.GetChargePower
 
 function ChargePulse()
 {
