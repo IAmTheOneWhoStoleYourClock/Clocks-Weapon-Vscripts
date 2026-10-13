@@ -496,10 +496,6 @@ function EndCharge(player)
 	function OnGameEvent_player_spawn(params)
 	{
 		local player = GetPlayerFromUserID(params.userid)
-	}
-	function OnGameEvent_player_spawn(params)
-	{
-		local player = GetPlayerFromUserID(params.userid)
 		player.ConnectOutput("OnUser1" "MeleeSwingCharge2")
 		player.ConnectOutput("OnUser2" "MeleeSwingCharge")
 		player.ConnectOutput("OnUser3" "MeleeSwingCharge2")
