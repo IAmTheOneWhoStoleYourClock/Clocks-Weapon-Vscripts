@@ -1,0 +1,251 @@
+//
+// DO NOT USE THIS IF YOU ARE NOT EXPLICITLY USING ITS FEATURES, IT WILL BREAK THINGS!
+// ALSO, DO NOT USE REGULAR DEMOMAN SHIELDS WITH THIS. IT WILL BREAK!
+// All shields *must* be made using this structure in order for the game to work correctly.
+// I plan to make a trimmed down version of this at some point for those that just want the basic features of the mod.
+//
+
+"has charge"
+// Gives you a charge depending on this list:
+// "regular" - Regular charge you've come to know and maybe come to love
+// "leap" - Leap upwards in the direction you are looking!
+// "leap_omni" - same as leap, but you can also leap downwards while airborne. If you want that for some reason.
+// "leap_charge" - Leap and charge.
+// "leap_omni_charge" - Omni leap and charge.
+// "gravdash" - Charge directly in the direction you are facing, no change in course once you've begun!
+// "gravdash_charge" - Gravdash and charge.
+// "gravdash_hold" - Gravdash, but it ends when you let go of secondary attack.
+// "jetdash" - Charge directly in the direction you are facing, but this time you can change course as you wish!
+// "jetdash_charge" - Jetdash and charge.
+// "jetdash_hold" - Jetdash, but it ends when you let go of secondary attack.
+// "skywards" - Flings you straight up into the air
+// "skywards_charge" - Skywards and charge.
+// Add "_active" to the end to make it only occour while the weapon is active.
+// Do not mix multiple weapons that have this together, I don't have that accounted for.
+// Works on all weapons except shields.
+"charge cost"
+// Mutiply the cost of charging (100%) by this much.
+"charge delay"
+// users must wait this amount in seconds after charging to be allowed to charge again.
+"charge slam"
+// Slam into the ground with anchor stats upon finishing a charge. (no effect on leaps)
+"charge explode"
+// Explode upon finishing a charge. (no effect on leaps)
+"charge speed increased"
+"charge speed decreased"
+// Increases or deacreases the speed of a charge by this much (also works on leaps and alt-charges)
+"charge cond"
+// Apply this condition while charging. (no effect on leaps)
+
+        "17650"
+		{
+			"name"					"has charge"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"17651"
+		{
+			"name"					"charge cost"
+			"description_format"	"value_is_percentage"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"17652"
+		{
+			"name"					"charge delay"
+			"description_format"	"value_is_additive"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"17977"
+		{
+			"name"					"charge slam"
+			"description_format"	"value_is_additive"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"17978"
+		{
+			"name"					"charge explode"
+			"description_format"	"value_is_additive"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"17980"
+		{
+			"name"					"charge speed increased"
+			"description_format"	"value_is_percentage"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"17981"
+		{
+			"name"					"charge speed decreased"
+			"description_format"	"value_is_percentage"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"17988"
+		{
+			"name"					"charge cond"
+			"description_format"	"value_is_additive"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+
+"DemoCharge.Charging" // REMOVES THE CHARGE SCREAM ENTIRELY
+{
+	"channel"	"CHAN_STATIC"
+	"soundlevel"	"SNDLVL_NONE"
+	"volume"	"0"
+	"wave"	"common/null.wav"
+}
+
+"Charge.Scout"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"1"
+	"soundlevel"	"SNDLVL_94dB"
+
+	"rndwave"			
+	{
+		"wave"		"vo/scout_PainCrticialDeath01.mp3"
+		"wave"		"vo/scout_PainCrticialDeath02.mp3"
+		"wave"		"vo/scout_PainCrticialDeath03.mp3"
+	}
+}
+
+"Charge.Soldier"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"1"
+	"soundlevel"	"SNDLVL_94dB"
+
+	"rndwave"			
+	{
+		"wave"		"vo/soldier_PainCrticialDeath01.mp3"
+		"wave"		"vo/soldier_PainCrticialDeath02.mp3"
+		"wave"		"vo/soldier_PainCrticialDeath03.mp3"
+		"wave"		"vo/soldier_PainCrticialDeath04.mp3"
+	}
+}
+
+"Charge.Pyro"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"1"
+	"soundlevel"	"SNDLVL_94dB"
+
+	"rndwave"			
+	{
+		"wave"		"vo/pyro_LaughEvil01.mp3"
+		"wave"		"vo/pyro_laughhappy01.mp3"
+		"wave"		"vo/pyro_laughshort01.mp3"
+	}
+}
+
+"Charge.Demo"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"1"
+	"soundlevel"	"SNDLVL_94dB"
+
+	"rndwave"
+	{
+		"wave"		"weapons/demo_charge_windup1.wav"
+		"wave"		"weapons/demo_charge_windup2.wav"
+		"wave"		"weapons/demo_charge_windup3.wav"
+	}
+}
+
+"Charge.Heavy"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"1"
+	"soundlevel"	"SNDLVL_94dB"
+
+	"rndwave"			
+	{
+		"wave"		"vo/heavy_PainCrticialDeath01.mp3"
+		"wave"		"vo/heavy_PainCrticialDeath02.mp3"
+		"wave"		"vo/heavy_PainCrticialDeath03.mp3"
+	}
+}
+
+"Charge.Engineer"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"1"
+	"soundlevel"	"SNDLVL_94dB"
+
+	"rndwave"			
+	{
+		"wave"		"vo/engineer_PainCrticialDeath01.mp3"
+		"wave"		"vo/engineer_PainCrticialDeath02.mp3"
+		"wave"		"vo/engineer_PainCrticialDeath03.mp3"
+		"wave"		"vo/engineer_PainCrticialDeath04.mp3"
+		"wave"		"vo/engineer_PainCrticialDeath05.mp3"
+		"wave"		"vo/engineer_PainCrticialDeath06.mp3"
+	}
+}
+
+"Charge.Medic"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"1"
+	"soundlevel"	"SNDLVL_94dB"
+
+	"rndwave"			
+	{
+		"wave"		"vo/medic_PainCrticialDeath01.mp3"
+		"wave"		"vo/medic_PainCrticialDeath02.mp3"
+		"wave"		"vo/medic_PainCrticialDeath03.mp3"
+		"wave"		"vo/medic_PainCrticialDeath04.mp3"
+	}
+}
+
+"Charge.Sniper"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"1"
+	"soundlevel"	"SNDLVL_94dB"
+
+	"rndwave"			
+	{
+		"wave"		"vo/sniper_PainCrticialDeath01.mp3"
+		"wave"		"vo/sniper_PainCrticialDeath02.mp3"
+		"wave"		"vo/sniper_PainCrticialDeath03.mp3"
+		"wave"		"vo/sniper_PainCrticialDeath04.mp3"
+	}
+}
+
+"Charge.Spy"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"1"
+	"soundlevel"	"SNDLVL_94dB"
+
+	"rndwave"			
+	{
+		"wave"		"vo/Spy_PainCrticialDeath01.mp3"
+		"wave"		"vo/Spy_PainCrticialDeath02.mp3"
+		"wave"		"vo/Spy_PainCrticialDeath03.mp3"
+	}
+}
+
+"Charge.Civilian"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"1"
+	"soundlevel"	"SNDLVL_94dB"
+
+	"rndwave"			
+	{
+		"wave"		"vo/civilian_PainCrticialDeath01.mp3"
+		"wave"		"vo/civilian_PainCrticialDeath02.mp3" // OH GOD
+		"wave"		"vo/civilian_PainCrticialDeath02.mp3"
+		"wave"		"vo/civilian_PainCrticialDeath03.mp3"
+	}
+}
