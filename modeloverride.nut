@@ -43,7 +43,7 @@ BASEMODELS <- [
 		if (model != "")
 		{
 			player.SetCustomModelWithClassAnimations(model) // The "with class animations" version for some reason applies the animations of the model, whereas the normal one leaves them with no animations whatsoever?
-			currentmodel[owner.GetEntityIndex()] = model
+			currentmodel[player.GetEntityIndex()] = model
 		}
 	}
 	function OnGameEvent_post_inventory_application(params)
