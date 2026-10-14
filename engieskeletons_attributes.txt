@@ -1,0 +1,68 @@
+"engie skeletons"
+// The maximum amount of skeletons the player can summon by right clicking while the weapon is active.
+// Despite the name, this works on all classes, not just engineer. The name is more of a holdover atp...
+// Cannot be used in spawn rooms
+"engie skeleton metal cost"
+// How much metal the skeleton should cost (no variant for other ammo types)
+"engie skeleton health cost"
+// How much health the skeleton should cost (does not allow you to kill yourself with it)
+"engie skeleton uber cost"
+// How much uber the skeleton should cost. Does not work if the user does not have uber. Scales with uber build rate.
+"engie skeleton animation"
+// The animation to play when summoning (required)
+"engie skeleton idle animation"
+// The animation to return to after summoning (required)
+
+		"17989"
+		{
+			"name"					"engie skeletons"
+			"description_format"	"value_is_additive"
+			"description_string"	"Alt-Fire: Summon up to %s1 skeletons"
+			"effect_type"			"positive"
+		}
+		"17990"
+		{
+			"name"					"engie skeleton metal cost"
+			"description_format"	"value_is_additive"
+			"description_string"	"Summoning skeletons consumes %s1 metal"
+			"effect_type"			"negative"
+		}
+		"17991"
+		{
+			"name"					"engie skeleton health cost"
+			"description_format"	"value_is_additive"
+			"description_string"	"Summoning skeletons consumes %s1 health"
+			"effect_type"			"negative"
+		}
+		"17992"
+		{
+			"name"					"engie skeleton uber cost"
+			"description_format"	"value_is_additive_percentage"
+			"description_string"	"Summoning skeletons consumes %s1% uber
+(Cost scales with uber build rate)"
+			"effect_type"			"negative"
+		}
+		"17993"
+		{
+			"name"					"engie skeleton animation"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"17994"
+		{
+			"name"					"engie skeleton idle animation"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		// DISPLAY ONLY
+		"17995"
+		{
+			"name"					"engie skeleton no respawn room"
+			"description_format"	"value_is_additive"
+			"description_string"	"Cannot summon skeletons in respawn rooms"
+			"effect_type"			"negative"
+		}
