@@ -1,0 +1,13 @@
+"selfdmg on hit"
+// Damage to take on hit. Express as negative value.
+
+       		"18000"
+		{
+			"name"	"selfdmg on hit"
+			"description_string"	"#Attrib_HealOnHit_Negative"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"negative"
+			"armory_Desc"	"on_hit"
+			"stored_as_integer"	"0"
+		}
