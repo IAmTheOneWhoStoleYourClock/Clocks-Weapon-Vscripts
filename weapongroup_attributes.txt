@@ -60,3 +60,9 @@
 			"description_format"	"value_is_additive"
 			"effect_type"			"positive"
 		}
+		"15592"
+		{
+			"name"					"weapon group minicrit"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}

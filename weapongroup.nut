@@ -37,6 +37,10 @@ function OnTakeDamage(self,info)
 		{
 			info.SetDamageType(info.GetDamageType() | Constants.FDmgType.DMG_ACID)
 		}
+		if (group & attackerweapon.GetAttribute("weapon group minicrit", 0).tointeger())
+		{
+			info.SetDamageCustom(55)
+		}
 		if (group & attackerweapon.GetAttribute("weapon group damage", 0).tointeger())
 		{
 			info.SetDamage(info.GetDamage() * attackerweapon.GetAttribute("weapon group damage mult", 1))
