@@ -13,7 +13,6 @@ IncludeScript("lib/clocksutils.nut")
 	{
 		local player = GetPlayerFromUserID(params.attacker)
 		local self = GetPlayerFromUserID(params.userid)
-		printl(params.custom)
 		if (!player || !player.IsPlayer() || !self || !self.IsPlayer() || player == self || params.custom == 34 || params.custom == 3 || !("weaponid" in params))
 		{
 			return
