@@ -1,0 +1,26 @@
+"heal on afterburn"
+// Amount to heal when dealing afterburn damage. Note that only afterburn dealt by THIS WEAPON will heal.
+"heal on afterburn wearer"
+// On wearer version, why not ig.
+
+       		"3035"
+		{
+			"name"	"heal on afterburn"
+			"attribute_class"	"add_burn_heals"
+			"description_string"	"On Afterburn: Gain up to %s1 health"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_Desc"	"on_hit"
+			"stored_as_integer"	"0"
+		}
+		"18004"
+		{
+			"name"	"heal on afterburn wearer"
+			"description_string"	"On All Afterburn: Gain up to %s1 health"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_Desc"	"on_hit"
+			"stored_as_integer"	"0"
+		}
