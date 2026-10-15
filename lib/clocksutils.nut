@@ -14,6 +14,7 @@ if (!("ATTRIBSTOBECLEAREDWEARER" in getroottable())) {
 	FLIGHTPROCS <- array(PLAYERCAP, [])
 	CURRENTWEAPON <- array(PLAYERCAP, [])
 	LASTATTACK <- array(PLAYERCAP, [])
+	LASTHURT <- array(PLAYERCAP, 0)
 	PLAYERITERATE <- []
 	FUNCTIONTRACKER <- []
 	REAPEATINGTRACKER <- []
@@ -30,6 +31,10 @@ ticks <- 0
 	{
 		PLAYERITERATE.append(GetPlayerFromUserID(params.userid))
 	}
+	function OnGameEvent_player_hurt(params)
+	{
+		LASTHURT[GetPlayerFromUserID(params.userid).GetEntityIndex()] = Time()
+	}
 }
 
 __CollectGameEventCallbacks(LibraryTable)
@@ -41,14 +46,28 @@ Entities.First().SetThinkFunction("TimerTracker", 0)
 ::TimerTracker <- function()
 {
 	local i = 0
-	while (i < FUNCTIONTRACKER.len() && FUNCTIONTRACKER[i][0] <= Time())
+	while (i < FUNCTIONTRACKER.len())
 	{
-		if (FUNCTIONTRACKER[i][1].getinfos().name != null)
+		if (FUNCTIONTRACKER[i][0] <= Time())
 		{
-			local params = clone FUNCTIONTRACKER[i][2]
-			FUNCTIONTRACKER[i][1].acall([this].extend(params))
+			if (FUNCTIONTRACKER[i][1].getinfos().name != null)
+			{
+				local params = clone FUNCTIONTRACKER[i][2]
+				FUNCTIONTRACKER[i][1].acall([this].extend(params))
+			}
+			FUNCTIONTRACKER.remove(i)
 		}
-		FUNCTIONTRACKER.remove(i)
+		else
+		{
+			if (FUNCTIONTRACKER[i][1].getinfos().name == null)
+			{
+				FUNCTIONTRACKER.remove(i)
+			}
+			else
+			{
+				i++
+			}
+		}
 	}
 	i = 0
 	while (i < REAPEATINGTRACKER.len())
@@ -402,20 +421,35 @@ UniqueRepeatingFunctionInTime(FrameCheck, 0)
 	// "Wait the amount of time and then run the function" SHOULD NOT BE THIS MUCH OF A PAIN.
 	local playerarray = ATTRIBSTOBECLEAREDWEARER[player.GetEntityIndex()]
 	local i = 0
-	while (i < playerarray.len() && playerarray[i][1] < truetime)
+	foreach (waiting in playerarray)
 	{
-		i += 1
+		if (waiting[0] == attribname)
+		{
+			if (waiting[1] >= time + Time())
+			{
+				return
+			}
+			else
+			{
+				playerarray.remove(playerarray.find(waiting))
+			}
+		}
 	}
-	playerarray.insert(i,[attribname, truetime])
-	EntFireByHandle(player, "CallScriptFunction", "__RemoveTimedWearerAttribute", time, null, null)
+	playerarray.append([attribname, truetime])
+	FunctionInTime(RemoveTimedWearerAttribute, time, [player, [attribname, truetime]])
 }
 
-// For those unfamiliar, __ before a functions means "DON'T USE THIS", so like, don't use this.
-::__RemoveTimedWearerAttribute <- function()
+function RemoveTimedWearerAttribute(player,array)
 {
-	local playerarray = ATTRIBSTOBECLEAREDWEARER[self.GetEntityIndex()]
-	local attribname = playerarray.remove(0)[0]
-	RemoveWearerAttribute(self, attribname)
+	local playerarray = ATTRIBSTOBECLEAREDWEARER[player.GetEntityIndex()]
+	foreach (array2 in playerarray)
+	{
+		if (array2[0] == array[0] && array2[1] == array[1])
+		{
+			RemoveWearerAttribute(player, array[0])
+			playerarray.remove(playerarray.find(array2))
+		}
+	}
 }
 
 // Suprisingly a pain
@@ -425,19 +459,36 @@ CTFPlayer.AddTimedWearerAttributeString <- function(attribname, value, time)
 	AddWearerAttributeString(this, attribname, value) //Sadly, the float that's supposed to determine how long it lasts does not, infact, do that.
 	// "Wait the amount of time and then run the function" SHOULD NOT BE THIS MUCH OF A PAIN.
 	local playerarray = ATTRIBSTOBECLEAREDWEARER[this.GetEntityIndex()]
-	local i = 0
-	while (i < playerarray.len() && playerarray[i][1] < truetime)
+	foreach (waiting in playerarray)
 	{
-		i += 1
+		if (waiting[0] == attribname)
+		{
+			if (waiting[1] >= time + Time())
+			{
+				return
+			}
+			else
+			{
+				playerarray.remove(playerarray.find(waiting))
+			}
+		}
 	}
-	playerarray.insert(i,[attribname, truetime])
-	FunctionInTime(this.__RemoveTimedWearerAttributeString, truetime, [attribname])
+	playerarray.append([attribname, truetime])
+	FunctionInTime(RemoveTimedWearerAttributeString, time, [attribname, truetime])
 }
+CTFBot.AddTimedWearerAttributeString <- CTFPlayer.AddTimedWearerAttributeString
 
-// For those unfamiliar, __ before a functions means "DON'T USE THIS", so like, don't use this.
-CTFPlayer.__RemoveTimedWearerAttributeString <- function(attribname)
+function RemoveTimedWearerAttributeString(array)
 {
-	RemoveWearerAttributeString(self, attribname)
+	local playerarray = ATTRIBSTOBECLEAREDWEARER[player.GetEntityIndex()]
+	foreach (array2 in playerarray)
+	{
+		if (array2[0] == array[0] && array2[1] == array[1])
+		{
+			RemoveWearerAttributeString(player, array[0])
+			playerarray.remove(playerarray.find(array2))
+		}
+	}
 }
 
 ::AddTimedAttribute <- function(weapon, attribname, value, time)
@@ -447,22 +498,34 @@ CTFPlayer.__RemoveTimedWearerAttributeString <- function(attribname)
 	weapon.AddAttribute(attribname, value, 0) //Sadly, the float that's supposed to determine how long it lasts, does not, infact, do that.
 	// "Wait the amount of time and then run the function" SHOULD NOT BE THIS MUCH OF A PAIN.
 	local playerarray = ATTRIBSTOBECLEARED[player.GetEntityIndex()]
-	local i = 0
-	while (i < playerarray.len() && playerarray[i][1] < truetime)
+	foreach (waiting in playerarray)
 	{
-		i += 1
+		if (waiting[0] == attribname && waiting[3] == weapon)
+		{
+			if (waiting[1] >= time + Time())
+			{
+				return
+			}
+			else
+			{
+				playerarray.remove(playerarray.find(waiting))
+			}
+		}
 	}
-	ATTRIBSTOBECLEARED[player.GetEntityIndex()].insert(i,[attribname, truetime])
-	EntFireByHandle(player, "CallScriptFunction", "__RemoveTimedAttribute", time, weapon, null)
+	playerarray.append([attribname, truetime, weapon])
+	FunctionInTime(RemoveTimedAttribute, time, [player, [attribname, truetime, weapon]])
 }
 
-// For those unfamiliar, __ before a functions means "DON'T USE THIS", so like, don't use this.
-::__RemoveTimedAttribute <- function()
+function RemoveTimedAttribute(player, array)
 {
-	local attribname = ATTRIBSTOBECLEARED[self.GetEntityIndex()].remove(0)[0]
-	if (activator && activator.IsValid() && activator.IsWeapon())
+	local playerarray = ATTRIBSTOBECLEARED[player.GetEntityIndex()]
+	foreach (array2 in playerarray)
 	{
-		activator.RemoveAttribute(attribname)
+		if (array2[0] == array[0] && array2[1] == array[1] && array2[2] == array[2])
+		{
+			array[2].RemoveAttribute(array[0])
+			playerarray.remove(playerarray.find(array2))
+		}
 	}
 }
 
@@ -472,23 +535,21 @@ CTFPlayer.__RemoveTimedWearerAttributeString <- function(attribname)
 	local player = weapon.GetOwner()
 	// "Wait the amount of time and then run the function" SHOULD NOT BE THIS MUCH OF A PAIN.
 	local playerarray = ATTRIBSTOBEADDED[player.GetEntityIndex()]
-	local i = 0
-	while (i < playerarray.len() && playerarray[i][1] < truetime)
-	{
-		i += 1
-	}
-	ATTRIBSTOBEADDED[player.GetEntityIndex()].insert(i,[attribname, truetime, value])
-	EntFireByHandle(player, "CallScriptFunction", "__AddAttributeAfterTime", time, weapon, null)
+	// We don't actually really care if they overlap here, so I just won't even check.
+	playerarray.append([attribname, truetime, weapon, value])
+	FunctionInTime(AddAttributeAfterTime, time, [player, [attribname, truetime, weapon, value]])
 }
 
-// For those unfamiliar, __ before a functions means "DON'T USE THIS", so like, don't use this.
-::__AddAttributeAfterTime <- function()
+function AddAttributeAfterTime(player, array)
 {
-	local attrib = ATTRIBSTOBEADDED[self.GetEntityIndex()].remove(0)
-
-	if (activator && activator.IsValid() && activator.IsWeapon())
+	local playerarray = ATTRIBSTOBEADDED[player.GetEntityIndex()]
+	foreach (array2 in playerarray)
 	{
-		activator.AddAttribute(attrib[0],attrib[2],0)
+		if (array2[0] == array[0] && array2[1] == array[1] && array2[2] == array[2] && array2[3] == array[3])
+		{
+			array[2].AddAttribute(array[0], array[3], 0)
+			playerarray.remove(playerarray.find(array2))
+		}
 	}
 }
 
@@ -569,6 +630,7 @@ CTFPlayer.IsInValidState <- function()
 	}
 	return true
 }
+CTFBot.IsInValidState <- CTFPlayer.IsInValidState
 
 ::DisplayStackBuildText <- function(player, text)
 {
@@ -716,6 +778,67 @@ CTFPlayer.IsInValidState <- function()
 	return false
 }
 
+CEntities.GetAllClassnameInRadius <- function(classname, origin, radius)
+{
+	local ents = []
+	local iterate = Entities.FindByClassnameWithin(null, classname, origin, radius)
+	local wd = 0
+	while (iterate && ents.find(iterate) == null && wd < 50)
+	{
+		ents.append(iterate)
+		wd++
+		iterate = Entities.FindByClassnameWithin(iterate, classname, origin, radius)
+	}
+	return ents
+}
+
+::ProcessStringAttrib <- function(string)
+{
+	local split = split(string, " ");
+	foreach (text in split)
+	{
+		if (text == "")
+		{
+			split.remove(split.find(text))
+		}
+		if (startswith(text,"'"))
+		{
+			local recomp = text.slice(1) + " "
+			local found = false
+			local place = split.find(text)
+			split.remove(place)
+			while (place < split.len() && !found)
+			{
+				if (!endswith(split[place],"'"))
+				{
+					recomp = recomp + split[place] + " "
+				}
+				else
+				{
+					recomp = recomp + split[place].slice(0,-1)
+					found = true
+				}
+				split.remove(place)
+			}
+			split.insert(place, recomp)
+		}
+		if (["1", "2", "3", "4", "5", "6", "7", "8", "9"].find(text.slice(0,1)) != null) // Lazy check ik but it'll be correct in 99.9% of senarios.
+		{
+			local index = split.find(text)
+			split.remove(split.find(text))
+			split.insert(index, text.tofloat())
+		}
+	}
+	if (split.len() == 0)
+	{
+		return [""]
+	}
+	else
+	{
+		return split
+	}
+}
+
 ::Bingus <- function()
 {
 	EntFireByHandle(Entities.First(), "CallScriptFunction", "BingusHours", 60, null, null)
@@ -737,7 +860,6 @@ CTFPlayer.IsInValidState <- function()
 	}
 	EntFireByHandle(Entities.First(), "CallScriptFunction", "BingusHours", 60, null, null)
 }
-
 
 // in alphabetical order, makes things readable
 ::WeaponsClassesListAlpha <-

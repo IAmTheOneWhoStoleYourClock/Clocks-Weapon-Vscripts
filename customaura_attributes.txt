@@ -1,0 +1,69 @@
+"custom aura"
+// Adds an aura. Input is range of said aura.
+"custom aura cond"
+// What condition should the aura provide?
+"custom aura player attrib"
+// What attribute should be applied to players in the radius?
+// Input as 'atrribname' value (ex: "custom aura player attrib"	"'max health additive bonus' 100")
+"custom aura weapon attrib"
+// What attribute should be applied to all of the weapons of players in the radius?
+// Input as 'atrribname' value (ex: "custom aura player attrib"	"'damage bonus' 1.2")
+"custom aura heal"
+// How much should the aura heal?
+"custom aura heal time"
+// How often should the aura heal? (Note that the aura is only checked once every 0.5 seconds,
+// so anything below that is ineffective and values not evenly divisible by 0.5 may be unevenly applied.)
+"custom aura affect self"
+// Makes the aura effect the user as well.
+
+        "18006"
+		{
+			"name"					"custom aura"
+			"description_format"	"value_is_additive"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"18007"
+		{
+			"name"					"custom aura cond"
+			"description_format"	"value_is_additive"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"18008"
+		{
+			"name"					"custom aura player attrib"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"18009"
+		{
+			"name"					"custom aura weapon attrib"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"18010"
+		{
+			"name"					"custom aura heal"
+			"description_format"	"value_is_additive"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"18011"
+		{
+			"name"					"custom aura heal time"
+			"description_format"	"value_is_additive"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"18012"
+		{
+			"name"					"custom aura affect self"
+			"description_format"	"value_is_additive"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
