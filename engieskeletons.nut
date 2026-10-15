@@ -188,6 +188,10 @@ Hooks.Add(this, "OnEntitySpawned", function(entity)
 
 function OnEntitySpawnedSkeletons(entity)
 {
+	if (!entity || !entity.IsValid())
+	{
+		return
+	}
 	if (entity.GetClassname() == "tf_zombie")
 	{
 		if (entity.GetOwner() && skeletonyPlayers.find(entity.GetOwner()) != null)
