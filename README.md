@@ -2,6 +2,8 @@ I make a da custom weapons.
 
 You are free to use all assets contained as you wish. All I ask is that you credit me for any original work contained therewithin.
 
+Everything in the folder called "lib" should be pasted into your vscript folder into a folder called lib. Otherwise some plugins will not function.
+
 Any bugs? Let me know! Either make an issue or contact me on discord. (@theclockstealer)
 
 No 4 team asset support as of yet sadly. I am lazy. The plugins should all be 4 team compatable though.
@@ -22,7 +24,6 @@ Current plugins:
 <br>linkeditemID: Emulates the previous "linked item id" attribute
 <br>mediguntargetsenemies: Allows you to target enemies and buildings with your medigun, among other things.
 <br>condextras: Gives extra options for how many and how you want to apply conditions!
-<br>scopedfirerate: Take a wild guess.
 <br>taserstuff: Allows you to make tasers add conditions, properly cap their healing, and also some other random support melees stuff tossed in.
 <br>weapongroup: Assign weapons to groups, and then allow weapons to do things to said groups.
 <br>bannerplus: Greatly expands banners in basically everyway, including allowing other classes to use them!
@@ -32,3 +33,8 @@ Current plugins:
 <br>thatonevshwallclimbwhoopee: Self explanatory
 <br>armorsys: Allows for adding armor (This hyjacks metal, use engiearmor for engineer still!)
 <br>armorwrench: Allows wrenches (or other melees technically ig) to give armor in exchange for metal
+<br>selfdamageplz: Adds an attribute that allows you to damage yourself on hit.
+<br>chargefix: All class and special charges.
+<br>burnheal: heal from afterburn that isn't locked to the harvester.
+<br>customaura: allows the addition of an aura to any class, with addtional options.
+<br>modeloverride: Override the playermodel (does not work on loadout menu)
