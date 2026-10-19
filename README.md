@@ -15,7 +15,7 @@ vscript_io goes directly into the tf2classified folder, it contains the configs 
 Current plugins:
 <br>GF&A: Grenade fixes and additions, pretty self explanatory.
 <br>engiearmor: Allows engineer to use his metal meter like armor, amoungst a couple of other engineer utility stats.
-<br>engieskeletons (UNFINISHED, I'LL GET THIS DONE SOON I PROMISE): Spend metal to create a skeleton, simple as it gets.
+<br>engieskeletons: Spend materials to create a skeleton.
 <br>Might make this a custom building, but I'd need to make a custom buildings frame work for that first.
 <br>BLSC: Allows you to modify the speed of the bison laser. Thrilling, I know.
 <br>scottishfixer: Changes the model of the scottish resistance's stickbomb so it can be team coloured.
