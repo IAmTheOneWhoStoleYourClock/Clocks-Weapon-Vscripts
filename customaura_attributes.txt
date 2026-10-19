@@ -13,8 +13,18 @@
 "custom aura heal time"
 // How often should the aura heal? (Note that the aura is only checked once every 0.5 seconds,
 // so anything below that is ineffective and values not evenly divisible by 0.5 may be unevenly applied.)
+"custom aura ammo"
+// How much of a precentage of ammo should the aura give?
+"custom aura heal time"
+// How often should the aura give ammo? (Note that the aura is only checked once every 0.5 seconds,
+// so anything below that is ineffective and values not evenly divisible by 0.5 may be unevenly applied.)
 "custom aura affect self"
 // Makes the aura effect the user as well.
+"custom aura group"
+// Assigns the aura to a group as a bitflag, groups can only have 1 aura of their type effecting a player at once. The aura that is applied is of the aura user closest to that player.
+"custom aura priority"
+// Auras with a higher priority always are prioritized over auras with lower priorities, regardless of distance. Defaults to 0.
+
 
         "18006"
 		{
@@ -63,6 +73,34 @@
 		"18012"
 		{
 			"name"					"custom aura affect self"
+			"description_format"	"value_is_additive"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"18013"
+		{
+			"name"					"custom aura group"
+			"description_format"	"value_is_additive"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"18014"
+		{
+			"name"					"custom aura priority"
+			"description_format"	"value_is_additive"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"18015"
+		{
+			"name"					"custom aura ammo"
+			"description_format"	"value_is_additive"
+			"hidden"				"1"
+			"effect_type"			"neutral"
+		}
+		"18016"
+		{
+			"name"					"custom aura ammo time"
 			"description_format"	"value_is_additive"
 			"hidden"				"1"
 			"effect_type"			"neutral"

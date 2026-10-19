@@ -49,7 +49,7 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 		{
 			// If it's these three I can be pretty sure about it in 90% of cases.
 			case "ammopack_small":
-				// Actually SHOULD be 40, but that's a really sad amount of armor to restore tbh. I really feel like this should just be 1/4 of the ammo poll anyways but that's different topic.
+				// Actually SHOULD be 40, but that's a really sad amount of armor to restore tbh. I really feel like this should just be 1/4 of the ammo pool anyways but that's a different topic.
 				ammoregained = 50
 				break;
 			case "ammopack_medium":
