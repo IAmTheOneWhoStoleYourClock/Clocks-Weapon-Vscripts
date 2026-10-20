@@ -5,8 +5,8 @@
 	"$additive" "1"
 	
 	"$color2" "[1 1 1]"
-	"$phongtint" "[0.3 0.03 0.03]"
-	"$selfillumtint" "[0.09 0.03 0.03]"
+	"$phongtint" "[0.06 0.06 0.06]"
+	"$selfillumtint" "[0.09 0.09 0.09]"
 
 	"$phong" "1"
 

@@ -164,7 +164,7 @@ function EntitySpawnMedigunDamager(entity)
 		switch (weapon.GetAttribute("special generator", 0))
 		{
 			case 1:
-				entity.SetModelSimple("models/items/shield_bubble/shield_bubble_colourable_v2.mdl")
+				entity.SetModelSimple("models/items/shield_bubble/shield_bubble_colourable_v3.mdl")
 				local colordecimal = 0
 				switch (weapon.GetTeam() -2)
 				{
@@ -181,27 +181,7 @@ function EntitySpawnMedigunDamager(entity)
 						colordecimal = weapon.GetAttribute("generator ylw", 0)
 						break;
 				}
-				entity.SetRenderColor(colordecimal/65536,(colordecimal%65536)/256,colordecimal%256)
-				break;
-			case 2:
-				entity.SetModelSimple("models/items/shield_bubble/shield_bubble_rainbow_v2.mdl")
-				local colordecimal = 0
-				switch (weapon.GetTeam() -2)
-				{
-					case 0:
-						colordecimal = weapon.GetAttribute("generator red", 0)
-						break;
-					case 1:
-						colordecimal = weapon.GetAttribute("generator blu", 0)
-						break;
-					case 2:
-						colordecimal = weapon.GetAttribute("generator grn", 0)
-						break;
-					case 3:
-						colordecimal = weapon.GetAttribute("generator ylw", 0)
-						break;
-				}
-				entity.SetRenderColor(colordecimal/65536,(colordecimal%65536)/256,colordecimal%256)
+				entity.SetRenderColor(floor(colordecimal/65536),floor((colordecimal%65536)/256),colordecimal%256)
 				break;
 		}
 	}

@@ -9,6 +9,12 @@
 	
 	"$receiveflashlight" "0"
 
+    "$blendtintbybasealpha"		"1"
+	"$blendtintcoloroverbase"		"0.1000000"
+	"$colortint_base"		"{ 255 255 255 }"
+	"$colortint_tmp"		"[0 0 0]"
+	"$bumpmapalphaphongmask"		"1"
+
     $treeSway            "1"    // height at which the effect is on fully (in world units)
     $treeSwayHeight            "1"//    // radius at which the effect is on fully (in world units)
     $treeSwayStartHeight        "0"    // portion of height at which the effect starts to fade in (0-1)
