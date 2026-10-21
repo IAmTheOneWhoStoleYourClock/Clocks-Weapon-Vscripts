@@ -14,53 +14,7 @@ local GRENADEDETONATORS = ["tf_projectile_arrow", "tf_projectile_energy_ring", "
 local NONEXPLODEYGRENADES = ["tf2c_projectile_brick","tf_projectile_ball_attributed", "tf_projectile_ball_ornament", "tf_projectile_stun_ball"]
 local PROJECTILES = ["tf_weapon_grenade_mirv_projectile", "tf_weapon_grenade_mirv_bomb", "tf_projectile_pipe", "tf_projectile_pipe_remote", "tf2c_projectile_brick", "tf2c_projectile_grenade_cyclops", "tf_projectile_ball_attributed", "tf_projectile_ball_ornament", "tf_projectile_stun_ball","tf_projectile_arrow", "tf_projectile_energy_ring", "tf_projectile_flare", "tf_projectile_healing_bolt", "tf_projectile_balloffire", "tf_projectile_rocket", "tf_projectile_syringe", "tf2c_projectile_arrow", "tf2c_projectile_coil", "tf2c_projectile_dart", "tf2c_projectile_nail"];
 local DESTRUCTABLEPROJECTILES = ["tf_weapon_grenade_mirv_bomb", "tf_projectile_pipe", "tf_projectile_pipe_remote", "tf2c_projectile_brick", "tf2c_projectile_grenade_cyclops", "tf_projectile_ball_attributed", "tf_projectile_ball_ornament", "tf_projectile_stun_ball","tf_projectile_arrow", "tf_projectile_energy_ring", "tf_projectile_flare", "tf_projectile_healing_bolt", "tf_projectile_balloffire", "tf_projectile_rocket", "tf_projectile_syringe", "tf2c_projectile_arrow", "tf2c_projectile_coil", "tf2c_projectile_dart", "tf2c_projectile_nail"];
-local SNIPERRIFLES = ["tf_weapon_sniperrifle","tf_weapon_sniperrifle_classic", "tf_weapon_sniperrifle_decap"]
-local WEAPONCLASSBASEDAMAGE=
-{
-    tf_weapon_cannon=100
-    tf_weapon_charged_smg=8
-	tf_weapon_cleaver=5
-	tf_weapon_compound_bow=-1//25
-	tf_weapon_crossbow=75
-	tf_weapon_drg_pompson=6
-	tf_weapon_flaregun=30
-	tf_weapon_flaregun_revenge=30
-	tf_weapon_grenade_mirv=180
-	tf_weapon_grenadelauncher=100
-	tf_weapon_handgun_scout_primary=12
-	tf_weapon_handgun_scout_secondary=15
-	tf_weapon_particle_cannon=90
-	tf_weapon_pipebomblauncher=190
-	tf_weapon_pistol=15
-	tf_weapon_pistol_scout=15
-	tf_weapon_raygun=6
-	tf_weapon_revolver=40
-	tf_weapon_rocketlauncher=90
-	tf_weapon_rocketlauncher_airstrike=90
-	tf_weapon_rocketlauncher_directhit=90
-	tf_weapon_rocketlauncher_fireball=90
-	tf_weapon_scattergun=6
-	tf_weapon_sentry_revenge=6
-	tf_weapon_shotgun_building_rescue=40
-	tf_weapon_shotgun_hwg=6
-	tf_weapon_shotgun_primary=6
-	tf_weapon_shotgun_pyro=6
-	tf_weapon_shotgun_soldier=6
-	tf_weapon_smg=8
-	tf_weapon_sniperrifle=50
-	tf_weapon_sniperrifle_classic=50
-	tf_weapon_sniperrifle_decap=50
-	tf_weapon_soda_popper=6
-	tf_weapon_syringegun_medic=10
-	tf2c_weapon_aagun=60
-	tf2c_weapon_brick=65
-	tf2c_weapon_coilgun=-1//25
-	tf2c_weapon_cyclops=100
-	tf2c_weapon_doubleshotgun=4.005 //Why is it so specific?
-	tf2c_weapon_hunting_revolver=40
-	tf2c_weapon_nailgun=12
-	tf2c_weapon_tranq=20
-}
+local EXEMPTPROJECTILES = ["tf_projectile_ball_attributed", "tf_projectile_ball_ornament", "tf_projectile_stun_ball"]
 local HIGHEST_SOLID_FLAG = 1028
 
 IncludeScript("lib/clocksutils.nut")
@@ -293,7 +247,7 @@ function EntitySpawn(entity)
 		entity.SetSize(minvec, maxvec)
 	}
 
-	if (!weapon.GetAttribute("no physics fix", 0))
+	if (!weapon.GetAttribute("no physics fix", 0) && EXEMPTPROJECTILES.find(classname) == null)
 	{
 		FunctionInTime(ReplacePhysics, 0, [entity])
 	}

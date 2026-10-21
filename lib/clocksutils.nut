@@ -86,10 +86,11 @@ Entities.First().SetThinkFunction("TimerTracker", 0)
 			local params = clone REAPEATINGTRACKER[i][3]
 			local removal
 			try {
-				removal = FUNCTIONTRACKER[i][1].acall([this].extend(params))
+				removal = REAPEATINGTRACKER[i][1].acall([this].extend(params))
 			} catch (exception){
-				printl(FUNCTIONTRACKER[i][1].getinfos().name + " - Threw an error! " + exception)
+				printl(REAPEATINGTRACKER[i][1].getinfos().name + " - Threw an error! " + exception)
 			}
+
 			if (removal == false)
 			{
 				REAPEATINGTRACKER.remove(i)
