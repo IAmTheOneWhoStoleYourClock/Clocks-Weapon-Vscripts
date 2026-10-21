@@ -111,11 +111,18 @@ function EntitySpawnMedigunDamager(entity)
 			{
 				local bombscope = entity.GetOrCreatePrivateScriptScope()
 				bombscope.explodinghealgrenade <- true
-				entity.SetThinkFunction("MedibombEnemyChecker", 0.01)
-				bombscope.damage <- damage
-				if (usinguber)
+				if (damage > 0)
 				{
-					bombscope.damage *= weapon.GetAttribute("medigun targets enemies uber damage mult", 1)
+					entity.SetThinkFunction("MedibombEnemyChecker", 0.01)
+					bombscope.damage <- damage
+					if (usinguber)
+					{
+						bombscope.damage *= weapon.GetAttribute("medigun targets enemies uber damage mult", 1)
+					}
+				}
+				else
+				{
+					bombscope.damage <- 0
 				}
 				bombscope.weapon <- owner.GetActiveWeapon()
 				bombscope.owner <- owner

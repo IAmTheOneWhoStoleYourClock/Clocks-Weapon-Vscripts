@@ -4,6 +4,7 @@
 "medigun targets enemies rework"
 // The amount of damage the medigun/rejuvenator does. Needed for it to connect to enemies at all. If this connects to buildings, also allows you to connect to enemy buildings as well.
 // For mediguns, this is dealt once every "tick"
+// Negative values on the rejuvenator allow it to still explode and do explosive stuff, but deal no damage.
 "medigun targets buildings"
 // Allows you to heal buildings. Inputed value is healing per "tick". Medigun only.
 "medigun targets enemies uber damage mult"
