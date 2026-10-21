@@ -53,7 +53,11 @@ Entities.First().SetThinkFunction("TimerTracker", 0)
 			if (FUNCTIONTRACKER[i][1].getinfos().name != null)
 			{
 				local params = clone FUNCTIONTRACKER[i][2]
-				FUNCTIONTRACKER[i][1].acall([this].extend(params))
+				try {
+					FUNCTIONTRACKER[i][1].acall([this].extend(params))
+				} catch (exception){
+					printl(FUNCTIONTRACKER[i][1].getinfos().name + " - Threw an error! " + exception)
+				}
 			}
 			FUNCTIONTRACKER.remove(i)
 		}
@@ -80,7 +84,12 @@ Entities.First().SetThinkFunction("TimerTracker", 0)
 				REAPEATINGTRACKER[i][0] = Time() + 0.01 // Not nessesary, but adds a bit of internal consistency
 			}
 			local params = clone REAPEATINGTRACKER[i][3]
-			local removal = REAPEATINGTRACKER[i][1].acall([this].extend(params))
+			local removal
+			try {
+				removal = FUNCTIONTRACKER[i][1].acall([this].extend(params))
+			} catch (exception){
+				printl(FUNCTIONTRACKER[i][1].getinfos().name + " - Threw an error! " + exception)
+			}
 			if (removal == false)
 			{
 				REAPEATINGTRACKER.remove(i)
@@ -838,6 +847,43 @@ CEntities.GetAllClassnameInRadius <- function(classname, origin, radius)
 		return split
 	}
 }
+
+CTFPlayer.GiveAllAmmoPercent <- function(ammo)
+{
+	local i = 1
+	local playedsound = false
+	// For the three main ammo types
+	while (i < 4)
+	{
+		// Get their current ammo
+		local ammoprev = this.GetAmmoCount(i)
+		// Fill up their ammo to the maximum
+		local k = 4096
+		while (k >= 1)
+		{
+			this.GiveAmmo(k, i, true)
+			k *= 0.5
+		}
+		// Get the maximum
+		local max = this.GetAmmoCount(i)
+		// Give them back their ammo + their maximum ammo times the banner ammount. Also play the sound if we haven't yet.
+		if (ammoprev != max)
+		{
+			this.SetAmmoCount(i, ammoprev)
+			if (!playedsound)
+			{
+				this.GiveAmmo(floor(min(max * ammo, max - ammoprev)), i, false)
+				playedsound = true
+			}
+			else
+			{
+				this.GiveAmmo(floor(min(max * ammo, max - ammoprev)), i, true)
+			}
+		}
+		i += 1
+	}
+}
+CTFBot.GiveAllAmmoPercent <- CTFPlayer.GiveAllAmmoPercent
 
 ::Bingus <- function()
 {
