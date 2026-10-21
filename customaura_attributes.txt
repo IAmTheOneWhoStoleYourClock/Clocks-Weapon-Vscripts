@@ -1,5 +1,5 @@
 "custom aura"
-// Adds an aura. Input is range of said aura.
+// Adds an aura. Input is range in hammer units of said aura.
 "custom aura cond"
 // What condition should the aura provide?
 "custom aura player attrib"
@@ -14,8 +14,8 @@
 // How often should the aura heal? (Note that the aura is only checked once every 0.5 seconds,
 // so anything below that is ineffective and values not evenly divisible by 0.5 may be unevenly applied.)
 "custom aura ammo"
-// How much of a precentage of ammo should the aura give?
-"custom aura heal time"
+// What percentage of ammo should the aura give? (ex. 0.1 = 10% of ammo)
+"custom aura ammo time"
 // How often should the aura give ammo? (Note that the aura is only checked once every 0.5 seconds,
 // so anything below that is ineffective and values not evenly divisible by 0.5 may be unevenly applied.)
 "custom aura affect self"
