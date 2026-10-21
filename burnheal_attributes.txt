@@ -4,12 +4,25 @@
 // On wearer version, why not ig.
 "flat heal on afterburn on active"
 // Now functions on non-scythe weapons.
+"heal on hit vs burning"
+// Heal on hit but it only works vs burning players.
 
        		"3035"
 		{
 			"name"	"heal on afterburn"
 			"attribute_class"	"add_burn_heals"
 			"description_string"	"On Afterburn: Gain up to %s1 health"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_Desc"	"on_hit"
+			"stored_as_integer"	"0"
+		}
+		"3046"
+		{
+			"name"	"heal on hit vs burning"
+			"attribute_class"	"add_onhit_addhealth_vs_burning"
+			"description_string"	"On Hit: Gain up to %s1 health vs burning enemies"
 			"description_format"	"value_is_additive"
 			"hidden"	"0"
 			"effect_type"	"positive"
@@ -26,3 +39,4 @@
 			"armory_Desc"	"on_hit"
 			"stored_as_integer"	"0"
 		}
+		

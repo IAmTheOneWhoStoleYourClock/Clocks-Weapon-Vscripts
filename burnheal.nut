@@ -11,7 +11,7 @@ IncludeScript("lib/clocksutils.nut")
 function OnTakeDamage(self,info)
 {
 	local player = info.GetAttacker()
-	if (!player || !player.IsPlayer() || !self || !self.IsPlayer() || player == self || !(info.GetDamageType() & 8))
+	if (!player || !player.IsPlayer() || !self || !self.IsPlayer() || player == self)
 	{
 		return
 	}
@@ -20,6 +20,23 @@ function OnTakeDamage(self,info)
 	{
 		return
 	}
+
+	if (!(info.GetDamageType() & 8))
+	{
+		local healvsburning = weapon.GetAttribute("heal on hit vs burning", 0)
+		if (healvsburning > 0 && self.InCond(22))
+		{
+			local healed = player.TakeHealth(healvsburning, 0)
+			if (healed > 0)
+			{
+				local userid = player.GetUserID()
+				SendGlobalGameEvent("player_healed", { patient = userid, healer = userid, amount = healed })
+				SendGlobalGameEvent("player_healonhit", { weapon_def_index = GetWeaponDefIndex(weapon), entindex = player.GetEntityIndex(), amount = healed })
+			}
+		}
+		return
+	}
+
 	local weaponclass = weapon.GetClassname()
 	local healonburn = weapon.GetAttribute("heal on afterburn", 0)
 	if (healonburn > 0)
@@ -29,7 +46,7 @@ function OnTakeDamage(self,info)
 		{
 			local userid = player.GetUserID()
 			SendGlobalGameEvent("player_healed", { patient = userid, healer = userid, amount = healed })
-			SendGlobalGameEvent("player_healonhit", { weapon_def_index = weapon.GetWeaponDefIndex(), entindex = player.GetEntityIndex(), amount = healed })
+			SendGlobalGameEvent("player_healonhit", { weapon_def_index = GetWeaponDefIndex(weapon), entindex = player.GetEntityIndex(), amount = healed })
 		}
 	}
 	local healonburnwearer = GetWearableAttribute(player, "heal on afterburn wearer", 0)
@@ -40,7 +57,7 @@ function OnTakeDamage(self,info)
 		{
 			local userid = player.GetUserID()
 			SendGlobalGameEvent("player_healed", { patient = userid, healer = userid, amount = healed })
-			SendGlobalGameEvent("player_healonhit", { weapon_def_index = weapon.GetWeaponDefIndex(), entindex = player.GetEntityIndex(), amount = healed })
+			SendGlobalGameEvent("player_healonhit", { weapon_def_index = GetWeaponDefIndex(weapon), entindex = player.GetEntityIndex(), amount = healed })
 		}
 	}
 	local activeweapon = player.GetActiveWeapon()
@@ -54,7 +71,7 @@ function OnTakeDamage(self,info)
 			{
 				local userid = player.GetUserID()
 				SendGlobalGameEvent("player_healed", { patient = userid, healer = userid, amount = healed })
-				SendGlobalGameEvent("player_healonhit", { weapon_def_index = activeweapon.GetWeaponDefIndex(), entindex = player.GetEntityIndex(), amount = healed })
+				SendGlobalGameEvent("player_healonhit", { weapon_def_index = GetWeaponDefIndex(activeweapon), entindex = player.GetEntityIndex(), amount = healed })
 			}
 		}
 	}

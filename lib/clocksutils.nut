@@ -886,6 +886,21 @@ CTFPlayer.GiveAllAmmoPercent <- function(ammo)
 }
 CTFBot.GiveAllAmmoPercent <- CTFPlayer.GiveAllAmmoPercent
 
+::GetWeaponDefIndex <- function(weapon)
+{
+	local classname = weapon.GetClassname()
+	local weapondef = WeaponsClassesListCode.find(classname)
+	if (classname == "tf_weapon_katana")
+	{
+		weapondef = 64
+	}
+	else if (weapondef == null)
+	{
+		weapondef = 65535
+	}
+	return weapondef
+}
+
 ::Bingus <- function()
 {
 	EntFireByHandle(Entities.First(), "CallScriptFunction", "BingusHours", 60, null, null)
