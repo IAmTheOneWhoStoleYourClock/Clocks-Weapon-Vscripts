@@ -392,6 +392,10 @@ function ExplodeNowRocketDetonate(self)
 
 function ReplacePhysics(self)
 {
+	if (!self || !self.IsValid())
+	{
+		return
+	}
 	local oldphysics = self.GetPhysicsObject()
 
 	if (oldphysics.GetName() == self.GetName())
