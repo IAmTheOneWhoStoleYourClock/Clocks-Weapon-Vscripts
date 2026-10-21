@@ -91,8 +91,6 @@ function EntitySpawn(entity)
 		return
 	}
 
-	printl("ran")
-
 	if (NONEXPLODEYGRENADES.find(classname) != null)
 	{
 		weapon.AddAttribute("brick explodes", 0, 0) // Just in case people can't read
