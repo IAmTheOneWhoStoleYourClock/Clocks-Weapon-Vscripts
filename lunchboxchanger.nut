@@ -458,7 +458,7 @@ function CanBeHealedByHealthKits(player)
 		overheal += GetWearableAttribute(owner, "sandvich can overheal friend", 0)
 	}
 
-	if (GetWearableAttribute(player, "health from packs decreased", 1) == 0 || activeweapon.GetAttribute("health from packs decreased on active", 1) == 0)
+	if (GetWearableAttribute(player, "health from packs decreased", 1) == 0 || (activeweapon.GetAttribute("health from packs decreased on active", 1) == 0))
 	{
 		return false
 	}

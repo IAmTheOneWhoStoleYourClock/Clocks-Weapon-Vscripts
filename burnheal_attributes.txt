@@ -2,6 +2,8 @@
 // Amount to heal when dealing afterburn damage. Note that only afterburn dealt by THIS WEAPON will heal.
 "heal on afterburn wearer"
 // On wearer version, why not ig.
+"flat heal on afterburn on active"
+// Now functions on non-scythe weapons.
 
        		"3035"
 		{
