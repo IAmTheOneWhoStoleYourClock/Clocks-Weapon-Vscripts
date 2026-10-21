@@ -137,6 +137,8 @@ function EntitySpawn(entity)
 		return
 	}
 
+	printl("ran")
+
 	if (NONEXPLODEYGRENADES.find(classname) != null)
 	{
 		weapon.AddAttribute("brick explodes", 0, 0) // Just in case people can't read
@@ -293,7 +295,7 @@ function EntitySpawn(entity)
 
 	if (!weapon.GetAttribute("no physics fix", 0))
 	{
-		EntFireByHandle(entity, "CallScriptFunction", "ReplacePhysics", 0, null, null) // Wait a frame or it'll get overriden.
+		FunctionInTime(ReplacePhysics, 0, [entity])
 	}
 }
 
@@ -388,12 +390,9 @@ function ExplodeNowRocketDetonate(self)
 	self.Destroy()
 }
 
-function ReplacePhysics()
+function ReplacePhysics(self)
 {
-	/*
 	local oldphysics = self.GetPhysicsObject()
-
-	self.AddContext("CurrentDamageForFix", self.GetDamage().tostring(), 0) // To fix grenade damage, feel free to remove if that's now fixed.
 
 	if (oldphysics.GetName() == self.GetName())
 		return; //We have nothing more to do here
@@ -404,12 +403,12 @@ function ReplacePhysics()
 	local oldavelocity = self.GetPhysAngularVelocity()
 	local solid = self.GetSolid()
 	local solidflags = GetSolidFlags(self)
-	self.PrecacheModel(oldphysics.GetName())
+	self.PrecacheModel(self.GetName())
+	self.PhysicsDestroyObject()
 	self.PhysicsInitNormal(solid,solidflags,true)
 	local newphysics = self.GetPhysicsObject()
 	SetPhysVelocity(newphysics, oldvelocity, oldavelocity)
 	self.SetAbsAngles(angle)
-	*/
 	
 	if (self.GetContext("NoGravity") == "thumbsup")
 	{

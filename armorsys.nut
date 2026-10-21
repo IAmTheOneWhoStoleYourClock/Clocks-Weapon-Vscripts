@@ -22,12 +22,7 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 		if (armor > 0)
 		{
 			NetProps.SetPropInt(player, "m_ArmorValue", armor)
-			player.SetContextThink("NOMETAL", NOMETAL, 0.1)
 			armoredplayers.append(player)
-			if (player.GetPlayerClass() == 9) // Engineer get grenades 1 overriden instead... because he regenerates that from ammo for some reason.
-			{
-				player.AddCustomAttribute("maxammo grenades1 increased", 200, 0)
-			}
 		}
 		else if (player in armoredplayers)
 		{
@@ -49,7 +44,7 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 		{
 			// If it's these three I can be pretty sure about it in 90% of cases.
 			case "ammopack_small":
-				// Actually SHOULD be 40, but that's a really sad amount of armor to restore tbh. I really feel like this should just be 1/4 of the ammo pool anyways but that's a different topic.
+				// Actually SHOULD be 40, but that's a really sad amount of armor to restore tbh. I really feel like this should just be 1/4 of the ammo poll anyways but that's different topic.
 				ammoregained = 50
 				break;
 			case "ammopack_medium":
@@ -118,7 +113,11 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 			}
 			else
 			{
-				armoredplayers.remove(armoredplayers.find(player))
+				local index = armoredplayers.find(player)
+				if (index)
+				{
+					armoredplayers.remove(index)
+				}
 			}
 		}
 	}
