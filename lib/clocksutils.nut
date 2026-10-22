@@ -167,6 +167,16 @@ function FrameCheck()
 
 		if (!weapon)
 		{
+			local newweap
+			local j = 0
+			while (!(newweap = NetProps.GetPropEntityArray(player, "m_hMyWeapons", j)))
+			{
+				j += 1
+			}
+			if (newweap)
+			{
+				player.Weapon_Switch(newweap)
+			}
 			continue
 		}
 		// when melee smacks, m_iNextMeleeCrit is 0
@@ -327,7 +337,7 @@ UniqueRepeatingFunctionInTime(FrameCheck, 0)
 	}
 }
 
-::RemoveWearerAttributeString <- function(player, attribname)
+::RemoveWearerAttributeString <- function(player, attribname) // OBSOLETE
 {
 	for (local i = 0; i < MAXWEAPONS; i++)
 	{
@@ -395,10 +405,10 @@ UniqueRepeatingFunctionInTime(FrameCheck, 0)
 			continue
 		if (held_weapon.GetSlot() == slot)
 		{
+			local newweap
 			NetProps.SetPropEntityArray(player, "m_hMyWeapons", null, i)
 			if (player.GetActiveWeapon() == held_weapon)
 			{
-				local newweap
 				local j = 0
 				while (!(newweap = NetProps.GetPropEntityArray(player, "m_hMyWeapons", j)))
 				{
