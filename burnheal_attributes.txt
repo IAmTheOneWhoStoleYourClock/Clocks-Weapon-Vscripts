@@ -6,6 +6,9 @@
 // Now functions on non-scythe weapons.
 "heal on hit vs burning"
 // Heal on hit but it only works vs burning players.
+"burn dmg increased on wearer"
+"burn dmg increased on wearer additive"
+// Increase burn damage by this much on wearer.
 
        		"3035"
 		{
@@ -37,6 +40,27 @@
 			"hidden"	"0"
 			"effect_type"	"positive"
 			"armory_Desc"	"on_hit"
+			"stored_as_integer"	"0"
+		}
+		"3120"
+		{
+			"name"	"burn dmg increased on wearer"
+			"attribute_class"	"mult_burndmg_wearer"
+			"description_string"	"Afterburn deals %s1% more damage from wearer"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"8000"
+		{
+			"name"	"burn dmg increased on wearer additive"
+			"attribute_class"	"mult_burndmg_wearer"
+			"description_string"	"Afterburn deals +%s1 more damage from wearer"
+			"description_format"	"value_is_additive"
+			"precision"				"1"
+			"hidden"	"0"
+			"effect_type"	"positive"
 			"stored_as_integer"	"0"
 		}
 		
