@@ -1,0 +1,58 @@
+"anchor earthquake wearer"
+// "anchor earthquake" but it auto applies to all of your weapons
+"anchor earthquake mins wearer"
+// "anchor earthquake mins" but it auto applies to all of your weapons
+"anchor stomp mult"
+// anchor damage is multplied by this amount when landing directly on an opponent
+"anchor stomp mult weapon"
+// anchor damage is multplied by this amount when landing directly on an opponent while this weapon is active
+
+		"17835"
+		{
+			"name"					"anchor earthquake wearer"
+			"description_string"	"Creates an earthquake upon taking fall damage on wearer"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"			"positive"
+		}
+		"17836"
+		{
+			"name"					"anchor stomp mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"neutral"
+		}
+		"17837"
+		{
+			"name"					"anchor stomp mult weapon"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"neutral"
+		}
+		"17838"
+		{
+			"name"					"anchor earthquake VSCRIPT"
+			"attribute_class"		"earthquake_attack_active"
+			"description_string"	"#Attrib_AnchorEarthquake" // "Creates an earthquake upon taking fall damage while active"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17839"
+		{
+			"name"					"anchor earthquake mins wearer"
+			"description_string"	"Creates an earthquake upon taking fall damage on wearer"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"			"positive"
+		}
+		"17840"
+		{
+			"name"	"earthquake attack mins VSCRIPT"
+			"attribute_class"	"earthquake_attack_mins_anchor"
+			"attribute_type"	"string"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
