@@ -10,9 +10,9 @@
 "medigun targets enemies uber damage mult"
 // A damage multiplier while using uber. Only applies to the medigun/rejuv itself.
 "medigun targets buildings uber mult"
-// Healing buildings is this multiplier more effective while using uber
+// Healing buildings is this multiplier more (or less) effective while using uber
 "medigun targets fire rate"
-// The amount of time a "tick" takes. Since the think function for this runs once every 0.1 seconds, only effective in multiples of 0.1.
+// The amount of time a "tick" takes. Since the think function for this runs once every 0.05 seconds, only effective in multiples of 0.05.
 "medigun targets lockon delay"
 // The amount of time the first "tick" takes. Also applies to friendly buildings, because I am lazy. (Let me know if you want that changed and I can fix it.)
 "medigun targets enemies cond"

@@ -137,6 +137,11 @@ function EntitySpawnMedigunDamager(entity)
 			{
 				entity.SetDamage(entity.GetDamage()*healmult)
 			}
+			local fusemult = owner.GetActiveWeapon().GetAttribute("fuse bonus", 1)
+			if (fusemult != 1)
+			{
+				NetProps.SetPropFloat(entity, "m_flDetonateTime",((NetProps.GetPropFloat(entity, "m_flDetonateTime") - Time()) * fusemult)+Time())
+			}
 		}
 	}
 	else if (entity.GetClassname() == "tf2c_projectile_ubergenerator")
@@ -255,7 +260,7 @@ function MedigunEnemyChecker()
 	{
 		medigunscope.target = null
 		medigunscope.targetingenemy = false
-		return 0.1
+		return 0.05
 	}
 
 	if (medigunscope.isusinguber && medigunscope.healmultduringuber != 1)
@@ -354,7 +359,8 @@ function MedigunEnemyChecker()
 			local shoootpos = owner.ShootPosition()
 			if ((TraceLine(shoootpos, targetspacecenter, null) != 1 && TraceLine(shoootpos, target.EyePosition(), null) != 1) || 
 			(medigunscope.fovcap < acos(AngleVectors(owner.EyeAngles()).Dot(targetspacecenter-owner.EyePosition())/((targetspacecenter-owner.EyePosition()).Length() * (AngleVectors(owner.EyeAngles()).Length())))
-			&& medigunscope.fovcap < acos(AngleVectors(owner.EyeAngles()).Dot(target.EyePosition()-owner.EyePosition())/((target.EyePosition()-owner.EyePosition()).Length() * (AngleVectors(owner.EyeAngles()).Length())))))
+			&& medigunscope.fovcap < acos(AngleVectors(owner.EyeAngles()).Dot(target.EyePosition()-owner.EyePosition())/((target.EyePosition()-owner.EyePosition()).Length() * (AngleVectors(owner.EyeAngles()).Length())))
+			&& (targetspacecenter-owner.EyePosition()).Length() > 128))
 			{
 				// If we don't have LOS, check if we haven't had LOS for over the amount of time we are allowed.
 				if (Time() - medigunscope.LOStime > LOSDISCONNECTTIME)
@@ -419,8 +425,9 @@ function MedigunEnemyChecker()
 	if (medigunscope.target && IsBuilding(medigunscope.target) && !medigunscope.isusinguber) // For enemy buildings, just use the building rate.
 	{
 		self.AddAttribute("ubercharge rate penalty VSCRIPT", 0, 0)
-		NetProps.SetPropFloat(self, "m_flChargeLevel", min(medigunscope.uber + (medigunscope.uberratebuildings)/381,1)) // 381 is a magic number
-		medigunscope.uber += (medigunscope.uberratebuildings)/381
+		printl(medigunscope.uberratebuildings)
+		NetProps.SetPropFloat(self, "m_flChargeLevel", min(medigunscope.uber + (medigunscope.uberratebuildings)/762,1)) // 381 is a magic number
+		medigunscope.uber += (medigunscope.uberratebuildings)/762
 	}
 	else if (medigunscope.targetingenemy && !medigunscope.isusinguber)
 	{
@@ -546,15 +553,15 @@ function MedigunEnemyChecker()
 		medigunscope.lastattack = Time()
 	}
 	// Actually do the attack
-	else if (medigunscope.targetingenemy && (Time() - medigunscope.lastattack >= medigunscope.ROF))
+	else if (medigunscope.targetingenemy && (Time() - medigunscope.lastattack >= medigunscope.ROF) && medigunscope.damage > 0)
 	{
 		local target = medigunscope.target
 		NetProps.SetPropEntity(self, "m_hHealingTarget", target)
-		local damagetype = 0
+		local damagetype = Constants.FDmgType.DMG_PREVENT_PHYSICS_FORCE
 		local customtype = 0
 		if (owner.IsCritBoosted())
 		{
-			damagetype = Constants.FDmgType.DMG_ACID // Crit damage
+			damagetype += Constants.FDmgType.DMG_ACID // Crit damage
 			customtype = 47 // Gib disintegrate. Also very helpfully makes this do minicrits, even though it missed the memo and it already should do crits.
 		}
 		// Did the TF2C team seriously not add their conditions into the constants. BRUH.
@@ -619,7 +626,7 @@ function MedigunEnemyChecker()
 	// So that medic doesn't stop "healing" the enemy if the ROF check fails
 	else if (medigunscope.targetingenemy)
 	{
-		NetProps.SetPropEntity(self, "m_hHealingTarget", target)
+		NetProps.SetPropEntity(self, "m_hHealingTarget", target) // TO DO: why did I do this?
 	}
 	else if (medigunscope.target && medigunscope.target.IsPlayer() && medigunscope.ammogive && Time() - medigunscope.lastattack >= medigunscope.ROF && !medigunscope.target.GetActiveWeapon().GetAttribute("no metal from dispensers while active", 0) && !medigunscope.target.GetActiveWeapon().GetAttribute("no metal from dispensers hidden VSCRIPT", 0))
 	{
@@ -658,7 +665,7 @@ function MedigunEnemyChecker()
 		medigunscope.lastattack = Time()
 	}
 
-	return 0.1
+	return 0.05
 }
 
 function RestrictedConds(entity, comp)

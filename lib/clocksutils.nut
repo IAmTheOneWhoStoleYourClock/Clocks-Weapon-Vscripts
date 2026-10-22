@@ -169,7 +169,7 @@ function FrameCheck()
 		{
 			local newweap
 			local j = 0
-			while (!(newweap = NetProps.GetPropEntityArray(player, "m_hMyWeapons", j)))
+			while (!(newweap = NetProps.GetPropEntityArray(player, "m_hMyWeapons", j)) && j < NetProps.GetPropArraySize(player, "m_hMyWeapons"))
 			{
 				j += 1
 			}
