@@ -187,6 +187,11 @@ function EntitySpawn(entity)
 	local noexplode = weapon.GetAttribute("grenade not explode on impact true", 0)
 	if (noexplode != 0){
 		NetProps.SetPropInt(entity, "m_bTouched", 1)
+		local reenable = weapon.GetAttribute("grenade reenable time", 0)
+		if (reenable)
+		{
+			FunctionInTime(ReenableGrenade, reenable, [entity])
+		}
 	}
 
 	local defensive = weapon.GetAttribute("defensive bomb", 0)
@@ -249,6 +254,11 @@ function EntitySpawn(entity)
 	{
 		FunctionInTime(ReplacePhysics, 0, [entity])
 	}
+}
+
+function ReenableGrenade(entity)
+{
+	NetProps.SetPropInt(entity, "m_bTouched", 0)
 }
 
 //Cursed function because the one that's supposed to do this does not exist

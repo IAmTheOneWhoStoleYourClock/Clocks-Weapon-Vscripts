@@ -1,0 +1,11 @@
+"MOOF"
+// weapon is sent forwards by this amount.
+
+        "7845"
+		{
+			"name"	"MOOF"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
