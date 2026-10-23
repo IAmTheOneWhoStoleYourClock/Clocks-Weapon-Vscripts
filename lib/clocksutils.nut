@@ -520,7 +520,7 @@ function RemoveTimedWearerAttributeString(array)
 	local playerarray = ATTRIBSTOBECLEARED[player.GetEntityIndex()]
 	foreach (waiting in playerarray)
 	{
-		if (waiting[0] == attribname && waiting[3] == weapon)
+		if (waiting[0] == attribname && waiting[2] == weapon)
 		{
 			if (waiting[1] >= time + Time())
 			{
