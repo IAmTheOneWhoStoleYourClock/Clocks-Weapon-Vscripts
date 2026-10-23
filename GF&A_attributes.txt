@@ -52,6 +52,8 @@
 // Grenades pretend as if they have already touched the ground.
 "grenade reenable time"
 // For the above, the amount in seconds before it stops pretending it has hit something
+"grenade lift"
+// Adds (or subtracts) this much from the grenades z velocity
 
 		"17856"
 		{
@@ -193,4 +195,12 @@
 			"description_string"	"Destroys all enemy projectiles in a radius on detonation"
 			"description_format"	"value_is_additive"
 			"effect_type"			"positive"
+		}
+		"7846"
+		{
+			"name"	"grenade lift"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
 		}
