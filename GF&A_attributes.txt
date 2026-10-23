@@ -30,7 +30,7 @@
 "proj detonate with rocket radius fix"
 // Fix for "proj detonate with rocket radius"
 "proj detonate with rocket radius dmg"
-// Increases the damage the proejctile deal by this much when the above triggers
+// Increases the damage the projectile deal by this much when the above triggers
 "override grenade type"
 // Hard to explain. Basically makes the grenade pretend it's a different type of grenade? 1 for base grenade, 2 for sticky, 3 for "training stickies", 4 for cannonballs.
 "defensive bomb"
