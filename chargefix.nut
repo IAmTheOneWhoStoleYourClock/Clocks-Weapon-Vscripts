@@ -18,7 +18,7 @@ if (!("chargingPlayers" in getroottable())) {
 	chargeEnd <- array(PLAYERCAP, 0)
 }
 
-Convars.SetValue("tf_max_charge_speed", 10000)
+//Convars.SetValue("tf_max_charge_speed", 10000)
 
 PrecacheSound("weapons/demo_charge_windup1.wav")
 PrecacheSound("weapons/demo_charge_windup2.wav")
@@ -56,6 +56,10 @@ function ChargePulse()
 			continue
 		}
 		local playerindex = player.GetEntityIndex()
+		if (player.InCond(17))
+		{
+			isCharging[playerindex] = true
+		}
 		if (isCharging[playerindex])
 		{	
 			local chargecond = GetWearableAttribute(player,"charge cond", 0)
@@ -87,7 +91,7 @@ function ChargePulse()
 				}
 				else
 				{
-					player.AddCustomAttribute("major move speed bonus", 0.075 * player.GetChargePower(), 0.1)
+					player.AddCustomAttribute("major move speed bonus", player.GetChargePower(), 0.1) //player.AddCustomAttribute("major move speed bonus", 0.075 * player.GetChargePower(), 0.1)
 				}
 				if (currCharge[playerindex] < 33 && isMelee && !GetWearableAttribute(player, "lose demo charge on damage when charging", 0))
 				{
@@ -143,7 +147,7 @@ function ChargePulse()
 		{
 			currCharge[playerindex] = clamp(currCharge[playerindex] + (0.125 * player.GetChargeRechargeTime()),0,100)
 			local chargecost = 100 * GetWearableAttribute(player, "charge cost", 1)
-			if (currCharge[playerindex] >= chargecost && player.GetButtons() & 2048 && player.IsInValidState() && !player.GetGrapplingHookTarget())
+			if (currCharge[playerindex] >= chargecost && player.GetButtons() & 2048 && player.IsInValidState() && !player.GetGrapplingHookTarget() && player.GetContext("charge type") != "display")
 			{
 				currCharge[playerindex] = ExecuteCharge(player, player.GetContext("charge type"), currCharge[playerindex], chargecost)
 			}
@@ -176,6 +180,10 @@ function ExecuteCharge(player, type, charge, cost)
 		if (player.GetActiveWeapon().GetAttributeString("has charge", "") == type)
 		{
 			type = type.slice(0,-7)
+		}
+		else
+		{
+			return charge
 		}
 	}
 	local chargetime = player.GetChargeTime()
@@ -361,17 +369,16 @@ function StartCharge(player, cost)
 	}
 	else
 	{
-		player.AddCustomAttribute("major move speed bonus", 0.075 * player.GetChargePower(), 0.1)
-		FunctionInTime(StartChargeDemo, 0, [player])
+		player.AddCond(17) //FunctionInTime(StartChargeDemo, 0, [player])
 	}
 	isCharging[playerindex] = true
 	chargeEnd[playerindex] = currCharge[playerindex] - cost
 }
 
-function StartChargeDemo(player)
-{
-	player.AddCond(17)
-}
+//function StartChargeDemo(player)
+//{
+//	player.AddCond(17)
+//}
 
 function GravityDashHold(player)
 {

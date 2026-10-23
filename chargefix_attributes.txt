@@ -20,6 +20,7 @@
 // "jetdash_hold" - Jetdash, but it ends when you let go of secondary attack.
 // "skywards" - Flings you straight up into the air
 // "skywards_charge" - Skywards and charge.
+// "display" - No effect, just for if you want the charge meter active.
 // Add "_active" to the end to make it only occour while the weapon is active.
 // Do not mix multiple weapons that have this together, I don't have that accounted for.
 // Works on all weapons except shields.
@@ -34,6 +35,7 @@
 "charge speed increased"
 "charge speed decreased"
 // Increases or deacreases the speed of a charge by this much (also works on leaps and alt-charges)
+// For regular charges this caps at demo's normal charge speed (750 HU/s), at least for the time being.
 "charge cond"
 // Apply this condition while charging. (no effect on leaps)
 
