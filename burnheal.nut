@@ -60,6 +60,11 @@ function OnTakeDamage(self,info)
 			SendGlobalGameEvent("player_healonhit", { weapon_def_index = GetWeaponDefIndex(weapon), entindex = player.GetEntityIndex(), amount = healed })
 		}
 	}
+	local burndmgwearer = (info.GetDamage() + GetWearableAttribute(player, "burn dmg increased on wearer additive", 0)) * GetWearableAttribute(player, "burn dmg increased on wearer", 1)
+	if (burndmgwearer != info.GetDamage())
+	{
+		info.SetDamage(burndmgwearer)
+	}
 	local activeweapon = player.GetActiveWeapon()
 	if (activeweapon)
 	{
