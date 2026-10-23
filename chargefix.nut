@@ -111,7 +111,6 @@ function ChargePulse()
 					// Takes 2 points, min/max hull bounds, an ent to ignore, a trace mask, and a collision group to trace to a point using a hull. Returns a handle which can access all trace info.
 					if (trace.Entity())
 					{
-						printl(trace.Contents())
 						if (trace.Entity().IsPlayer())
 						{
 							local chargedmg = RemapValClamped(currCharge[playerindex], 90, 40, 15, 50) * GetWearableAttribute(player,"charge impact damage increased", 1) * GetWearableAttribute(player,"charge impact damage decreased", 1) * (1 + min(NetProps.GetPropInt(player, "m_Shared.m_iDecapitations") * 0.1, 0.5))
