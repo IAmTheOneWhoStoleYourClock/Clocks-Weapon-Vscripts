@@ -1,0 +1,136 @@
+"banner rate"
+// Modifies how quickly the banner fills
+"banner speed"
+// Modifies how quickly the player moves while the banner is active
+"banner effect"
+// Condition ONLY the banner owner gets while the effect is active
+"banner melee buff user"
+// Buffs the user's melees while the effect is active. (Specifically increases damage by 1.538 and swing speed by 0.8)
+// Yes I know, very rigid 1 use case thing, this one is an old attrib.
+"banner ammo"
+// Banners give this percentage in ammo every application (so once every second)
+"banner heads"
+"banner heads cap"
+// Increases the firing and reload speed of all weapons on the player up to the inputted value of banner heads in banner heads cap.
+// Note that the way its coded the value is multiplied by an equal amount every time to reach the value set in banner heads, meaing 5 heads to 25% is not 5% (it's closer to 7)
+// Expect this to change at some point. Also, Melees are effect 25% more by the swing speed bonuses. Why? Felt like it.
+"no banner hold"
+// You cannot hold the banner, it auto releases as soon as it is done.
+"banner defense"
+// players affected by this banner take this percentage less damage.
+"banner explodes"
+// You explode when you finish blowing your banner. Also releases a massive explosion particle (the same one from "use large smoke explosion").
+// Explosion does 300 damage by default, which can be adjusted with "blast splash damage decreased"
+// Otherwise functions as a "normal" grenade and be modified as such.
+
+        "17670"
+		{
+			"name"	"banner rate"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17671"
+		{
+			"name"	"banner speed"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17672"
+		{
+			"name"	"banner effect"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+        "17675"
+		{
+			"name"	"banner ammo"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+        "17677"
+		{
+			"name"	"banner heads"
+			"description_string"	"Using the banner grants Loot
+Loot increases attack and reload speed
+Loot effects melees 25% more"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17678"
+		{
+			"name"	"banner heads cap"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+        "17679"
+		{
+			"name"	"no banner hold"
+			"description_string"	"cannot hold banner"
+			"description_format"	"value_is_additive"
+			"hidden"		"1"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+        "17938"
+		{
+			"name"					"banner defense"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"positive"
+		}
+        "17976"
+		{
+			"name"					"banner melee buff user"
+			"description_format"	"value_is_additive"
+			"effect_type"			"positive"
+		}
+		"17977"
+		{
+			"name"					"melee attack rate VSCRIPT"
+			"attribute_class"		"mult_postfiredelay"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"neutral"
+			"stored_as_integer"		"0"
+		}
+		"17978"
+		{
+			"name"					"multdmg banner VSCRIPT"
+			"attribute_class"		"mult_dmg"
+			"description_format"	"value_is_percentage"
+			"hidden"				"1"
+			"effect_type"			"positive"
+			"is_user_generated"		"1"
+		}
+		"17979"
+		{
+			"name"					"halloween fire rate VSCRIPT"
+			"attribute_class"		"hwn_mult_postfiredelay"
+			"description_format"	"value_is_inverted_percentage"
+			"hidden"				"1"
+			"effect_type"			"positive"
+			"stored_as_integer"		"0"
+		}
+		"17980"
+		{
+			"name"					"halloween reload time VSCRIPT"
+			"attribute_class"		"hwn_mult_reload_time"
+			"description_format"	"value_is_percentage"
+			"effect_type"			"neutral"
+		}
+		"17981"
+		{
+			"name"					"banner explodes"
+			"description_format"	"value_is_additive"
+			"effect_type"			"neutral"
+		}

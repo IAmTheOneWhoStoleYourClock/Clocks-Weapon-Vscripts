@@ -16,8 +16,16 @@ PrecacheScriptSound(")player/pl_scout_dodge_can_drink.wav")
 
 BannerBoomOffset <- Vector(0, 0, 30)
 
-::BuffBannerEventTable <- {
+::BannerPlusEventTable <- {
 	// Event that runs whenever a banner activiates. Conveinent!
+	function OnGameEvent_weapon_equipped(params)
+	{
+		local weapon = EntIndexToHScript(params.entindex)
+		if (weapon.GetClassname() == "tf_weapon_banner")
+		{
+			weapon.ValidateScriptScope()
+		}
+	}
 	function OnGameEvent_deploy_buff_banner(params)
 	{
 		local player = GetPlayerFromUserID(params.buff_owner)
@@ -37,7 +45,7 @@ BannerBoomOffset <- Vector(0, 0, 30)
 		}
 		// Why did I make it "display duck leaderboard"? Whatever, i'll just keep it like that.
 		// Anyways, for whatever reason, condition 72 doesn't buff melees at all? This fixes that.
-		local meleebuff = weapon.GetAttribute("display duck leaderboard", 0)
+		local meleebuff = weapon.GetAttribute("banner melee buff user", 0)
 		if (meleebuff != 0)
 		{
 			// TO DO: Make this give a particle effect to the player!
@@ -52,46 +60,45 @@ BannerBoomOffset <- Vector(0, 0, 30)
 				if (MeleeWeapons.find(classname) != null)
 				{
 					// Be more stringent on time here since a random melee crit at the end with the effect will nearly ENTIRELY fill up the meter.
-					held_weapon.AddAttribute("CARD: damage bonus", 1.538, bannertime)
-					held_weapon.AddAttribute("melee attack rate bonus", 0.8, bannertime)
-					EntFireByHandle(held_weapon, "CallScriptFunction", "RemoveMeleeRageBuff", bannertime, null, null)
+					held_weapon.AddAttribute("multdmg banner VSCRIPT", 1.538, bannertime)
+					held_weapon.AddAttribute("melee attack rate VSCRIPT", 0.8, bannertime)
+					FunctionInTime(RemoveMeleeRageBuff, bannertime, [player])
 				}
 			}
 		}
 		local maxheads = weapon.GetAttribute("banner heads", 0)
-		local loot = scriptscope.loot
 		local headcount = weapon.GetAttribute("banner heads cap", 0)
-		if (maxheads != 0 && loot < headcount)
+		if (maxheads != 0 && scriptscope.loot < headcount)
 		{
 			scriptscope.loot += 1
 			local boostperloot = pow(maxheads,1/headcount)
-			DisplayStackBuildText(player, "Loot: " + loot.tostring())
-			player.AddCustomAttribute("halloween fire rate bonus", pow(boostperloot, loot), 0)
-			player.AddCustomAttribute("halloween reload time decreased", pow(boostperloot, loot), 0)
+			DisplayStackBuildText(player, "Loot: " + scriptscope.loot.tostring())
+			player.AddCustomAttribute("halloween fire rate VSCRIPT", pow(boostperloot, scriptscope.loot), 0)
+			player.AddCustomAttribute("halloween reload time VSCRIPT", pow(boostperloot, scriptscope.loot), 0)
 			for (local i = 0; i < MAXWEAPONS; i++)
 			{
 				local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
 				if (held_weapon == null)
 					continue
 				local classname = held_weapon.GetClassname()
-				if (classname == "tf_weapon_shovel" || classname == "tf_weapon_sword")
+				if (MeleeWeapons.find(classname) != null)
 				{
-					held_weapon.AddAttribute("melee attack rate bonus", pow(pow(maxheads/1.25,1/headcount),loot), 0)
-					held_weapon.AddAttribute("mult melee smack delay VSCRIPT", pow(boostperloot,loot), 0) // Originally this was boosted the same amount as the atack rate was boosted, but that felt weird.
+					held_weapon.AddAttribute("melee attack rate VSCRIPT", pow(pow(maxheads/1.25,1/headcount),scriptscope.loot), 0)
+					held_weapon.AddAttribute("mult melee smack delay VSCRIPT", pow(boostperloot,scriptscope.loot), 0) // Originally this was boosted the same amount as the atack rate was boosted, but that felt weird.
 				}
 			}
 		}
-		local explodedummy = weapon.GetAttribute("brick explodes", 0)
+		local explodedummy = weapon.GetAttribute("banner explodes", 0)
 		if (explodedummy != 0)
 		{
-			EntFireByHandle(weapon, "CallScriptFunction", "ExplodeThink2", 0, player, null) // AUGH WHY WILL IT JUST NOT DO THE EFFECT!!!! AUGHHHHHHHHHHHHHHHHHHHHH
+			FunctionInTime(ExplodeNowBanner, 0, [weapon, player]) // ...Wait why does this need to be timed again?
 		}
 
-		if (player.GetPlayerClass() != Constants.ETFClass.TF_CLASS_SOLDIER)
-		{
-			// TO DO: Is there a better way to do this?
-			DisplayTimer(player, bannertime)
-		}
+		//if (player.GetPlayerClass() != Constants.ETFClass.TF_CLASS_SOLDIER)
+		//{
+		//	// TO DO: Is there a better way to do this?
+		//	DisplayTimer(player, bannertime)
+		//}
 	}
 	// Event that runs whenever a player is hurt. Hooking into this to alter rage.
 	function OnGameEvent_player_hurt(params)
@@ -105,14 +112,15 @@ BannerBoomOffset <- Vector(0, 0, 30)
 		// Grab the banner. If we don't have a banner, or we don't need to adjust the rage rate anyways, ignore this.
 		local banner = GetWeaponByClass(player, "tf_weapon_buff_item")
 		local bannerate = GetWearableAttribute(player, "banner rate", 1)
-		if (!banner || bannerate == 1)
+		local issolider = player.GetPlayerClass() == Constants.ETFClass.TF_CLASS_SOLDIER
+		if (!banner || bannerate <= 0 || (issolider && bannerate == 1))
 		{
 			return
 		}
 		
 		// Grab the damaging weapon, if the weapon is even valid.
 		local weapon
-		if (params.weaponid != null && params.weaponid < 2000)
+		if (params.weaponid != null && params.weaponid < 2000) // I do not remember why I check if its below 2000 tbh.
 		{
 			weapon = GetWeaponByClassID(player, params.weaponid)
 		}
@@ -136,7 +144,7 @@ BannerBoomOffset <- Vector(0, 0, 30)
 		local desiredrage = ((newrage - rage) * bannerate) + rage
 
 		// Now to actually set the rage. If this is soldier, we need to do a different calculation
-		if (player.GetPlayerClass() == Constants.ETFClass.TF_CLASS_SOLDIER)
+		if (issolider)
 		{
 			// Set the Rage Meter in a way to compensate for the upcoming increase it is about to receive.
 			// Note that there is NO lower cap to this! This is to make sure it works with slower build rates when they are at low rage, but will break the game if the charge rate goes to the negatives somehow!
@@ -147,8 +155,7 @@ BannerBoomOffset <- Vector(0, 0, 30)
 			// For everybody else, just set the meter to what we're looking for.
 			desiredrage = min(desiredrage,100)
 			player.SetRageMeter(min(desiredrage,100))
-			// TO DO: Is there a better way to do this?
-			DisplayRageBuildText(player, "Rage: " + format("%.1f", desiredrage).tostring())
+			//DisplayRageBuildText(player, "Rage: " + format("%.1f", desiredrage).tostring())
 		}
 	}
 	// Event that runs whenever there's the potential for an item change
@@ -163,8 +170,8 @@ BannerBoomOffset <- Vector(0, 0, 30)
 		{
 			if (scriptscope.loot != 0)
 			{
-				player.RemoveCustomAttribute("halloween fire rate bonus")
-				player.RemoveCustomAttribute("halloween reload time decreased")
+				player.RemoveCustomAttribute("halloween fire rate VSCRIPT")
+				player.RemoveCustomAttribute("halloween reload time VSCRIPT")
 
 				for (local i = 0; i < MAXWEAPONS; i++)
 				{
@@ -172,9 +179,9 @@ BannerBoomOffset <- Vector(0, 0, 30)
 					if (held_weapon == null)
 						continue
 					local classname = held_weapon.GetClassname()
-					if (classname == "tf_weapon_shovel" || classname == "tf_weapon_sword")
+					if (MeleeWeapons.find(classname) != null)
 					{
-						held_weapon.RemoveAttribute("melee attack rate bonus")
+						held_weapon.RemoveAttribute("melee attack rate VSCRIPT")
 						held_weapon.RemoveAttribute("mult melee smack delay VSCRIPT")
 					}
 				}
@@ -189,17 +196,17 @@ BannerBoomOffset <- Vector(0, 0, 30)
 			local loot = scriptscope.loot
 			local headcount = GetWearableAttribute(player,"banner heads cap", 0)
 			local boostperloot = pow(maxheads,1/headcount)
-			player.AddCustomAttribute("halloween fire rate bonus", pow(boostperloot, loot), 0)
-			player.AddCustomAttribute("halloween reload time decreased", pow(boostperloot, loot), 0)
+			player.AddCustomAttribute("halloween fire rate VSCRIPT", pow(boostperloot, loot), 0)
+			player.AddCustomAttribute("halloween reload time VSCRIPT", pow(boostperloot, loot), 0)
 			for (local i = 0; i < MAXWEAPONS; i++)
 			{
 				local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
 				if (held_weapon == null)
 					continue
 				local classname = held_weapon.GetClassname()
-				if (classname == "tf_weapon_shovel" || classname == "tf_weapon_sword")
+				if (MeleeWeapons.find(classname) != null)
 				{
-					held_weapon.AddAttribute("melee attack rate bonus", pow(pow(maxheads/1.25,1/headcount),loot), 0)
+					held_weapon.AddAttribute("melee attack rate VSCRIPT", pow(pow(maxheads/1.25,1/headcount),loot), 0)
 					held_weapon.AddAttribute("mult melee smack delay VSCRIPT", pow(boostperloot,loot), 0)
 				}
 			}
@@ -280,7 +287,7 @@ BannerBoomOffset <- Vector(0, 0, 30)
 		// No idea which is more efficent, don't really care.
 		local scriptscope = player.GetOrCreatePrivateScriptScope()
 		scriptscope.loot <- 0
-		player.PrecacheModel("models/weapons/c_models/c_samurai_soldier_arms.mdl") //Grand design arm model. I'm just going to pull a Volvo and manually hard code this.
+		player.PrecacheModel("models/weapons/c_models/c_samurai_soldier_arms.mdl")
 		player.PrecacheModel("models/weapons/c_models/c_chest_buffbanner/c_chest_buffbanner.mdl")
 		player.PrecacheModel("models/weapons/c_models/c_seige_buffbanner/c_seige_buffbanner.mdl")
 		player.PrecacheModel("models/weapons/c_models/c_backrack_buffbanner/c_backrack_buffbanner.mdl")
@@ -295,7 +302,7 @@ BannerBoomOffset <- Vector(0, 0, 30)
 }
 
 // Actually gets the events to work.
-__CollectGameEventCallbacks(BuffBannerEventTable)
+__CollectGameEventCallbacks(BannerPlusEventTable)
 
 //
 // Prevent the user from holding down certain banners
@@ -303,24 +310,6 @@ __CollectGameEventCallbacks(BuffBannerEventTable)
 
 // Unfortunately being able to hold it is a quirk of how it is implemented itself, so I have to manually disable the ability to hold the button myself.
 // Add script scope to any banners
-Entities.EnableEntityListening()
-Hooks.Add(this, "OnEntitySpawned", function(entity)
-{
-	EntitySpawnValidateBanner(entity)
-}, "ValidateBanner" )
-
-function EntitySpawnValidateBanner(entity)
-{
-	if (!entity || !entity.IsValid())
-	{
-		return
-	}
-
-	if (entity.GetClassname() == "tf_weapon_buff_item")
-	{
-		entity.ValidateScriptScope()
-	}
-}
 
 // If this makes its sound (meaning it is being used) and we're not allowed to hold it, set a think that will remove the ability to hold it.
 function ModifyEmitSoundParams(self,params)
@@ -347,33 +336,29 @@ function Reenable(self)
 }
 
 // Removes the buff to the melees.
-function RemoveMeleeRageBuff()
+function RemoveMeleeRageBuff(player)
 {
-	self.RemoveAttribute("CARD: damage bonus")
-	self.RemoveAttribute("melee attack rate bonus")
+	player.RemoveAttribute("multdmg banner VSCRIPT")
+	player.RemoveAttribute("melee attack rate VSCRIPT")
 }
 
-// I don't think the particles here work correctly tbh but good enough.
-function ExplodeThink2()
-{
-	DispatchParticleEffect( "explosionTrail_seeds_mvm", self.GetOrigin(), self.GetAbsAngles(), self)
-	DispatchParticleEffect( "fluidSmokeExpl_ring_mvm", self.GetOrigin(), self.GetAbsAngles(), self)
-	ExplodeNowBanner(self, activator)
-}
 
 PrecacheParticleSystem("explosionTrail_seeds_mvm")
 PrecacheParticleSystem("fluidSmokeExpl_ring_mvm")
 
+// I don't think the particles here work correctly tbh but good enough.
 // Just summon a pipe and immediately blow it up.
 function ExplodeNowBanner(banner, owner)
 {
+	DispatchParticleEffect( "explosionTrail_seeds_mvm", owner.GetOrigin(), owner.GetAbsAngles(), owner)
+	DispatchParticleEffect( "fluidSmokeExpl_ring_mvm", owner.GetOrigin(), owner.GetAbsAngles(), owner)
 	local pipe = Entities.CreateByClassname("tf_projectile_pipe")
 	NetProps.SetPropEntity(pipe, "m_hLauncher", banner)
 	pipe.SetOrigin(owner.GetOrigin() + BannerBoomOffset)
 	pipe.SetOwner(owner)
 	pipe.SetThrower(owner)
 	//pipe.GetDamage() // Not sure if this does anything, but i'm also not sure it doesn't do anything?
-	pipe.SetDamage(300)
+	pipe.SetDamage(300 * banner.GetAttribute("blast splash damage decreased", 1) * banner.GetAttribute("blast splash damage increased", 1))
 	pipe.GetDamageRadius()
 	NetProps.SetPropEntity(pipe, "m_hOriginalLauncher", owner) // Gives it the correct explosion effect.
 	pipe.AcceptInput("detonate", "", banner, owner)
