@@ -33,6 +33,20 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 				armoredplayers.remove(playerindex)
 			}
 		}
+
+		if (player.GetPlayerClass() == 4)
+		{
+			// Add an invis watch since we can't hyjack charge on demoman
+			local weapon = Entities.CreateByClassname("tf_weapon_invis")
+			NetProps.SetPropInt(weapon, "m_AttributeManager.m_Item.m_iItemDefinitionIndex", 30)
+			NetProps.SetPropBool(weapon, "m_AttributeManager.m_Item.m_bInitialized", true)
+			NetProps.SetPropBool(weapon, "m_bValidatedAttachedEntity", true)
+			weapon.SetTeam(player.GetTeam())
+			weapon.DispatchSpawn()
+			player.Weapon_Equip(weapon)
+		}
+
+		ToggleArmor(player, false)
 	}
 	function OnGameEvent_item_pickup(params)
 	{
@@ -110,6 +124,10 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 			{
 				local newarmor = ceil(min(NetProps.GetPropInt(player, "m_ArmorValue") + (ammoregained * GetWearableAttribute(player, "mult armor ratio", 1)),cap))
 				NetProps.SetPropInt(player, "m_ArmorValue", newarmor)
+				if (newarmor >= cap)
+				{
+					ToggleArmor(player, false)
+				}
 			}
 			else
 			{
@@ -127,7 +145,7 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 		local prev = null
 		while (cart && cart != prev)
 		{
-			EntFireByHandle(cart, "CallScriptFunction", "CartDispenserArmorCheck", generalstats[4], null, null)
+			ReapeatingFunctionInTime(CartDispenserArmorCheck, 0.5, [cart])
 			prev = cart
 			cart = Entities.FindByClassname(null, "mapobj_cart_dispenser")
 		}
@@ -137,43 +155,44 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 		if (params.object == 0)
 		{
 			local entity = EntIndexToHScript(params.index)
-			EntFireByHandle(entity, "CallScriptFunction", "DispenserArmorCheck", generalstats[4], null, null)
+			ReapeatingFunctionInTime(DispenserArmorCheck, 0.5, [entity])
 		}
 	}
 	function OnGameEvent_player_hurt(params)
 	{
 		local player = GetPlayerFromUserID(params.userid)
 		local armor = playercurrarmor[player.GetEntityIndex()]
-		if (armor > 0)
+		if (armor > 0 && "crit" in params)
 		{
 			local damage = params.damageamount
-			local scriptscope = player.GetOrCreatePrivateScriptScope()
 			if (damage <= 0)
 			{
 				//Why?
 				return false
 			}
+			local scriptscope = player.GetOrCreatePrivateScriptScope()
+			ToggleArmor(player, true)
 			local armorprotection = GetWearableAttribute(player, "mult armor protection", 1) * Convars.GetFloat("cvs_armor_base_protection")
 			local armorratio = GetWearableAttribute(player, "mult armor damage ratio", 1) * 1/Convars.GetFloat("cvs_armor_base_ratio") // Doing the console command the other way around makes more sense... I think.
 			
 			// Man if only I had a switch type statement that worked with flags
 			// Actually I probably do but I am too lazy to look for it
-			if (scriptscope.damagetypebuffer & Constants.FDmgType.DMG_BLAST)
+			if (scriptscope.damagetypebuffer & 64)
 			{
 				armorratio *= GetWearableAttribute(player, "mult armor blast ratio", 1) * Convars.GetFloat("cvs_armor_explosive_weakness")
 				armorprotection *= GetWearableAttribute(player, "mult armor blast protection", 1)
 			}
-			if (scriptscope.damagetypebuffer & Constants.FDmgType.DMG_BULLET)
+			if (scriptscope.damagetypebuffer & 536870914)
 			{
 				armorratio *= GetWearableAttribute(player, "mult armor bullet ratio", 1)
 				armorprotection *= GetWearableAttribute(player, "mult armor bullet protection", 1)
 			}
-			if (scriptscope.damagetypebuffer & Constants.FDmgType.DMG_BURN)
+			if (scriptscope.damagetypebuffer & 16777224)
 			{
 				armorratio *= GetWearableAttribute(player, "mult armor fire ratio", 1)
 				armorprotection *= GetWearableAttribute(player, "mult armor fire protection", 1)
 			}
-			if (scriptscope.damagetypebuffer & Constants.FDmgType.DMG_CLUB)
+			if (scriptscope.damagetypebuffer & 132)
 			{
 				armorratio *= GetWearableAttribute(player, "mult armor melee ratio", 1)
 				armorprotection *= GetWearableAttribute(player, "mult armor melee protection", 1)
@@ -204,66 +223,63 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 			if ((scriptscope.hpbuffer - (damage - damagereduced)) > 0) // If false, we are dead regardless of the armor. RIP.
 			{
 				// Deal negative damage so the attacker still gets the right damage number. Hopefully.
-				player.TakeDamageEx(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, player.GetOrigin() + Vector(0,0,16), -damagereduced - 1, 0) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
+				player.TakeDamageEx(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, player.GetOrigin() + Vector(0,0,16), -damagereduced - 1, 2048) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
 				player.SetArmor(armor - (damagereduced*armorratio))
 				// (hInflictor, hAttacker, hWeapon, vecDamageForce, vecDamagePosition, flDamage, nDamageType)
+
+				if (player.GetArmor() > 0)
+				{
+					if (damage > 50) //Arbitrary.
+					{
+						player.EmitSound("EngieArmor.ImpactHard")
+					}
+					else
+					{
+						player.EmitSound("EngieArmor.ImpactSoft")
+					}
+				}
+				else if (damagereduced > 0) //It should never be... but just in case.
+				{
+					player.EmitSound("EngieArmor.Break")
+				}
 			}
 			else // In that case, do this to prevent death weirdness.
 			{
 				player.SetHealth(100)
 				NetProps.SetPropInt(player, "m_lifeState", 0)
-				player.TakeDamageCustom(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, player.GetOrigin() + Vector(0,0,16), -damagereduced - 1, 0, 27) // Do Rune Reflect Type Damage. Don't question it, this works.
+				player.TakeDamageCustom(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, player.GetOrigin() + Vector(0,0,16), -damagereduced - 1, 2048, 27) // Do Rune Reflect Type Damage. Don't question it, this works.
 				player.SetHealth(0)
 				NetProps.SetPropInt(player, "m_lifeState", 2)
 			}
 			// (hInflictor, hAttacker, hWeapon, vecDamageForce, vecDamagePosition, flDamage, nDamageType)
 		}
-	}
-}
-
-function NOMETAL(self)
-{
-	local pc = self.GetPlayerClass() - 1
-	if (pc == 8)
-	{
-		NetProps.SetPropIntArray(self, "m_iAmmo", 0, 4)
-		self.AddCustomAttribute("maxammo grenades1 increased", 200, 0)
-	}
-	else
-	{
-		NetProps.SetPropIntArray(self, "m_iAmmo", 0, 3)
-		self.AddCustomAttribute("maxammo metal increased", 2, 0)
+		else if (!("crit" in params))
+		{
+			player.SetArmor(armor)
+		}
 	}
 }
 
 __CollectGameEventCallbacks(ArmorEventTable)
 
-function DispenserArmorCheck()
+function DispenserArmorCheck(entity)
 {
-	EntFireByHandle(self, "CallScriptFunction", "DispenserArmorCheck", generalstats[4], null, null)
-	if (NetProps.GetPropFloat(self,"m_flPercentageConstructed") >= 1 && NetProps.GetPropFloat(self,"m_flUpgradeCompleteTime") < Time() && NetProps.GetPropFloat(self,"m_flUpgradeCompleteTime"))
+	if (NetProps.GetPropFloat(entity,"m_flPercentageConstructed") >= 1 && NetProps.GetPropFloat(entity,"m_flUpgradeCompleteTime") < Time() && NetProps.GetPropFloat(entity,"m_flUpgradeCompleteTime"))
 	{
-		local rangescale = GetWearableAttribute(NetProps.GetPropEntity(self,"m_hBuilder"), "engy dispenser radius increased", 1)
+		local rangescale = GetWearableAttribute(NetProps.GetPropEntity(entity,"m_hBuilder"), "engy dispenser radius increased", 1)
 		local BBox = Vector(64,64,64) * rangescale
-		local player = Entities.FindByClassnameWithinBox(null, "player", -BBox + self.GetOrigin(), BBox + self.GetOrigin())
+		local player = Entities.FindByClassnameWithinBox(null, "player", -BBox + entity.GetOrigin(), BBox + entity.GetOrigin())
 		local prev = null
 		while (player && player != prev)
 		{
-			if (player.GetTeam() == self.GetTeam())
+			if (player.GetTeam() == entity.GetTeam())
 			{
 				local pc = player.GetPlayerClass() - 1
-				local cap = GetWearableAttribute(player, "armor cap", 0) + durabiltylist[pc][0]
+				local cap = GetWearableAttribute(player, "armor cap", 0)
 				if (cap > 0)
 				{
 					local newarmor = 0
-					if (generalstats[5])
-					{
-						newarmor = ceil(min(player.GetArmor() + (generalstats[5] * GetWearableAttribute(player, "mult armor ratio", 1) * durabiltylist[pc][3]),cap))
-					}
-					else
-					{
-						newarmor = ceil(min(player.GetArmor() + (generalstats[5]),cap))
-					}
+					newarmor = ceil(min(player.GetArmor() + (2 * GetWearableAttribute(player, "mult armor ratio", 1)),cap))
 					if (newarmor > player.GetArmor())
 					{
 						player.SetArmor(newarmor)
@@ -279,37 +295,29 @@ function DispenserArmorCheck()
 				}
 			}
 			prev = player
-			player = Entities.FindByClassnameWithinBox(player, "player", -BBox + self.GetOrigin(), BBox + self.GetOrigin())
+			player = Entities.FindByClassnameWithinBox(player, "player", -BBox + entity.GetOrigin(), BBox + entity.GetOrigin())
 		}
 	}
 }
 
-function CartDispenserArmorCheck()
+function CartDispenserArmorCheck(cart)
 {
-	EntFireByHandle(self, "CallScriptFunction", "CartDispenserArmorCheck", generalstats[4], null, null)
-	if (PointsMayBeCaptured && !NetProps.GetPropInt(self,"m_bDisabled"))
+	if (PointsMayBeCaptured() && !NetProps.GetPropInt(cart,"m_bDisabled"))
 	{
 		local BBox = Vector(128,128,64)
-		local player = Entities.FindByClassnameWithinBox(null, "player", -BBox + self.GetOrigin(), BBox + self.GetOrigin())
+		local player = Entities.FindByClassnameWithinBox(null, "player", -BBox + cart.GetOrigin(), BBox + cart.GetOrigin())
 		local prev = null
 		while (player && player != prev)
 		{
 			// Assume The map maker isn't doing cursed garbage cause I CAN'T ACCOUNT FOR THAT!!!!
-			if (player.GetTeam() == self.GetTeam() && Entities.FindByClassnameNearest("trigger_capture_area", self.GetOrigin(), 100000000000).IsTouching(player))
+			if (player.GetTeam() == cart.GetTeam() && Entities.FindByClassnameNearest("trigger_capture_area", cart.GetOrigin(), 100000000000).IsTouching(player))
 			{
 				local pc = player.GetPlayerClass() - 1
-				local cap = GetWearableAttribute(player, "armor cap", 0) + durabiltylist[pc][0]
+				local cap = GetWearableAttribute(player, "armor cap", 0)
 				if (cap > 0)
 				{
 					local newarmor = 0
-					if (generalstats[5])
-					{
-						newarmor = ceil(min(player.GetArmor() + (generalstats[5] * GetWearableAttribute(player, "mult armor ratio", 1) * durabiltylist[pc][3]),cap))
-					}
-					else
-					{
-						newarmor = ceil(min(player.GetArmor() + (generalstats[5]),cap))
-					}
+					newarmor = ceil(min(player.GetArmor() + (2 * GetWearableAttribute(player, "mult armor ratio", 1)),cap))
 					if (newarmor > player.GetArmor())
 					{
 						player.SetArmor(newarmor)
@@ -325,7 +333,36 @@ function CartDispenserArmorCheck()
 				}
 			}
 			prev = player
-			player = Entities.FindByClassnameWithinBox(player, "player", -BBox + self.GetOrigin(), BBox + self.GetOrigin())
+			player = Entities.FindByClassnameWithinBox(player, "player", -BBox + cart.GetOrigin(), BBox + cart.GetOrigin())
+		}
+	}
+}
+
+function ToggleArmor(player, state)
+{
+	local pc = player.GetPlayerClass() - 1
+	if (state)
+	{
+		if (pc == 3)
+		{
+			player.SetSpyCloakMeter(99)
+		}
+		else
+		{
+			player.AddCustomAttribute("ammo gives charge", 1, 0)
+			NetProps.SetPropFloat(player, "m_Shared.m_flChargeMeter", 99)
+		}
+	}
+	else
+	{
+		if (pc == 3)
+		{
+			player.SetSpyCloakMeter(100)
+		}
+		else
+		{
+			player.AddCustomAttribute("ammo gives charge", 0, 0)
+			NetProps.SetPropFloat(player, "m_Shared.m_flChargeMeter", 99)
 		}
 	}
 }

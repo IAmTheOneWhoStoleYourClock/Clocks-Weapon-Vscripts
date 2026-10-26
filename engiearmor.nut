@@ -112,7 +112,7 @@ MAXWEAPONS <- 8
 			if ((scriptscope.hpbuffer - (damage - damagereduced)) > 0) // If false, we are dead regardless of the armor. RIP.
 			{
 				// Deal negative damage so the attacker still gets the right damage number. Hopefully.
-				player.TakeDamageEx(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, player.GetOrigin() + Vector(0,0,16), -damagereduced - 1, 0) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
+				player.TakeDamageEx(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, player.GetOrigin() + Vector(0,0,16), -damagereduced - 1, 2048) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
 				// (hInflictor, hAttacker, hWeapon, vecDamageForce, vecDamagePosition, flDamage, nDamageType)
 			
 				if (remaining >= ceil(1*armorratio - 1))
@@ -137,7 +137,7 @@ MAXWEAPONS <- 8
 			{
 				player.SetHealth(100)
 				NetProps.SetPropInt(player, "m_lifeState", 0)
-				player.TakeDamageCustom(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, player.GetOrigin() + Vector(0,0,16), -damagereduced - 1, 0, 27) // Do Rune Reflect Type Damage. Don't question it, this works.
+				player.TakeDamageCustom(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, player.GetOrigin() + Vector(0,0,16), -damagereduced - 1, 2048, 27) // Do Rune Reflect Type Damage. Don't question it, this works.
 				player.SetHealth(0)
 				NetProps.SetPropInt(player, "m_lifeState", 2)
 			}

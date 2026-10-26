@@ -122,7 +122,7 @@ if (!("playercurrarmor" in getroottable())) {
 			{
 				player.SetArmor(armor * generalstats[7])
 			}
-			player.SetContextThink("PF2NOMETAL", PF2NOMETAL, 0.1)
+			player.SetContextThink("PF2HC", PF2HC, 0.1)
 			if (durabiltylist[pc][8] > 0)
 			{
 				EntFireByHandle(player, "CallScriptFunction", "EngieArmorRegen", 1, null, null)
@@ -301,22 +301,22 @@ if (!("playercurrarmor" in getroottable())) {
 			
 			// Man if only I had a switch type statement that worked with flags
 			// Actually I probably do but I am too lazy to look for it
-			if (scriptscope.damagetypebuffer & Constants.FDmgType.DMG_BLAST)
+			if (scriptscope.damagetypebuffer & 64)
 			{
 				armorratio *= GetWearableAttribute(player, "mult armor blast ratio", 1) * durabiltylist[pc][5][2]
 				armorprotection *= GetWearableAttribute(player, "mult armor blast protection", 1) * durabiltylist[pc][6][2]
 			}
-			if (scriptscope.damagetypebuffer & Constants.FDmgType.DMG_BULLET)
+			if (scriptscope.damagetypebuffer & 536870914)
 			{
 				armorratio *= GetWearableAttribute(player, "mult armor bullet ratio", 1) * durabiltylist[pc][5][3]
 				armorprotection *= GetWearableAttribute(player, "mult armor bullet protection", 1) * durabiltylist[pc][6][3]
 			}
-			if (scriptscope.damagetypebuffer & Constants.FDmgType.DMG_BURN)
+			if (scriptscope.damagetypebuffer & 16777224)
 			{
 				armorratio *= GetWearableAttribute(player, "mult armor fire ratio", 1) * durabiltylist[pc][5][4]
 				armorprotection *= GetWearableAttribute(player, "mult armor fire protection", 1) * durabiltylist[pc][6][4]
 			}
-			if (scriptscope.damagetypebuffer & Constants.FDmgType.DMG_CLUB)
+			if (scriptscope.damagetypebuffer & 132)
 			{
 				armorratio *= GetWearableAttribute(player, "mult armor melee ratio", 1) * durabiltylist[pc][5][5]
 				armorprotection *= GetWearableAttribute(player, "mult armor melee protection", 1) * durabiltylist[pc][6][5]
@@ -328,7 +328,7 @@ if (!("playercurrarmor" in getroottable())) {
 				armorprotection *= GetWearableAttribute(player, "mult armor self protection", 1) * durabiltylist[pc][6][6]
 			}
 
-			if (scriptscope.weaponbuffer)
+			if (scriptscope.weaponbuffer && scriptscope.weaponbuffer.IsWeapon())
 			{
 				armorratio *= scriptscope.weaponbuffer.GetAttribute("mult damage to armor", 1)
 				armorprotection *= scriptscope.weaponbuffer.GetAttribute("mult armor pierce", 1)
@@ -340,7 +340,7 @@ if (!("playercurrarmor" in getroottable())) {
 			if ((scriptscope.hpbuffer - (damage - damagereduced)) > 0) // If false, we are dead regardless of the armor. RIP.
 			{
 				// Deal negative damage so the attacker still gets the right damage number. Hopefully.
-				player.TakeDamageEx(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, player.GetOrigin() + Vector(0,0,16), -damagereduced - 1, 0) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
+				player.TakeDamageEx(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, player.GetOrigin() + Vector(0,0,16), -damagereduced - 1, 2048) //Deal the negative amount of the damage we want to negate... plus -1. For some reason 1, just, gets added.
 				player.SetArmor(armor - (damagereduced*armorratio))
 				// (hInflictor, hAttacker, hWeapon, vecDamageForce, vecDamagePosition, flDamage, nDamageType)
 			}
@@ -348,7 +348,7 @@ if (!("playercurrarmor" in getroottable())) {
 			{
 				player.SetHealth(100)
 				NetProps.SetPropInt(player, "m_lifeState", 0)
-				player.TakeDamageCustom(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, player.GetOrigin() + Vector(0,0,16), -damagereduced - 1, 0, 27) // Do Rune Reflect Type Damage. Don't question it, this works.
+				player.TakeDamageCustom(scriptscope.inflictorbuffer, params.attacker, null, NULLVECTOR, player.GetOrigin() + Vector(0,0,16), -damagereduced - 1, 2048, 27) // Do Rune Reflect Type Damage. Don't question it, this works.
 				player.SetHealth(0)
 				NetProps.SetPropInt(player, "m_lifeState", 2)
 			}
@@ -360,7 +360,7 @@ if (!("playercurrarmor" in getroottable())) {
 	}
 }
 
-function PF2NOMETAL(self)
+function PF2HC(self)
 {
 	local pc = self.GetPlayerClass() - 1
 	self.AddCustomAttribute("max health additive bonus", durabiltylist[pc][1] - basemaxhealth[pc], 0)

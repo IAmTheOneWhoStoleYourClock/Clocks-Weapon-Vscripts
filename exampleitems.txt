@@ -837,14 +837,16 @@ of all damage taken in a 5-2 ratio"
 
 "EngieArmor.Break"
 {
-	"volume"		"0.96"
+	"channel"		"CHAN_STATIC"
+	"volume"		"0.5"
 	"soundlevel"	"SNDLVL_100dB" //The sound levels on these might be too high? Eh. Seemed fine from my testing.
 	"wave"			")weapons\engiearmor\metal_box_break1.wav"
 }
 "EngieArmor.ImpactHard"
 {
+	"channel"		"CHAN_STATIC"
 	"soundlevel"	"SNDLVL_94dB"
-	"volume"		"0.97"
+	"volume"		"0.4"
 	"pitch"			"98,100"
 	"rndwave"
 	{
@@ -855,8 +857,9 @@ of all damage taken in a 5-2 ratio"
 }
 "EngieArmor.ImpactSoft"
 {
+	"channel"		"CHAN_STATIC"
 	"soundlevel"		"SNDLVL_89dB"
-	"volume"		"0.93"
+	"volume"		"0.3"
 	"pitch"		"90,100"
 	"rndwave"
 	{

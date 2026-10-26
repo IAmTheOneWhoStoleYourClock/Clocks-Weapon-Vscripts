@@ -143,3 +143,69 @@ Armor absorbs 80% of damage taken in a 1:1 ratio"
 			"description_format"	"value_is_additive"
 			"effect_type"			"negative"
 		}
+
+"DamageFeedback.Send.Armored"
+{
+	"channel"	"CHAN_STATIC"
+	"soundlevel"	"SNDLVL_NONE"
+	"volume"	"0"
+	"wave"	"common/null.wav"
+}
+
+"DamageFeedback.Receive.Armored"
+{
+	"channel"	"CHAN_STATIC"
+	"soundlevel"	"SNDLVL_NONE"
+	"volume"	"0"
+	"wave"	"common/null.wav"
+}
+
+"DamageFeedback.Send.Armored.Lethal"
+{
+	"channel"	"CHAN_STATIC"
+	"soundlevel"	"SNDLVL_NONE"
+	"volume"	"0"
+	"wave"	"common/null.wav"
+}
+
+"DamageFeedback.Receive.Armored.Lethal"
+{
+	"channel"	"CHAN_STATIC"
+	"soundlevel"	"SNDLVL_NONE"
+	"volume"	"0"
+	"wave"	"common/null.wav"
+}
+
+"EngieArmor.Break"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"0.5"
+	"soundlevel"	"SNDLVL_100dB" //The sound levels on these might be too high? Eh. Seemed fine from my testing.
+	"wave"			")weapons\engiearmor\metal_box_break1.wav"
+}
+"EngieArmor.ImpactHard"
+{
+	"channel"		"CHAN_STATIC"
+	"soundlevel"	"SNDLVL_94dB"
+	"volume"		"0.4"
+	"pitch"			"98,100"
+	"rndwave"
+	{
+		"wave"	")weapons\engiearmor\metal_barrel_impact_hard1.wav"
+		"wave"	")weapons\engiearmor\metal_barrel_impact_hard2.wav"
+		"wave"	")weapons\engiearmor\metal_barrel_impact_hard3.wav"
+	}
+}
+"EngieArmor.ImpactSoft"
+{
+	"channel"		"CHAN_STATIC"
+	"soundlevel"		"SNDLVL_89dB"
+	"volume"		"0.4"
+	"pitch"		"90,100"
+	"rndwave"
+	{
+		"wave"	")weapons\engiearmor\metal_barrel_impact_soft1.wav"
+		"wave"	")weapons\engiearmor\metal_barrel_impact_soft2.wav"
+		"wave"	")weapons\engiearmor\metal_barrel_impact_soft3.wav"
+	}
+}
