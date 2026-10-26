@@ -507,30 +507,6 @@ of all damage taken in a 5-2 ratio"
 			"effect_type"	"positive"
 			"stored_as_integer"	"0"
 		}
-		"17666"
-		{
-			"name"	"banner rate"
-			"description_format"	"value_is_percentage"
-			"hidden"	"1"
-			"effect_type"	"positive"
-			"stored_as_integer"	"0"
-		}
-		"17667"
-		{
-			"name"	"banner speed"
-			"description_format"	"value_is_percentage"
-			"hidden"	"1"
-			"effect_type"	"positive"
-			"stored_as_integer"	"0"
-		}
-		"17668"
-		{
-			"name"	"banner effect"
-			"description_format"	"value_is_additive"
-			"hidden"	"1"
-			"effect_type"	"positive"
-			"stored_as_integer"	"0"
-		}
 
 		"17692"
 		{
