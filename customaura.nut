@@ -123,7 +123,10 @@ function CivCheck()
 				healamount = healamount * ((min(Time() - LASTHURT[target.GetEntityIndex()] - 10, 5) * (2.0/5.0)) + 1)
 			}
 			local healed = target.TakeHealth(healamount, 0)
-			SendGlobalGameEvent("player_healed", { patient = target.GetUserID(), healer = player.GetUserID(), amount = healed })
+			if (healed > 0)
+			{
+				SendGlobalGameEvent("player_healed", { patient = target.GetUserID(), healer = player.GetUserID(), amount = healed })
+			}
 			healpulse[target.GetEntityIndex()] = Time() + aura[6]
 		}
 		if (aura[10] > 0 && ammopulse[target.GetEntityIndex()] <= Time())
