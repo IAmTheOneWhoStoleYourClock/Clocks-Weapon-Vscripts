@@ -343,7 +343,7 @@ function EntitySpawnSandvichThrow(entity)
 	}
 
 	local owner = entity.GetOwner()
-	if(owner != null && owner.IsPlayer())
+	if(owner != null && owner.IsPlayer() && owner.IsAlive())
 	{
 		entity.SetSkin(owner.GetTeam() - 2)
 		// If it has this stat, allow the user to eat their own thrown sandvich.
@@ -357,8 +357,6 @@ function EntitySpawnSandvichThrow(entity)
 		{
 			entity.SetThinkFunction("AreWeThereYet", 0)
 		}
-		local scriptscope = entity.GetOrCreatePrivateScriptScope()
-		scriptscope.weapon <- owner.GetActiveWeapon()
 		entity.SetOrigin(entity.GetOrigin()) // Wait why do I do this was this just some overtired thing I did or is there a legitimate reason to do this
 	}
 }
@@ -490,7 +488,7 @@ function ThrownLunchboxAcquired(self, pickeruper)
 
 	// We actually don't check this for much, pretty much everything we care about should be on wearer
 	local scriptscope = self.GetOrCreatePrivateScriptScope()
-	local weapon = scriptscope.weapon
+	local weapon = GetWeaponByClass(owner,"tf_weapon_lunchbox")
 	if (!weapon || !weapon.IsWeapon())
 	{
 		return
