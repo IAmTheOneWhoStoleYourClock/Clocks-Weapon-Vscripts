@@ -1,3 +1,7 @@
+//
+// This plugin allows banners to work on all classes without any noticeable differences from soldier (hopefully)
+//
+
 "banner rate"
 // Modifies how quickly the banner fills
 "banner speed"
