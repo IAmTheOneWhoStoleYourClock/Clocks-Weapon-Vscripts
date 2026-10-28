@@ -99,7 +99,7 @@ else
 }
 
 if (!("playercurrarmor" in getroottable())) {
-	playercurrarmor <- array(PLAYERCAP, [])
+	playercurrarmor <- array(PLAYERCAP, 0)
 	playerlastdamage <- array(PLAYERCAP, 0)
 	playerlastregen <- array(PLAYERCAP, 0)
 	basemaxhealth <- [125, 125, 200, 175, 150, 300, 175, 125, 125, 200]

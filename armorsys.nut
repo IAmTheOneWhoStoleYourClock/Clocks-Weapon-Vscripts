@@ -3,7 +3,7 @@
 IncludeScript("lib/clocksutils.nut");
 
 armoredplayers <- []
-playercurrarmor <- array(PLAYERCAP, [])
+playercurrarmor <- array(PLAYERCAP, 0)
 
 Convars.RegisterConvar("cvs_armor_base_protection", "0.8", "How much protection armor provides baseline", 0)
 Convars.RegisterConvar("cvs_armor_base_ratio", "2", "How much damage it takes to consume an armor baseline", 0)
