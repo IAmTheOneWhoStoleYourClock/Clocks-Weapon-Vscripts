@@ -204,10 +204,6 @@ function FrameCheck()
 				player.AcceptInput("fireuser2", "", null, null)
 				LASTATTACK[player.GetEntityIndex()] = attacktime
 			}
-			else if (!weapon.FireDuration())
-			{
-				LASTATTACK[player.GetEntityIndex()] = -1 // Likely unnessesary, but I'd like to be sure.
-			}
 		}
 	}
 
