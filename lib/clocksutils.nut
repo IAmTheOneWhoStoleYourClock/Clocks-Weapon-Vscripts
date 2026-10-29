@@ -22,6 +22,38 @@ if (!("ATTRIBSTOBECLEAREDWEARER" in getroottable())) {
 	NULLVECTOR <- Vector(0,0,0)
 	BuildText <- null
 	TimerText <- null
+
+	Hooks.Add(ROOT, "OnEntitySpawned", function(entity)
+	{
+		EntitySpawnCatch(entity);
+	}, "EntitySpawnCatch" );
+}
+
+function EntitySpawnCatch(entity)
+{
+	if (!entity || !entity.IsValid())
+	{
+		return
+	}
+	local classname = entity.GetClassname()
+	if (classname == "tf_dropped_weapon")
+	{
+		EntFireByHandle(entity, "Kill", "", 0, null, null) // If I do it instantly the game crashes. Whatever man.
+	}
+	if (startswith(classname,"tf_wearable")) // The later is succifient to check if this is an extra wearable.
+	{
+		FunctionInTime(WearableParse,0,[wearable])
+	}
+}
+
+function WearableParse(entity)
+{
+	if (NetProps.GetPropInt(entity, "m_AttributeManager.m_Item.m_iItemDefinitionIndex") != 65535)
+	{
+		local eventable = { entindex = entity.GetEntityIndex() }
+		eventable.rawset("class", "tf_wearable") // Need to do it this way since I can't just put it in the table normally because class is a reserved keyword by squirrel
+		SendGlobalGameEvent("weapon_equipped", eventable)
+	}
 }
 
 ticks <- 0
@@ -179,30 +211,33 @@ function FrameCheck()
 			}
 			continue
 		}
-		// when melee smacks, m_iNextMeleeCrit is 0
-		if (NetProps.GetPropInt(player, "m_Shared.m_iNextMeleeCrit") == 0)
-		{
-			// when switching away from melee, m_iNextMeleeCrit will also be 0 so check for that case
-			if (player.GetActiveWeapon() == weapon)
-			{
-				player.AcceptInput("fireuser1", "", null, null)
-			}
-
-			// continue smack detection
-			NetProps.SetPropInt(player, "m_Shared.m_iNextMeleeCrit", -2)
-		}
-		local attacktime = NetProps.GetPropFloat(weapon, "m_flLastFireTime")
-		if (attacktime == Time())
-		{
-			player.AcceptInput("fireuser2", "", null, null)
-		}
 		else
 		{
-			local attacktime = max(NetProps.GetPropFloat(weapon, "m_flNextPrimaryAttack"), NetProps.GetPropFloat(weapon, "m_flNextSecondaryAttack"))
-			if (attacktime > Time() && (LASTATTACK[player.GetEntityIndex()] != attacktime && weapon.FireDuration()))
+			// when melee smacks, m_iNextMeleeCrit is 0
+			if (NetProps.GetPropInt(player, "m_Shared.m_iNextMeleeCrit") == 0)
+			{
+				// when switching away from melee, m_iNextMeleeCrit will also be 0 so check for that case
+				if (player.GetActiveWeapon() == weapon)
+				{
+					player.AcceptInput("fireuser1", "", null, null)
+				}
+
+				// continue smack detection
+				NetProps.SetPropInt(player, "m_Shared.m_iNextMeleeCrit", -2)
+			}
+			local attacktime = NetProps.GetPropFloat(weapon, "m_flLastFireTime")
+			if (attacktime == Time())
 			{
 				player.AcceptInput("fireuser2", "", null, null)
-				LASTATTACK[player.GetEntityIndex()] = attacktime
+			}
+			else
+			{
+				local attacktime = max(NetProps.GetPropFloat(weapon, "m_flNextPrimaryAttack"), NetProps.GetPropFloat(weapon, "m_flNextSecondaryAttack"))
+				if (attacktime > Time() && (LASTATTACK[player.GetEntityIndex()] != attacktime && weapon.FireDuration()))
+				{
+					player.AcceptInput("fireuser2", "", null, null)
+					LASTATTACK[player.GetEntityIndex()] = attacktime
+				}
 			}
 		}
 	}

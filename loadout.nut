@@ -6,6 +6,8 @@
 // None, which probably means it has some grevious issue I missed.
 //
 
+IncludeScript("lib/clocksutils.nut");
+
 local FLOATSTUFF = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 function DeriveValue(value)
@@ -14,7 +16,7 @@ function DeriveValue(value)
 	{
 		return null
 	}
-	else if (FLOATSTUFF.find(value.slice(0,1)) != null)
+	else if (FLOATSTUFF.find(value.slice(0,1)) != null) // Bad but I *clap* DON'T *clap* CARE *third unnessary clap*
 	{
 		return value.tofloat()
 	}
@@ -60,21 +62,21 @@ function Handlefileline(string)
 if (!FileExists("fallbacklist.cfg"))
 {
 	fallbacklist <- [
-		// Slot 1, Slot 2, Slot 3, Slot 4, Slot 5, Slot 6, Slot 7 (as [Item ID, Item Class])
-		[[13, "tf_weapon_scattergun"],[23, "tf_weapon_pistol_scout"],[0, "tf_weapon_bat"],null,null,null], //Scout
-		[[14, "tf_weapon_sniperrifle"],[16, "tf_weapon_smg"],[3, "tf_weapon_club"],null,null,null], //Sniper
-		[[18, "tf_weapon_rocketlauncher"],[10, "tf_weapon_shotgun_soldier"],[6, "tf_weapon_shovel"],null,null,null], //Soldier
-		[[19, "tf_weapon_grenadelauncher"],[20, "tf_weapon_pipebomblauncher"],[1, "tf_weapon_bottle"],null,null,null], //Demoman
-		[[17, "tf_weapon_syringegun_medic"],[29, "tf_weapon_pda_engineer_destroy"],[8, "tf_weapon_medigun"],null,null,null],  //Medic
-		[[15, "tf_weapon_minigun"],[11, "tf_weapon_shotgun_hwg"],[5, "tf_weapon_fists"],null,null,null],  //Heavy
-		[[21, "tf_weapon_flamethrower"],[12, "tf_weapon_shotgun_pyro"],[2, "tf_weapon_fireaxe"],null,null,null],  //Pyro
-		[[24, "tf_weapon_revolver"],[735, "tf_weapon_builder"],[4, "tf_weapon_knife"],[27, "tf_weapon_pda_spy"],[30, "tf_weapon_invis"],null],  //Spy
-		[[9, "tf_weapon_shotgun_primary"],[22, "tf_weapon_pistol"],[7, "tf_weapon_wrench"],[25, "tf_weapon_pda_engineer_build"],[26, "tf_weapon_pda_engineer_destroy"],[28, "tf_weapon_builder"]],  //Engineer
-		[null,null,[2000, "tf2c_weapon_umbrella"],null,null,null],  //Civilian
+		// Slot 1, Slot 2, Slot 3, Slot 4, Slot 5, Slot 6, Slot 7 (as Name)
+		["TF_WEAPON_SCATTERGUN","TF_WEAPON_PISTOL_SCOUT","TF_WEAPON_BAT",null,null,null], //Scout
+		["TF_WEAPON_SNIPERRIFLE","TF_WEAPON_SMG","TF_WEAPON_CLUB",null,null,null], //Sniper
+		["TF_WEAPON_ROCKETLAUNCHER","TF_WEAPON_SHOTGUN_SOLDIER","TF_WEAPON_SHOVEL",null,null,null], //Soldier
+		["TF_WEAPON_GRENADELAUNCHER","TF_WEAPON_PIPEBOMBLAUNCHER","TF_WEAPON_BOTTLE",null,null,null], //Demoman
+		["TF_WEAPON_SYRINGEGUN_MEDIC","TF_WEAPON_MEDIGUN","TF_WEAPON_BONESAW",null,null,null],  //Medic
+		["TF_WEAPON_MINIGUN","TF_WEAPON_SHOTGUN_HWG","TF_WEAPON_FISTS",null,null,null],  //Heavy
+		["TF_WEAPON_FLAMETHROWER","TF_WEAPON_SHOTGUN_PYRO","TF_WEAPON_FIREAXE",null,null,null],  //Pyro
+		["TF_WEAPON_REVOLVER","TF_WEAPON_BUILDER_SPY","TF_WEAPON_KNIFE","TF_WEAPON_PDA_SPY","TF_WEAPON_INVIS",null],  //Spy
+		["TF_WEAPON_SHOTGUN_PRIMARY","TF_WEAPON_PISTOL","TF_WEAPON_WRENCH","TF_WEAPON_PDA_ENGINEER_BUILD","TF_WEAPON_PDA_ENGINEER_DESTROY","TF_WEAPON_BUILDER"],  //Engineer
+		[null,null,"Umbrella",null,null,null],  //Civilian
 	]
 	local configgenerator = "// This is the config that track weapons to fallback to, Do not add or remove any lines! In the event of an update, you WILL need to update this!\n"
 	configgenerator += "// Slot 1, Slot 2, Slot 3, Slot 4, Slot 5, Slot 6, Slot 7. In order of scout, sniper, soldier, demoman, medic, heavy, pyro, spy, engineer, civilian\n"
-	configgenerator += "// Entries are ordered as [Item ID, Item Class], enter null instead to give nothing upon falling back. (THIS IS EXTREMELY LIKELY TO CHANGE)"
+	configgenerator += "// Entries are ordered as Item Names, enter null instead to give nothing upon falling back."
 	foreach (i in fallbacklist)
 	{
 		configgenerator += "\n["
@@ -203,19 +205,18 @@ else
 
 		if (removedslots.len() > 0)
 		{
-			local wepaposne
 			foreach (slot in removedslots)
 			{
 				if (fallbacklist[player.GetPlayerClass() - 1][slot] != null)
 				{
-					wepaposne = GivePlayerWeapon(player, fallbacklist[player.GetPlayerClass() - 1][slot][1], fallbacklist[player.GetPlayerClass() - 1][slot][0])
+					player.GenerateAndWearItem(fallbacklist[player.GetPlayerClass() - 1][slot])
 				}
 			}
-			player.Weapon_Switch(wepaposne)
 		}
 	}
 }
 
+/*
 function GivePlayerWeapon(player, classname, item_id)
 {
 	local weapon = Entities.CreateByClassname(classname)
@@ -245,5 +246,6 @@ function GivePlayerWeapon(player, classname, item_id)
 
 	return weapon
 }
+*/
 
 __CollectGameEventCallbacks(LoadoutEvents)
