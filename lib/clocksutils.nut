@@ -61,7 +61,11 @@ ticks <- 0
 ::LibraryTable <- {
 	function OnGameEvent_player_spawn(params)
 	{
-		PLAYERITERATE.append(GetPlayerFromUserID(params.userid))
+		local player = GetPlayerFromUserID(params.userid)
+		if (PLAYERITERATE.find(player) == null)
+		{
+			PLAYERITERATE.append(GetPlayerFromUserID(params.userid))
+		}
 	}
 	function OnGameEvent_player_hurt(params)
 	{
