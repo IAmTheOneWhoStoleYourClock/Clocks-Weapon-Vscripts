@@ -55,7 +55,6 @@ function WeaponParseLinked(player, weapon)
 
 	if (linkedname != "")
 	{
-		ascatch += 1
 		player.GenerateAndWearItem(linkedname)
 		return true
 	}
