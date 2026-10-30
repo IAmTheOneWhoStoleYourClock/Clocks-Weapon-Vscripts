@@ -873,7 +873,7 @@ CEntities.GetAllClassnameInRadius <- function(classname, origin, radius)
 			}
 			split.insert(place, recomp)
 		}
-		if (["1", "2", "3", "4", "5", "6", "7", "8", "9"].find(text.slice(0,1)) != null) // Lazy check ik but it'll be correct in 99.9% of senarios.
+		if (["0","1", "2", "3", "4", "5", "6", "7", "8", "9"].find(text.slice(0,1)) != null) // Lazy check ik but it'll be correct in 99.9% of senarios.
 		{
 			local index = split.find(text)
 			split.remove(split.find(text))
