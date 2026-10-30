@@ -42,7 +42,7 @@ function EntitySpawnCatch(entity)
 	}
 	if (startswith(classname,"tf_wearable")) // The later is succifient to check if this is an extra wearable.
 	{
-		FunctionInTime(WearableParse,0,[wearable])
+		FunctionInTime(WearableParse,0,[entity])
 	}
 }
 

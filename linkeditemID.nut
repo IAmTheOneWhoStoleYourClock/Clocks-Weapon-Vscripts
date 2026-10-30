@@ -38,7 +38,7 @@ if (!("lockedplayers" in getroottable())) {
 				wd += 1
 				if (!startswith(wearable.GetClassname(),"tf_wearable") || NetProps.GetPropInt(wearable, "m_bDisguiseWearable"))
 					continue
-				WeaponParseLinked(player,held_weapon)
+				WeaponParseLinked(player,wearable)
 			}
 			lockedplayers[player.GetEntityIndex()] = false
 		}
