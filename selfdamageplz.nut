@@ -25,7 +25,16 @@ IncludeScript("lib/clocksutils.nut")
 		local selfdmg = weapon.GetAttribute("selfdmg on hit", 0)
 		if (selfdmg < 0)
 		{
-			player.TakeDamageEx(weapon, player, null, Vector(0,0,0) player.GetOrigin() + Vector(0,0,50), -selfdmg, 2064);
+			local nokbcond = player.InCond(130)
+			if (!nokbcond)
+			{
+				player.AddCondEx(130, 0.1, player)
+			}
+			player.TakeDamageEx(player, self, null, Vector(0,0,0) player.GetOrigin() + Vector(0,0,50), -selfdmg, 0);
+			if (!nokbcond)
+			{
+				player.RemoveCondEx(130, true)
+			}
 		}
 	}
 }
