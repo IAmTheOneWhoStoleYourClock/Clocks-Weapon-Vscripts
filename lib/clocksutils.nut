@@ -23,7 +23,7 @@ if (!("ATTRIBSTOBECLEAREDWEARER" in getroottable())) {
 	BuildText <- null
 	TimerText <- null
 
-	Hooks.Add(ROOT, "OnEntitySpawned", function(entity)
+	Hooks.Add(this, "OnEntitySpawned", function(entity)
 	{
 		EntitySpawnCatch(entity);
 	}, "EntitySpawnCatch" );
