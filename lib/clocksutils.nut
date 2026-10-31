@@ -48,12 +48,18 @@ function EntitySpawnCatch(entity)
 
 function WearableParse(entity)
 {
+	if (!entity || !entity.IsValid())
+	{
+		return false
+	}
 	if (NetProps.GetPropInt(entity, "m_AttributeManager.m_Item.m_iItemDefinitionIndex") != 65535)
 	{
 		local eventable = { entindex = entity.GetEntityIndex() }
 		eventable.rawset("class", "tf_wearable") // Need to do it this way since I can't just put it in the table normally because class is a reserved keyword by squirrel
 		SendGlobalGameEvent("weapon_equipped", eventable)
+		return true
 	}
+	return false
 }
 
 ticks <- 0
@@ -374,21 +380,7 @@ UniqueRepeatingFunctionInTime(FrameCheck, 0)
 
 ::RemoveWearerAttributeString <- function(player, attribname) // OBSOLETE
 {
-	for (local i = 0; i < MAXWEAPONS; i++)
-	{
-		local held_weapon = NetProps.GetPropEntityArray(player, "m_hMyWeapons", i)
-		if (held_weapon == null)
-			continue
-		held_weapon.AddAttributeString(attribname, "")
-	}
-	local wd = 0
-	for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
-	{
-		wd += 1
-		if (!startswith(wearable.GetClassname(),"tf_wearable")) // It really shouldn't matter if attributes get removed from disguise wearables should it?
-			continue
-		wearable.AddAttributeString(attribname, "")
-	}
+	printl("RemoveWearerAttributeString HAS BEEN CALLED, NOTIFY ME IMMEDIATELY")
 }
 
 ::GetWeaponInSlot <- function(player, slot)
@@ -529,18 +521,18 @@ CTFPlayer.AddTimedWearerAttributeString <- function(attribname, value, time)
 		}
 	}
 	playerarray.append([attribname, truetime])
-	FunctionInTime(RemoveTimedWearerAttributeString, time, [attribname, truetime])
+	FunctionInTime(RemoveTimedWearerAttributeString, time, [this, [attribname, truetime]])
 }
 CTFBot.AddTimedWearerAttributeString <- CTFPlayer.AddTimedWearerAttributeString
 
-function RemoveTimedWearerAttributeString(array)
+function RemoveTimedWearerAttributeString(player, array)
 {
 	local playerarray = ATTRIBSTOBECLEAREDWEARER[player.GetEntityIndex()]
 	foreach (array2 in playerarray)
 	{
 		if (array2[0] == array[0] && array2[1] == array[1])
 		{
-			RemoveWearerAttributeString(player, array[0])
+			RemoveWearerAttribute(player, array[0])
 			playerarray.remove(playerarray.find(array2))
 		}
 	}

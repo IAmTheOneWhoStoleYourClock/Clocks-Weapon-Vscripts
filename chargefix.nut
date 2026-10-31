@@ -493,10 +493,11 @@ function EndCharge(player)
 		NetProps.SetPropEntity(pipe, "m_hEffectEntity", player) // So the icon can be corrected
 		pipe.AcceptInput("detonate", "", weapon, player)
 	}
-	if (GetWearableAttribute(player, "charge slam", 0))
+	local slam = GetWearableAttribute(player, "charge slam", 0)
+	if (slam > 0)
 	{
 		player.ApplyAbsVelocityImpulse(Vector(0,0,-1000))
-		player.AddTimedWearerAttributeString("anchor earthquake", "192.0 0.0 4.0", 1.5)
+		player.AddTimedWearerAttributeString("anchor earthquake", "192.0 0.0 " + (4 * slam).tostring(), 1.5)
 	}
 	player.RemoveCond(17)
 }
