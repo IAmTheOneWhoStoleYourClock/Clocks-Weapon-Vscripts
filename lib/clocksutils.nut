@@ -13,7 +13,8 @@ if (!("ATTRIBSTOBECLEAREDWEARER" in getroottable())) {
 	ATTRIBSTOBEADDED <- array(PLAYERCAP, [])
 	FLIGHTPROCS <- array(PLAYERCAP, [])
 	CURRENTWEAPON <- array(PLAYERCAP, [])
-	LASTATTACK <- array(PLAYERCAP, [])
+	LASTATTACK <- array(PLAYERCAP, 0)
+	LASTATTACKMELEE <- array(PLAYERCAP, 0)
 	LASTHURT <- array(PLAYERCAP, 0)
 	PLAYERITERATE <- []
 	FUNCTIONTRACKER <- []
@@ -205,6 +206,7 @@ function FrameCheck()
 		{
 			player.AcceptInput("fireuser3", "", null, null)
 			CURRENTWEAPON[player.GetEntityIndex()] = player.GetActiveWeapon()
+			LASTATTACK[player.GetEntityIndex()] = NetProps.GetPropFloat(weapon, "m_flLastFireTime")
 		}
 
 		if (!weapon)
@@ -236,17 +238,18 @@ function FrameCheck()
 				NetProps.SetPropInt(player, "m_Shared.m_iNextMeleeCrit", -2)
 			}
 			local attacktime = NetProps.GetPropFloat(weapon, "m_flLastFireTime")
-			if (attacktime == Time())
+			if (attacktime != 0 && attacktime != LASTATTACK[player.GetEntityIndex()])
 			{
 				player.AcceptInput("fireuser2", "", null, null)
+				LASTATTACK[player.GetEntityIndex()] = attacktime
 			}
-			else
+			else if (attacktime == 0)
 			{
-				local attacktime = max(NetProps.GetPropFloat(weapon, "m_flNextPrimaryAttack"), NetProps.GetPropFloat(weapon, "m_flNextSecondaryAttack"))
-				if (attacktime > Time() && (LASTATTACK[player.GetEntityIndex()] != attacktime && weapon.FireDuration()))
+				attacktime = max(NetProps.GetPropFloat(weapon, "m_flNextPrimaryAttack"), NetProps.GetPropFloat(weapon, "m_flNextSecondaryAttack"))
+				if (attacktime > Time() && (LASTATTACKMELEE[player.GetEntityIndex()] != attacktime && weapon.FireDuration()))
 				{
 					player.AcceptInput("fireuser2", "", null, null)
-					LASTATTACK[player.GetEntityIndex()] = attacktime
+					LASTATTACKMELEE[player.GetEntityIndex()] = attacktime
 				}
 			}
 		}
