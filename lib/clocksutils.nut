@@ -84,9 +84,8 @@ __CollectGameEventCallbacks(LibraryTable)
 
 // What a laggy piece of work
 // TO DO: OPTIMISE!
-Entities.First().SetThinkFunction("TimerTracker", 0)
 
-::TimerTracker <- function()
+::TimerTracker <- function(self) // self is unused because why should I care
 {
 	local i = 0
 	while (i < FUNCTIONTRACKER.len())
@@ -149,8 +148,10 @@ Entities.First().SetThinkFunction("TimerTracker", 0)
 		}
 	}
 
-	return -1
+	return 0.015
 }
+
+Entities.First().SetContextThink("TimerTracker", TimerTracker, 0)
 
 ::FunctionInTime <- function(timedfunction, time, params=[])
 {
