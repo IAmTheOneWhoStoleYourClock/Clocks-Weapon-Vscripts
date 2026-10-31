@@ -29,7 +29,7 @@
 "charge delay"
 // users must wait this amount in seconds after charging to be allowed to charge again.
 "charge slam"
-// Slam into the ground with anchor stats upon finishing a charge. (no effect on leaps)
+// Slam into the ground with anchor stats upon finishing a charge. Inputted value multiplies the fall damage mult. (no effect on leaps)
 "charge explode"
 // Explode upon finishing a charge. (no effect on leaps)
 "charge speed increased"
