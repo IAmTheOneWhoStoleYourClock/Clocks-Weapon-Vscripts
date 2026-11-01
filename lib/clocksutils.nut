@@ -1056,7 +1056,7 @@ CTFBot.GiveAllAmmoPercent <- CTFPlayer.GiveAllAmmoPercent
 	"tf2c_weapon_heallauncher", // 86
 	"tf2c_weapon_hunting_revolver", // 87
 	"tf2c_weapon_nailgun", // 88
-	"tf2c_weapon_sycthe", // 89
+	"tf2c_weapon_scythe", // 89
 	"tf2c_weapon_taser", // 90
 	"tf2c_weapon_tranq", // 91
 	"tf2c_weapon_umbrella", // 92
@@ -1212,7 +1212,7 @@ CTFBot.GiveAllAmmoPercent <- CTFPlayer.GiveAllAmmoPercent
 	"tf_weapon_breakable_sign",
 	"tf_weapon_slap",
 	"tf2c_weapon_anchor",
-	"tf2c_weapon_sycthe",
+	"tf2c_weapon_scythe",
 	"tf2c_weapon_umbrella",
 	"tf2c_weapon_chains",
 	"tf2c_weapon_taser"
@@ -1237,7 +1237,7 @@ CTFBot.GiveAllAmmoPercent <- CTFPlayer.GiveAllAmmoPercent
 	"tf_weapon_breakable_sign",
 	"tf_weapon_slap",
 	"tf2c_weapon_anchor",
-	"tf2c_weapon_sycthe",
+	"tf2c_weapon_scythe",
 	"tf2c_weapon_umbrella",
 	"tf2c_weapon_chains",
 	"tf2c_weapon_taser",
