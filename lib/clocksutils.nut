@@ -1182,7 +1182,7 @@ CTFBot.GiveAllAmmoPercent <- CTFPlayer.GiveAllAmmoPercent
 	"tf2c_weapon_anchor",
 	"tf2c_weapon_hunting_revolver",
 	"tf2c_weapon_doubleshotgun",
-	"tf2c_weapon_sycthe",
+	"tf2c_weapon_scythe",
 	"tf2c_weapon_aagun",
 	"tf2c_weapon_umbrella",
 	"tf2c_weapon_chains",
