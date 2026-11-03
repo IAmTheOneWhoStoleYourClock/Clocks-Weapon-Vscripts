@@ -154,6 +154,13 @@ function EntitySpawn(entity)
 
 		// entity.ValidateScriptScope() // Should be unnessesary?
 	}
+	else if (classname == "tf2c_projectile_grenade_cyclops")
+	{
+		local fuse = weapon.GetAttribute("fuse bonus", 1)
+		if (fuse != 1){
+			FunctionInTime(Cyclopsfuse, 0, [entity, fuse])
+		}
+	}
 	else if (classname == "tf_projectile_pipe_remote")
 	{
 	//	local playerstick = weapon.GetAttribute("stickies stick to players", 0) // Too complicated for me right now so this is scrapped, maybe a serperate plugin at some point?
@@ -209,12 +216,18 @@ function EntitySpawn(entity)
 
 	local explodeonworldfixed = weapon.GetAttribute("explode on world", 0)
 	if (explodeonworldfixed != 0){
+		entity.ValidateScriptScope()
 		entity.AddContext("ExplodeOnWorld", "yeppers", 0)
 	}
 
 	local nograv = weapon.GetAttribute("no gravity", 0)
 	if (nograv != 0){
 		entity.AddContext("NoGravity", "thumbsup", 0)
+	}
+
+	local lift = weapon.GetAttribute("grenade lift", 0)
+	if (lift != 0){
+		entity.ApplyAbsVelocityImpulse(Vector(0,0,lift))
 	}
 
 	local recalcbound = weapon.GetAttribute("scale bounding box", 0)
@@ -254,6 +267,21 @@ function EntitySpawn(entity)
 	{
 		FunctionInTime(ReplacePhysics, 0, [entity])
 	}
+	else if (entity.GetContext("NoGravity") == "thumbsup")
+	{
+		FunctionInTime(DisableGravity, 0, [entity])
+	}
+}
+
+function DisableGravity(entity)
+{
+	entity.GetPhysicsObject().EnableGravity(false)
+}
+
+function Cyclopsfuse(entity, fuse)
+{
+	NetProps.SetPropFloat(entity, "m_flDetonateTime", ((NetProps.GetPropFloat(entity, "m_flDetonateTime") - Time()) * fuse) + Time())
+	return 0.015
 }
 
 function ReenableGrenade(entity)
