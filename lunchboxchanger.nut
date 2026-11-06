@@ -502,13 +502,13 @@ function ThrownLunchboxAcquired(self, pickeruper)
 
 		if (healtotal > 0)
 		{
-			pickeruper.AddCustomAttribute("sandvich VSCRIPT", GetWearableAttribute(owner, "sandvich self healing", 1), 0.00001)
-			pickeruper.AddCustomAttribute("sandvich additive VSCRIPT", GetWearableAttribute(owner, "sandvich self healing additive", 0), 0.00001)
-			pickeruper.AddCustomAttribute("health kits can overheal on wearer", GetWearableAttribute(owner, "sandvich can overheal self", 0), 0.00001)
+			pickeruper.AddCustomAttribute("sandvich VSCRIPT", GetWearableAttribute(owner, "sandvich self healing", 1), 0.08)
+			pickeruper.AddCustomAttribute("sandvich additive VSCRIPT", GetWearableAttribute(owner, "sandvich self healing additive", 0), 0.08)
+			pickeruper.AddCustomAttribute("health kits can overheal on wearer", GetWearableAttribute(owner, "sandvich can overheal self", 0), 0.08)
 		}
 		else
 		{
-			pickeruper.AddCustomAttribute("sandvich VSCRIPT", 0, 0.00001)
+			pickeruper.AddCustomAttribute("sandvich VSCRIPT", 0, 0.08)
 		}
 
 		local cond = GetWearableAttribute(owner, "sandvich self cond", 0)
@@ -524,9 +524,9 @@ function ThrownLunchboxAcquired(self, pickeruper)
 
 		if (healtotal > 0)
 		{
-			pickeruper.AddCustomAttribute("sandvich VSCRIPT", GetWearableAttribute(owner, "sandvich enemy healing", 1), 0.00001)
-			pickeruper.AddCustomAttribute("sandvich additive VSCRIPT", GetWearableAttribute(owner, "sandvich enemy healing additive", 0), 0.00001)
-			pickeruper.AddCustomAttribute("health kits can overheal on wearer", GetWearableAttribute(owner, "sandvich can overheal enemy", 0), 0.00001)
+			pickeruper.AddCustomAttribute("sandvich VSCRIPT", GetWearableAttribute(owner, "sandvich enemy healing", 1), 0.08)
+			pickeruper.AddCustomAttribute("sandvich additive VSCRIPT", GetWearableAttribute(owner, "sandvich enemy healing additive", 0), 0.08)
+			pickeruper.AddCustomAttribute("health kits can overheal on wearer", GetWearableAttribute(owner, "sandvich can overheal enemy", 0), 0.08)
 		}
 		else
 		{
@@ -546,9 +546,9 @@ function ThrownLunchboxAcquired(self, pickeruper)
 
 		if (healtotal > 0)
 		{
-			pickeruper.AddCustomAttribute("sandvich VSCRIPT", GetWearableAttribute(owner, "sandvich friend healing", 1), 0.00001)
-			pickeruper.AddCustomAttribute("sandvich additive VSCRIPT", GetWearableAttribute(owner, "sandvich friend healing additive", 0), 0.00001)
-			pickeruper.AddCustomAttribute("health kits can overheal on wearer", GetWearableAttribute(owner, "sandvich can overheal friend", 0), 0.00001)
+			pickeruper.AddCustomAttribute("sandvich VSCRIPT", GetWearableAttribute(owner, "sandvich friend healing", 1), 0.08)
+			pickeruper.AddCustomAttribute("sandvich additive VSCRIPT", GetWearableAttribute(owner, "sandvich friend healing additive", 0), 0.08)
+			pickeruper.AddCustomAttribute("health kits can overheal on wearer", GetWearableAttribute(owner, "sandvich can overheal friend", 0), 0.08)
 		}
 		else
 		{
