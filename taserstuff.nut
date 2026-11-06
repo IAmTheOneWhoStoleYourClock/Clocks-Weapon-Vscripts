@@ -25,37 +25,17 @@ IncludeScript("lib/clocksutils.nut");
 	{
 		// add give health to teammate on hit stuff. I know that's not technically taser stuff but where else would it go.
 		// For some reason it's exclusively like this for this specific attribute.
-		if("userid" in params && "priority" in params && params.priority == 5 && params.attacker == params.userid)
+		if("userid" in params && "priority" in params && "bonuseffect" in params && "weaponid" in params && params.priority == 5 && params.attacker == params.userid && false)
 		{
 			local healer = GetPlayerFromUserID(params.attacker)
 			local weapon = healer.GetActiveWeapon()
 			healer.SetHealth(params.health + params.damageamount - (params.damageamount * weapon.GetAttribute("add give health to teammate on hit self scale", 1)))
 		}
 	}
-	function OnGameEvent_vip_boost(params)
-	{
-		// A fix for add civ boost to self and some additions
-		// Yes, I know this should be a different plugin but idc
-		local player = GetPlayerFromUserID(params.provider)
-		local buffed = GetPlayerFromUserID(params.target)
-		local weapon = player.GetActiveWeapon()
-
-		local selfcond = weapon.GetAttribute("add civ boost to self fix", 0)
-		if (selfcond)
-		{
-			player.AddCondEx(selfcond, weapon.GetAttribute("add civ boost to self fix time", 0), player)
-		}
-
-		local extracond = weapon.GetAttribute("civ boost extra cond", 0)
-		if (extracond)
-		{
-			buffed.AddCondEx(selfcond, weapon.GetAttribute("civ boost extra cond time", 0), player)
-		}
-	}
 	function OnGameEvent_player_healed(params)
 	{
 		// This check should only be true if this is a taser.
-		if(!("priority" in params) && ("healer" in params) && ("patient" in params))
+		if(!("priority" in params) && ("healer" in params) && ("patient" in params) && params.healer != params.patient && false)
 		{
 			local healer = GetPlayerFromUserID(params.healer)
 			local healed = GetPlayerFromUserID(params.patient)
@@ -65,6 +45,10 @@ IncludeScript("lib/clocksutils.nut");
 			}
 			local weapon = healer.GetActiveWeapon()
 			// For the enemy attributes
+			if (!weapon || weapon.GetClassname() != "tf2c_weapon_taser")
+			{
+				return false
+			}
 			weapon.AddContext("rechargestarttime", Time().tostring(), 0)
 			// Cap the amount of healing this can do, since normally taser healing is completely uncapped.
 			local cap = weapon.GetAttribute("taser cap", 0)

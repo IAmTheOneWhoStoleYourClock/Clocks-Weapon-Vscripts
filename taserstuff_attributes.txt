@@ -13,12 +13,6 @@
 // Same as before, but only at full charge.
 "add give health to teammate on hit self scale"
 // Scales how much health is taken by "add give health to teammate on hit" from you.
-"add civ boost to self fix"
-"add civ boost to self fix time"
-// Fixed version of add civ boost to self.
-"civ boost extra cond"
-"civ boost extra cond time"
-// Apply an extra condition upon boosting a teammate with the umbrella.
 
 
 "ubercharge rate penalty VSCRIPT"

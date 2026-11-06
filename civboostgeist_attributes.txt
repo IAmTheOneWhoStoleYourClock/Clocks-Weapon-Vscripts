@@ -1,0 +1,74 @@
+"add civ boost to self fix"
+// Fixed version of add civ boost to self. Cond as integer followed by condition time in seconds.
+"civ boost extra cond"
+// Apply an extra condition upon boosting a teammate with the umbrella. Cond as integer followed by condition time in seconds.
+"civ boost player attrib"
+// Apply an attribute onto the player on boosting. (Wearable attributes.)
+// Input as 'atrribname', value, time (ex: "civ boost player attrib"	"'max health additive bonus' 100 3")
+"civ boost weapon attrib"
+// Apply and attribute onto all of the weapons of a boosted player.
+// Input as 'atrribname', value, time (ex: "civ boost weapon attrib"	"'damage bonus' 1.2 8")
+"civ boost heal"
+// Heal a player for this much upon boosting them. Does not overheal.
+"civ boost ammo"
+// Give a boosted player this much (as a percentage) of their max ammo pool.
+
+		"8000"
+		{
+			"name"	"add civ boost to self fix"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"8001"
+		{
+			"name"	"add civ boost to self fix time"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"8002"
+		{
+			"name"	"civ boost extra cond"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"8003"
+		{
+			"name"	"civ boost player attrib"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"8004"
+		{
+			"name"	"civ boost weapon attrib"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"8005"
+		{
+			"name"	"civ boost heal"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"8006"
+		{
+			"name"	"civ boost ammo"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
