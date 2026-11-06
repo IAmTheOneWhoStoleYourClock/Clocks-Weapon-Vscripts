@@ -47,7 +47,9 @@
 "BBoxMinZ"
 // Set various aspects of the grenades Bounding box (note that "scale bounding box" must be non-zero for the following three to have any affect)
 "destroy all on detonate"
-// Destroys all enemy projectiles in a radius equal to the inputted value upon detonation
+// Grenades destroy all enemy projectiles in a radius equal to the inputted value upon their detonation
+"detonate all on detonate"
+// Grenades detonate all of your projectiles in a radius equal to the inputted value upon their detonation
 "grenade not explode on impact true"
 // Grenades pretend as if they have already touched the ground.
 "grenade reenable time"
@@ -199,6 +201,14 @@
 		"7846"
 		{
 			"name"	"grenade lift"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"8006"
+		{
+			"name"	"detonate all on detonate"
 			"description_format"	"value_is_additive"
 			"hidden"	"1"
 			"effect_type"	"positive"

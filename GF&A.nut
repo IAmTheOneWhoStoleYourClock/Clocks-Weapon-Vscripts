@@ -14,6 +14,7 @@ local GRENADEDETONATORS = ["tf_projectile_arrow", "tf_projectile_energy_ring", "
 local NONEXPLODEYGRENADES = ["tf2c_projectile_brick","tf_projectile_ball_attributed", "tf_projectile_ball_ornament", "tf_projectile_stun_ball"]
 local PROJECTILES = ["tf_weapon_grenade_mirv_projectile", "tf_weapon_grenade_mirv_bomb", "tf_projectile_pipe", "tf_projectile_pipe_remote", "tf2c_projectile_brick", "tf2c_projectile_grenade_cyclops", "tf_projectile_ball_attributed", "tf_projectile_ball_ornament", "tf_projectile_stun_ball","tf_projectile_arrow", "tf_projectile_energy_ring", "tf_projectile_flare", "tf_projectile_healing_bolt", "tf_projectile_balloffire", "tf_projectile_rocket", "tf_projectile_syringe", "tf2c_projectile_arrow", "tf2c_projectile_coil", "tf2c_projectile_dart", "tf2c_projectile_nail"];
 local DESTRUCTABLEPROJECTILES = ["tf_weapon_grenade_mirv_bomb", "tf_projectile_pipe", "tf_projectile_pipe_remote", "tf2c_projectile_brick", "tf2c_projectile_grenade_cyclops", "tf_projectile_ball_attributed", "tf_projectile_ball_ornament", "tf_projectile_stun_ball","tf_projectile_arrow", "tf_projectile_energy_ring", "tf_projectile_flare", "tf_projectile_healing_bolt", "tf_projectile_balloffire", "tf_projectile_rocket", "tf_projectile_syringe", "tf2c_projectile_arrow", "tf2c_projectile_coil", "tf2c_projectile_dart", "tf2c_projectile_nail"];
+local EXPLODEYPROJECTILES = ["tf_weapon_grenade_mirv_bomb", "tf_projectile_pipe", "tf_projectile_pipe_remote", "tf2c_projectile_grenade_cyclops", "tf2c_projectile_brick", "tf_projectile_ball_attributed", "tf_projectile_ball_ornament", "tf_projectile_stun_ball", "tf_projectile_rocket"];
 local EXEMPTPROJECTILES = ["tf_projectile_ball_attributed", "tf_projectile_ball_ornament", "tf_projectile_stun_ball"]
 local HIGHEST_SOLID_FLAG = 1028
 
@@ -97,7 +98,7 @@ function EntitySpawn(entity)
 		local brickexplodesfix = weapon.GetAttribute("brick explodes fixed", 0)
 		if (brickexplodesfix > 0)
 		{
-			EntFireByHandle(entity, "CallScriptFunction", "ExplodeNow", brickexplodesfix, null, null)
+			FunctionInTime(ExplodeNow, brickexplodesfix, [entity])
 		}
 		local brickreplace = weapon.GetAttributeString("brick custom projectile", "")
 		if (brickreplace != "")
@@ -132,6 +133,7 @@ function EntitySpawn(entity)
 		bombletdata.weapon <- weapondata.weapon
 		entity.AddContext("BombletAttributesGrenadesFix", bomb.GetContext("MirvLogWeaponDataGrenadeFix2"), 0.02)
 		EntFireByHandle(entity, "CallScriptFunction", "BombletApplyAttribs", 0, null, null) // Wait a frame because it's not initalised yet
+		FunctionInTime(ReplacePhysics, 0, [entity])
 
 		return; // None of the rest of this is relevant to this and will just needlessly throw errors
 	}
@@ -189,6 +191,11 @@ function EntitySpawn(entity)
 	local destroyallondetonate = weapon.GetAttribute("destroy all on detonate", 0)
 	if (destroyallondetonate != 0){
 		entity.AddContext("DPOE", destroyallondetonate.tostring(), 0)
+	}
+
+	local destroyallondetonate = weapon.GetAttribute("detonate all on detonate", 0)
+	if (destroyallondetonate != 0){
+		entity.AddContext("DOPE", destroyallondetonate.tostring(), 0)
 	}
 
 	local noexplode = weapon.GetAttribute("grenade not explode on impact true", 0)
@@ -336,24 +343,24 @@ function BombletApplyAttribs()
 	}
 }
 
-function ExplodeNow()
+function ExplodeNow(entity)
 {
 	local pipe = Entities.CreateByClassname("tf_projectile_pipe")
-	self.AcceptInput("detonate", "", null, null)
-	NetProps.SetPropEntity(pipe, "m_hLauncher", NetProps.GetPropEntity(self,"m_hLauncher")) //Makes the following work correctly.
-	pipe.SetOrigin(self.GetOrigin()) // Set its position to that of the brick.
-	pipe.SetOwner(self.GetOwner()) // Set its owner to that of the brick.
-	pipe.SetThrower(self.GetThrower()) // Set its owner to that of the brick, again.
+	entity.AcceptInput("detonate", "", null, null)
+	NetProps.SetPropEntity(pipe, "m_hLauncher", NetProps.GetPropEntity(entity,"m_hLauncher")) //Makes the following work correctly.
+	pipe.SetOrigin(entity.GetOrigin()) // Set its position to that of the brick.
+	pipe.SetOwner(entity.GetOwner()) // Set its owner to that of the brick.
+	pipe.SetThrower(entity.GetThrower()) // Set its owner to that of the brick, again.
 	//pipe.GetDamage() // Not sure if this does anything, but i'm also not sure it doesn't do anything?
-	pipe.SetDamage(self.GetDamage()) // Corrects the damage.
+	pipe.SetDamage(entity.GetDamage()) // Corrects the damage.
 	pipe.GetDamageRadius() // Corrects the radius. For some reason brick doesn't calculate its stat correctly but doing it like this does calculate it correctly since m_hLauncher is correct.
-	NetProps.SetPropEntity(pipe, "m_hOriginalLauncher", NetProps.GetPropEntity(self,"m_hOriginalLauncher")) // Gives it the correct explosion effect.
-	NetProps.SetPropEntity(pipe, "m_hDeflectOwner", NetProps.GetPropEntity(self,"m_hDeflectOwner")) // Deflect checks.
-	NetProps.SetPropInt(pipe, "m_iDeflected", NetProps.GetPropInt(self,"m_iDeflected"))
+	NetProps.SetPropEntity(pipe, "m_hOriginalLauncher", NetProps.GetPropEntity(entity,"m_hOriginalLauncher")) // Gives it the correct explosion effect.
+	NetProps.SetPropEntity(pipe, "m_hDeflectOwner", NetProps.GetPropEntity(entity,"m_hDeflectOwner")) // Deflect checks.
+	NetProps.SetPropInt(pipe, "m_iDeflected", NetProps.GetPropInt(entity,"m_iDeflected"))
 	pipe.AddContext("IsBrickExplodeFixPipe", "yep", 0.1) // So we know that this is the brick explode pipe in damage calculations 
-	NetProps.SetPropEntity(pipe, "m_hEffectEntity", self) // So the icon icon can be corrected
-	pipe.AcceptInput("detonate", "", self, self.GetThrower())
-	self.Destroy()
+	NetProps.SetPropEntity(pipe, "m_hEffectEntity", entity) // So the icon icon can be corrected
+	pipe.AcceptInput("detonate", "", entity, entity.GetThrower())
+	entity.Destroy()
 }
 
 function ExplodeNowRocketDetonate(self)
@@ -447,6 +454,54 @@ function DestroyAllProjectiles(entity)
 			{
 				DispatchParticleEffect("arm_detonate_sparks", projectile.GetOrigin(), NULLVECTOR, null)
 				projectile.Kill()
+			}
+		}
+	}
+	local DOPE = entity.GetContext("DOPE")
+	if (DOPE != "" && NetProps.GetPropFloat(entity, "m_flDetonateTime") < Time())
+	{
+		DOPE = DOPE.tofloat()
+		local wd = 0
+		local entityorigin = entity.GetOrigin()
+		local detonatedrockets = []
+		for (local projectile = Entities.First(); projectile != null && wd < 2048; projectile = Entities.Next(projectile))
+		{
+			wd += 1
+			if (EXPLODEYPROJECTILES.find(projectile.GetClassname()) == null || projectile == entity || (projectile.GetOwner() != entity.GetThrower() && (!"GetThrower" in projectile || projectile.GetThrower() != entity.GetThrower())))
+				continue
+			if ((projectile.GetOrigin() - entityorigin).Length() <= DOPE)
+			{
+				local classname = projectile.GetClassname()
+				if (classname == "tf_projectile_rocket")
+				{
+					// Dumb hack because rockets are stupid
+					local origin = projectile.GetOrigin().ToKVString()
+					local found = false
+					foreach (pastpos in detonatedrockets)
+					{
+						if (origin == pastpos)
+						{
+							found = true
+							break
+						}
+					}
+					if (found)
+					{
+						continue
+					}
+					detonatedrockets.append(origin)
+
+					projectile.AcceptInput("touch", "worldspawn", entity, entity.GetThrower())
+					continue
+				}
+				else if (NONEXPLODEYGRENADES.find(classname) != null)
+				{
+					ExplodeNow(projectile)
+				}
+				else
+				{
+					projectile.AcceptInput("detonate", "", entity, null)
+				}
 			}
 		}
 	}
