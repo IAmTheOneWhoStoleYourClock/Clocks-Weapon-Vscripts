@@ -100,7 +100,7 @@ function EntitySpawnMedigunDamager(entity)
 		local owner = entity.GetOwner()
 		if (owner && owner.IsPlayer())
 		{
-			local weapon = owner.GetActiveWeapon()
+			local weapon = NetProps.GetPropEntity(entity,"m_hLauncher")
 			if (!weapon)
 			{
 				return
@@ -150,7 +150,7 @@ function EntitySpawnMedigunDamager(entity)
 		if (owner && owner.IsPlayer())
 		{
 			local generatorscope = entity.GetOrCreatePrivateScriptScope()
-			generatorscope.weapon <- owner.GetActiveWeapon()
+			generatorscope.weapon <- NetProps.GetPropEntity(entity,"m_hOriginalLauncher")
 			local damage = owner.GetActiveWeapon().GetAttribute("medigun targets enemies generator damage", 0)
 			if (damage)
 			{
@@ -770,7 +770,7 @@ function GeneratorEnemyChecker()
 	{
 		return generatorscope.ROF
 	}
-	local entity = Entities.FindByClassnameWithin(null, "player", self.GetOrigin(), NetProps.GetPropFloat(self, "m_flRadius")*1.05)
+	local entity = Entities.FindByClassnameWithin(null, "player", self.GetOrigin(), NetProps.GetPropFloat(self, "m_flRadius") * 1.05)
 	while (entity)
 	{
 		if (entity.GetTeam() != self.GetTeam() && entity.IsAlive())
