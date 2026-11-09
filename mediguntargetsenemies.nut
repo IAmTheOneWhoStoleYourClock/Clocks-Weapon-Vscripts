@@ -723,7 +723,7 @@ function UpdateOnRemove(self)
 
 function OnTakeDamage(self,info)
 {
-	if (!self.IsPlayer() || !info.GetInflictor() || !info.GetAttacker() || self.GetTeam() == info.GetAttacker().GetTeam())
+	if (!self.IsValid() || !self.IsPlayer() || !info.GetInflictor() || !info.GetAttacker() || self.GetTeam() == info.GetAttacker().GetTeam() || !info.GetWeapon())
 	{
 		return true
 	}
