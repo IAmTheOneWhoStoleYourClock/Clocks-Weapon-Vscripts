@@ -723,7 +723,7 @@ function UpdateOnRemove(self)
 
 function OnTakeDamage(self,info)
 {
-	if (!self.IsValid() || !self.IsPlayer() || !info.GetInflictor() || !info.GetAttacker() || self.GetTeam() == info.GetAttacker().GetTeam() || !info.GetWeapon())
+	if (!self.IsValid() || !self.IsPlayer() || !info.GetInflictor() || !info.GetAttacker() || self.GetTeam() == info.GetAttacker().GetTeam())
 	{
 		return true
 	}
@@ -734,7 +734,7 @@ function OnTakeDamage(self,info)
 		info.SetDamage(info.GetInflictor().GetDamage())
 	}
 	local medigunbomb = info.GetInflictor().GetContext("IsMedigunBomb")
-	if (medigunbomb != "")
+	if (medigunbomb != "" && info.GetWeapon())
 	{
 		local weapon = info.GetWeapon()
 		if (!NetProps.GetPropBool(weapon, "m_bChargeRelease"))
