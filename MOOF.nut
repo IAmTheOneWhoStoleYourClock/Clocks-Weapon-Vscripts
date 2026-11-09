@@ -11,7 +11,7 @@ local PROJECTILES = ["tf_weapon_grenade_mirv_projectile", "tf_weapon_grenade_mir
 Entities.EnableEntityListening()
 Hooks.Add(this, "OnEntitySpawned", function(entity)
 {
-	FunctionInTime(EntitySpawnMOOF, 0, [entity]);
+	EntitySpawnMOOF(entity)
 }, "EntitySpawnMOOF" );
 
 function EntitySpawnMOOF(entity)
