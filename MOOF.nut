@@ -16,14 +16,26 @@ Hooks.Add(this, "OnEntitySpawned", function(entity)
 
 function EntitySpawnMOOF(entity)
 {
-	if (!entity || !entity.IsValid() || !entity.GetOwner() || !entity.GetOwner().IsPlayer() || PROJECTILES.find(entity.GetClassname()) == null)
+	if (!entity || !entity.IsValid() || PROJECTILES.find(entity.GetClassname()) == null)
+	{
+		return
+	}
+
+	local owner = entity.GetOwner()
+
+	if (!owner && "GetThrower" in entity)
+	{
+		owner = entity.GetThrower()
+	}
+
+	if (!owner)
 	{
 		return
 	}
 
 	local classname = entity.GetClassname()
 
-	local weapon = entity.GetOwner().GetActiveWeapon()
+	local weapon = owner.GetActiveWeapon()
 
 	if (weapon == null)
 	{
@@ -31,9 +43,8 @@ function EntitySpawnMOOF(entity)
 	}
 
 	local MOOF = weapon.GetAttribute("MOOF", 0) // Might as well use this one.
-
 	if (MOOF != 0)
 	{
-		entity.SetVelocity(entity.GetVelocity()+entity.GetOwner().GetEyeForward()*MOOF)
+		entity.ApplyAbsVelocityImpulse(entity.GetVelocity()+owner.GetEyeForward()*MOOF)
 	}
 }
