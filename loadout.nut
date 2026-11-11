@@ -192,7 +192,7 @@ else
 				{
 					for (local i = 1; i < 7 ; i++)
 					{
-						local slot = wearable.GetAttribute("wearable slot " + slot.tostring(), 0)
+						local slot = wearable.GetAttribute("wearable slot " + i.tostring(), 0)
 						if (slot)
 						{
 							removedslots.append(i)
