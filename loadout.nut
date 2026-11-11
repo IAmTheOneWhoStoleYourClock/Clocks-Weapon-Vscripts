@@ -121,9 +121,15 @@ else
 	}
 }
 
+local locked = false
+
 ::LoadoutEvents <- {
 	function OnGameEvent_post_inventory_application(params)
 	{
+		if (locked)
+		{
+			return false
+		}
 		local player = GetPlayerFromUserID(params.userid)
 		local hasloadout = false
 		local removedslots = []
@@ -182,6 +188,7 @@ else
 				}
 			}
 			local wd = 0
+			local buffer = null // kill error prevention hack
 			for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
 			{
 				wd += 1
@@ -198,7 +205,22 @@ else
 							removedslots.append(i)
 						}
 					}
-					wearable.Kill()
+					// kill error prevention hack
+					try {
+						wearable.Kill()
+						wearable = buffer
+					} catch (exception){ }
+
+				}
+
+				// kill error prevention hack
+				if (!wearable)
+				{
+					wearable = player.FirstMoveChild()
+				}
+				else
+				{
+					buffer = wearable
 				}
 			}
 		}
@@ -209,7 +231,9 @@ else
 			{
 				if (fallbacklist[player.GetPlayerClass() - 1][slot] != null)
 				{
+					locked = true
 					player.GenerateAndWearItem(fallbacklist[player.GetPlayerClass() - 1][slot])
+					locked = false
 				}
 			}
 		}
