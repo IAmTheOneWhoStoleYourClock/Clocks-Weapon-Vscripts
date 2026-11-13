@@ -167,8 +167,7 @@ local locked = false
 				loadoutallow = loadoutallow & loadout
 			}
 		}
-		
-		if (hasloadout)
+		if (hasloadout && loadoutallow == 0)
 		{
 			for (local i = 0; i < MAXWEAPONS; i++)
 			{
@@ -176,7 +175,7 @@ local locked = false
 				if (held_weapon == null)
 					continue
 				local loadout = held_weapon.GetAttribute("loadout weapon", 0).tointeger()
-				if (((loadoutallow & loadout) == 0) && loadout)
+				if (loadout)
 				{
 					removedslots.append(held_weapon.GetSlot())
 					local wearable = NetProps.GetPropEntity(held_weapon, "m_hExtraWearable")
@@ -189,20 +188,24 @@ local locked = false
 			}
 			local wd = 0
 			local buffer = null // kill error prevention hack
-			for (local wearable = player.FirstMoveChild(); wearable != null && wd < 50; wearable = wearable.NextMovePeer())
+			local wearable = player.FirstMoveChild()
+			while (wearable != null && wd < 50)
 			{
 				wd += 1
 				if (!startswith(wearable.GetClassname(),"tf_wearable") || NetProps.GetPropInt(wearable, "m_bDisguiseWearable"))
+				{
+					wearable = wearable.NextMovePeer()
 					continue
+				}
 				local loadout = wearable.GetAttribute("loadout weapon", 0).tointeger()
-				if (((loadoutallow & loadout) == 0) && loadout)
+				if (loadout)
 				{
 					for (local i = 1; i < 7 ; i++)
 					{
 						local slot = wearable.GetAttribute("wearable slot " + i.tostring(), 0)
 						if (slot)
 						{
-							removedslots.append(i)
+							removedslots.append(i-1)
 						}
 					}
 					// kill error prevention hack
@@ -220,6 +223,7 @@ local locked = false
 				}
 				else
 				{
+					wearable = wearable.NextMovePeer()
 					buffer = wearable
 				}
 			}
