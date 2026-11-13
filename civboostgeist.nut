@@ -22,22 +22,34 @@ IncludeScript("lib/clocksutils.nut");
 			player.AddCondEx(selfcond, weapon.GetAttribute("add civ boost to self fix time", 0), player)
 		}
 
+		local selfplayerattrib = ProcessStringAttrib(weapon.GetAttributeString("add civ boost to self player attrib", ""))
+		if (selfplayerattrib[0] != "")
+		{
+			player.AddCustomAttribute(selfplayerattrib[0], selfplayerattrib[1], selfplayerattrib[2])
+		}
+
+		local selfweaponattrib = ProcessStringAttrib(weapon.GetAttributeString("add civ boost to self weapon attrib", ""))
+		if (selfweaponattrib[0] != "")
+		{
+			AddTimedWearerAttribute(player, selfweaponattrib[0], selfweaponattrib[1], selfweaponattrib[2])
+		}
+
 		local extracond = ProcessStringAttrib(weapon.GetAttributeString("civ boost extra cond", ""))
 		if (extracond[0] != "")
 		{
 			buffed.AddCondEx(extracond[0], extracond[1], player)
 		}
 
-		local auraplayerattrib = ProcessStringAttrib(weapon.GetAttributeString("civ boost player attrib", ""))
-		if (auraplayerattrib[0] != "")
+		local playerattrib = ProcessStringAttrib(weapon.GetAttributeString("civ boost player attrib", ""))
+		if (playerattrib[0] != "")
 		{
-			buffed.AddCustomAttribute(auraplayerattrib[0], auraplayerattrib[1], auraplayerattrib[2])
+			buffed.AddCustomAttribute(playerattrib[0], playerattrib[1], playerattrib[2])
 		}
 
-		local auraweaponattrib = ProcessStringAttrib(weapon.GetAttributeString("civ boost weapon attrib", ""))
-		if (auraweaponattrib[0] != "")
+		local weaponattrib = ProcessStringAttrib(weapon.GetAttributeString("civ boost weapon attrib", ""))
+		if (weaponattrib[0] != "")
 		{
-			AddTimedWearerAttribute(buffed, auraweaponattrib[0], auraweaponattrib[1], auraweaponattrib[2])
+			AddTimedWearerAttribute(buffed, weaponattrib[0], weaponattrib[1], weaponattrib[2])
 		}
 
 		local heal = weapon.GetAttribute("civ boost heal", 0)
@@ -52,6 +64,10 @@ IncludeScript("lib/clocksutils.nut");
 			{
 				SendGlobalGameEvent("player_healed", { patient = buffed.GetUserID(), healer = player.GetUserID(), amount = healed })
 			}
+		}
+		else if (heal < 0)
+		{
+			buffed.TakeDamageEx(weapon, player, weapon, NULLVECTOR, player.GetOrigin(), -heal, 2048)
 		}
 
 		local ammo = weapon.GetAttribute("civ boost ammo", 0)

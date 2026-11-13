@@ -10,6 +10,7 @@
 // Input as 'atrribname', value, time (ex: "civ boost weapon attrib"	"'damage bonus' 1.2 8")
 "civ boost heal"
 // Heal a player for this much upon boosting them. Does not overheal.
+// Negative values damage enemies if using civ boost target enemies
 "civ boost ammo"
 // Give a boosted player this much (as a percentage) of their max ammo pool.
 
@@ -69,6 +70,24 @@
 			"name"	"civ boost ammo"
 			"description_format"	"value_is_additive"
 			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"8007"
+		{
+			"name"	"add civ boost to self player attrib"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"8008"
+		{
+			"name"	"add civ boost to self weapon attrib"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"attribute_type"		"string"
 			"effect_type"	"positive"
 			"stored_as_integer"	"0"
 		}
