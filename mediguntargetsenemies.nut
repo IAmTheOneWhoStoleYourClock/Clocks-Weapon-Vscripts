@@ -124,20 +124,20 @@ function EntitySpawnMedigunDamager(entity)
 				{
 					bombscope.damage <- 0
 				}
-				bombscope.weapon <- owner.GetActiveWeapon()
+				bombscope.weapon <- weapon
 				bombscope.owner <- owner
 			}
-			local healmultduringuber = owner.GetActiveWeapon().GetAttribute("heal mult during uber", 1)
+			local healmultduringuber = weapon.GetAttribute("heal mult during uber", 1)
 			if (healmultduringuber != 1 && usinguber)
 			{
 				entity.SetDamage(entity.GetDamage()*healmultduringuber)
 			}
-			local healmult = owner.GetActiveWeapon().GetAttribute("heal grenade hit heal mult", 1)
+			local healmult = weapon.GetAttribute("heal grenade hit heal mult", 1)
 			if (healmult != 1)
 			{
 				entity.SetDamage(entity.GetDamage()*healmult)
 			}
-			local fusemult = owner.GetActiveWeapon().GetAttribute("fuse bonus", 1)
+			local fusemult = weapon.GetAttribute("fuse bonus", 1)
 			if (fusemult != 1)
 			{
 				NetProps.SetPropFloat(entity, "m_flDetonateTime",((NetProps.GetPropFloat(entity, "m_flDetonateTime") - Time()) * fusemult)+Time())
