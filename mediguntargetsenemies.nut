@@ -71,6 +71,10 @@ function EntitySpawnMedigunDamager(entity)
 		medigunscope.construction <- entity.GetAttribute("medigun buildings construction mult", 1)
 		medigunscope.constructionuber <- entity.GetAttribute("medigun buildings construction uber mult", 1)
 		medigunscope.fovcap <- (entity.GetAttribute("medigun targets enemies fov cap", 0)/360)*PI // How far from where you are looking the medibeam can be, in degrees (although we convert it to radians here)
+		medigunscope.playerattrib <- ProcessStringAttrib(entity.GetAttributeString("medigun player attrib", ""))
+		medigunscope.weaponattrib <- ProcessStringAttrib(entity.GetAttributeString("medigun weapon attrib", ""))
+		medigunscope.playerattribextra <- ProcessStringAttrib(entity.GetAttributeString("medigun player attrib extra", ""))
+		medigunscope.weaponattribextra <- ProcessStringAttrib(entity.GetAttributeString("medigun weapon attrib extra", ""))
 		medigunscope.fling <- entity.GetAttribute("medigun fling enable", 0)
 		if (medigunscope.fling)
 		{
@@ -465,17 +469,7 @@ function MedigunEnemyChecker()
 			
 			if (medigunscope.upgradegive && NetProps.GetPropInt(medigunscope.target, "m_bMiniBuilding") != 1 && NetProps.GetPropInt(medigunscope.target, "m_bIsUpgradable") && NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") < 3 && !NetProps.GetPropInt(medigunscope.target, "m_bBuilding"))
 			{
-				local upgrade = NetProps.GetPropInt(medigunscope.target, "m_iUpgradeMetal")
-				local upgraderequire = NetProps.GetPropInt(medigunscope.target, "m_iUpgradeMetalRequired")
-				if (upgrade + (medigunscope.upgradegive * medigunscope.upgradegiveuber) >= upgraderequire)
-				{
-					NetProps.SetPropInt(medigunscope.target, "m_iHighestUpgradeLevel", min(NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") + 1,3))
-					NetProps.SetPropInt(medigunscope.target, "m_iUpgradeMetal", 0)
-				}
-				else
-				{
-					NetProps.SetPropInt(medigunscope.target, "m_iUpgradeMetal", upgrade + (medigunscope.upgradegive * medigunscope.upgradegiveuber))
-				}
+				GiveUpgradeMetal(medigunscope.target, medigunscope.upgradegive * medigunscope.upgradegiveuber)
 			}
 
 			if (medigunscope.construction != 1 && NetProps.GetPropInt(medigunscope.target, "m_bBuilding"))
@@ -511,19 +505,9 @@ function MedigunEnemyChecker()
 				NetProps.SetPropInt(medigunscope.target, "m_iAmmoRockets", min(NetProps.GetPropInt(medigunscope.target, "m_iAmmoRockets") + (medigunscope.ammogivebuildings),20)) // I don't think max rockets should ever change?
 			}
 
-			if (medigunscope.upgradegive && NetProps.GetPropInt(medigunscope.target, "m_bMiniBuilding") != 1 && NetProps.GetPropInt(medigunscope.target, "m_bIsUpgradable") && NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") < 3 && !NetProps.GetPropInt(medigunscope.target, "m_bBuilding"))
+			if (medigunscope.upgradegive)
 			{
-				local upgrade = NetProps.GetPropInt(medigunscope.target, "m_iUpgradeMetal")
-				local upgraderequire = NetProps.GetPropInt(medigunscope.target, "m_iUpgradeMetalRequired")
-				if (upgrade + (medigunscope.upgradegive) >= upgraderequire)
-				{
-					NetProps.SetPropInt(medigunscope.target, "m_iHighestUpgradeLevel", min(NetProps.GetPropInt(medigunscope.target, "m_iUpgradeLevel") + 1,3))
-					NetProps.SetPropInt(medigunscope.target, "m_iUpgradeMetal", 0)
-				}
-				else
-				{
-					NetProps.SetPropInt(medigunscope.target, "m_iUpgradeMetal", upgrade + (medigunscope.upgradegive))
-				}
+				GiveUpgradeMetal(medigunscope.target, medigunscope.upgradegive)
 			}
 
 			if (medigunscope.construction != 1 && NetProps.GetPropInt(medigunscope.target, "m_bBuilding"))
@@ -663,6 +647,24 @@ function MedigunEnemyChecker()
 			i += 1
 		}
 		medigunscope.lastattack = Time()
+	}
+
+	if (medigunscope.playerattrib[0] != "" && medigunscope.target && !IsBuilding(medigunscope.target))
+	{
+		target.AddCustomAttribute(medigunscope.playerattrib[0], medigunscope.playerattrib[1], 0.1)
+		if (medigunscope.playerattribextra[0] != "")
+		{
+			target.AddCustomAttribute(medigunscope.playerattribextra[0], medigunscope.playerattribextra[1], 0.1)
+		}
+	}
+
+	if (medigunscope.weaponattrib[0] != "" && medigunscope.target && !IsBuilding(medigunscope.target))
+	{
+		AddTimedWearerAttribute(target, medigunscope.weaponattrib[0], medigunscope.weaponattrib[1], 0.1)
+		if (medigunscope.weaponattribextra[0] != "")
+		{
+			target.AddCustomAttribute(medigunscope.weaponattribextra[0], medigunscope.weaponattribextra[1], 0.1)
+		}
 	}
 
 	return 0.05

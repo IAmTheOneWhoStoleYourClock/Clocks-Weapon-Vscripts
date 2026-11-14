@@ -65,7 +65,15 @@
 "medigun buildings construction mult"
 "medigun buildings construction uber mult"
 // Multiplies construction speed of buildings being healed by this by this by this much (effects both dispensers and jumppads at the same time because it has to)
-
+"medigun player attrib"
+// Attribute to be applied be applied to target.
+// Input as 'atrribname' value (ex: "medigun player attrib" "'max health additive bonus' 100")
+"medigun weapon attrib"
+// Attribute to be applied to all of the weapons of target.
+// Input as 'atrribname' value (ex: "medigun weapon attrib" "'damage bonus' 1.2")
+"medigun player attrib extra"
+"medigun weapon attrib extra"
+// Dupes of the above.
 
 "heal grenade hit heal mult"
 // A multplier for heal grenade healing. Will likely replace this with a heal rate fix in GF&A at some point, I just can't be bothered rn.
@@ -480,4 +488,40 @@ Essenally the same as the previous, down to the ability to colour it, but the in
 			"name"					"medigun buildings construction uber mult"
 			"description_format"	"value_is_percentage"
 			"effect_type"			"neutral"
+		}
+		"8011"
+		{
+			"name"	"medigun player attrib"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"attribute_type"		"string"
+			"stored_as_integer"	"0"
+		}
+		"8012"
+		{
+			"name"	"medigun weapon attrib"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"attribute_type"		"string"
+			"stored_as_integer"	"0"
+		}
+		"8013"
+		{
+			"name"	"medigun player attrib extra"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"attribute_type"		"string"
+			"stored_as_integer"	"0"
+		}
+		"8014"
+		{
+			"name"	"medigun weapon attrib extra"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"attribute_type"		"string"
+			"stored_as_integer"	"0"
 		}

@@ -24,6 +24,8 @@
 // Assigns the aura to a group as a bitflag, groups can only have 1 aura of their type effecting a player at once. The aura that is applied is of the aura user closest to that player.
 "custom aura priority"
 // Auras with a higher priority always are prioritized over auras with lower priorities, regardless of distance. Defaults to 0.
+"custom aura slot"
+// The aura should only be active while the weapon in this slot is active.
 
 
         "18006"
@@ -104,4 +106,12 @@
 			"description_format"	"value_is_additive"
 			"hidden"				"1"
 			"effect_type"			"neutral"
+		}
+		"18017"
+		{
+			"name"	"custom aura slot"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
 		}

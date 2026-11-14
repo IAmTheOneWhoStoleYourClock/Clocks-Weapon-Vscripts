@@ -18,7 +18,6 @@ if (!("auras" in getroottable())) {
 	function OnGameEvent_post_inventory_application(params)
 	{
 		local player = GetPlayerFromUserID(params.userid)
-
 		foreach (aura in auras)
 		{
 			if (player == aura[0])
@@ -42,11 +41,12 @@ if (!("auras" in getroottable())) {
 		local aurapriority = GetWearableAttribute(player,"custom aura priority", 0).tointeger()
 		local auraammo = GetWearableAttribute(player,"custom aura ammo", 0)
 		local auraammotime = GetWearableAttribute(player,"custom aura ammo time", 0)
+		local auraammoslot = GetWearableAttribute(player,"custom aura slot", 0)
 		if (aurahealtime < 0.5)
 		{
 			aurahealtime = 0.5
 		}
-		auras.append([player, auraradius, auracond, ProcessStringAttrib(auraplayerattrib), ProcessStringAttrib(auraweaponattrib), auraheal, aurahealtime, selfeffect, auragroup, aurapriority, auraammo, auraammotime])
+		auras.append([player, auraradius, auracond, ProcessStringAttrib(auraplayerattrib), ProcessStringAttrib(auraweaponattrib), auraheal, aurahealtime, selfeffect, auragroup, aurapriority, auraammo, auraammotime, auraammoslot])
 	}
 }
 
@@ -63,6 +63,11 @@ function CivCheck()
 			aura.remove(aura.find(aura))
 			continue
 		}
+		if (aura[12] && (!player.GetActiveWeapon() || aura[12] != player.GetActiveWeapon().GetSlot()))
+		{
+			continue
+		}
+		printl("ran2")
 		local targets = Entities.GetAllClassnameInRadius("player", player.GetOrigin(), aura[1])
 		foreach (target in targets)
 		{
