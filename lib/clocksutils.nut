@@ -132,7 +132,6 @@ __CollectGameEventCallbacks(LibraryTable)
 			} catch (exception){
 				printl(REAPEATINGTRACKER[i][1].getinfos().name + " - Threw an error! " + exception)
 			}
-
 			if (removal == false)
 			{
 				REAPEATINGTRACKER.remove(i)
@@ -663,11 +662,11 @@ function AddAttributeAfterTime(player, array)
 
 CTFPlayer.IsInValidState <- function()
 {
-	if (GetRoundState == 3)
+	if (GetRoundState() == 3)
 	{
 		return false
 	}
-	else if (GetWinningTeam() != 0 && GetWinningTeam() != this.GetTeam())
+	else if ((GetRoundState() == 5 || GetRoundState() == 7) && GetWinningTeam() != this.GetTeam())
 	{
 		return false
 	}
@@ -873,7 +872,7 @@ CEntities.GetAllClassnameInRadius <- function(classname, origin, radius)
 			}
 			split.insert(place, recomp)
 		}
-		if (["0","1", "2", "3", "4", "5", "6", "7", "8", "9"].find(text.slice(0,1)) != null) // Lazy check ik but it'll be correct in 99.9% of senarios.
+		if (["0","1", "2", "3", "4", "5", "6", "7", "8", "9","-"].find(text.slice(0,1)) != null) // Lazy check ik but it'll be correct in 99.9% of senarios.
 		{
 			local index = split.find(text)
 			split.remove(split.find(text))
@@ -940,6 +939,57 @@ CTFBot.GiveAllAmmoPercent <- CTFPlayer.GiveAllAmmoPercent
 		weapondef = 65535
 	}
 	return weapondef
+}
+
+::GetWeaponDefIndex <- function(weapon)
+{
+	local classname = weapon.GetClassname()
+	local weapondef = WeaponsClassesListCode.find(classname)
+	if (classname == "tf_weapon_katana")
+	{
+		weapondef = 64
+	}
+	else if (weapondef == null)
+	{
+		weapondef = 65535
+	}
+	return weapondef
+}
+
+::GiveUpgradeMetal <- function(building, amount)
+{
+	if (NetProps.GetPropInt(building, "m_bIsUpgradable") && NetProps.GetPropInt(building, "m_iUpgradeLevel") < 3 && NetProps.GetPropInt(building, "m_bMiniBuilding") != 1 && !NetProps.GetPropInt(building, "m_bBuilding"))
+	{
+		local upgrade = NetProps.GetPropInt(building, "m_iUpgradeMetal")
+		local upgraderequire = NetProps.GetPropInt(building, "m_iUpgradeMetalRequired")
+		local builder = NetProps.GetPropEntity(building, "m_hBuilder")
+		local id
+		if (builder)
+		{
+			id = builder.GetUserID()
+		}
+		else
+		{
+			return false // Just do nothing on buildings that don't have a builder, bad idea.
+		}
+		if (upgrade + (amount) >= upgraderequire)
+		{
+			NetProps.SetPropInt(building, "m_iHighestUpgradeLevel", NetProps.GetPropInt(building, "m_iUpgradeLevel") + 1)
+			SendGlobalGameEvent("player_upgradedobject", { userid = id, object = ["obj_dispenser", "obj_teleporter", "obj_sentrygun", "obj_sapperorsomethingthiscan'tupgradedwhocares" "obj_jumppad"].find(building.GetClassname()), index = building.GetEntityIndex(), isbuilder = true })
+			NetProps.SetPropInt(building, "m_iUpgradeMetal", 0)
+			building.ResetSequence(building.LookupSequence("ACT_OBJ_UPGRADING"))
+		}
+		else
+		{
+			NetProps.SetPropInt(building, "m_iUpgradeMetal", upgrade + (amount))
+		}
+		return true
+	}
+}
+
+::IsScriptedbuilding <- function(building)
+{
+	return building.GetScriptScope() && "compat" in building.GetScriptScope() // Why compat specifically??? Uh. Feel like it.
 }
 
 ::Bingus <- function()
