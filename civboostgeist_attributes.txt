@@ -16,7 +16,7 @@
 "civ boost ammo"
 // Give a boosted player this much (as a percentage) of their max ammo pool.
 "boost starts uncharged"
-// Your boost will have to charge when you get the weapon
+// Your boost will start at no charge when you get this umbrella
 "umbrella recharge rate wearer"
 // Modifies umbrella recharge rate on wearer
 "umbrella boost on hit add"
@@ -24,7 +24,7 @@
 "umbrella boost on hit percent"
 // Hits with this weapon will subtract the amount of damage dealt multiplied by this from the recharge time of an umbrella's boost
 "umbrella boost on hit percent wearer"
-// Hits with all weapons will subtract the amount of damage dealt multiplied by them from the recharge time of an umbrella's boost
+// Hits with all weapons will subtract the amount of damage dealt multiplied by this from the recharge time of an umbrella's boost
 
 		"8000"
 		{
