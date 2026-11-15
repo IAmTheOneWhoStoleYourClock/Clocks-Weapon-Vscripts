@@ -63,7 +63,7 @@ function CivCheck()
 			auras.remove(auras.find(aura))
 			continue
 		}
-		if (aura[12] && (!player.GetActiveWeapon() || aura[12] != player.GetActiveWeapon().GetSlot()))
+		if (aura[12] && (!player.GetActiveWeapon() || aura[12] - 1 != player.GetActiveWeapon().GetSlot()))
 		{
 			continue
 		}
