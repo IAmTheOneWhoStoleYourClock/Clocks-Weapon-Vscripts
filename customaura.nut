@@ -60,14 +60,13 @@ function CivCheck()
 		local player = aura[0]
 		if (!player || !player.IsValid() || !player.IsPlayer() || !player.IsAlive())
 		{
-			aura.remove(aura.find(aura))
+			auras.remove(auras.find(aura))
 			continue
 		}
 		if (aura[12] && (!player.GetActiveWeapon() || aura[12] != player.GetActiveWeapon().GetSlot()))
 		{
 			continue
 		}
-		printl("ran2")
 		local targets = Entities.GetAllClassnameInRadius("player", player.GetOrigin(), aura[1])
 		foreach (target in targets)
 		{
