@@ -370,7 +370,7 @@ function AreWeThereYet()
 		return 9
 	}
 	local pickeruper = Entities.FindByClassname(null, "player")
-	while (pickeruper != null && (!TouchingBBox(self, pickeruper) || pickeruper == self.GetOwner() || !CanBeHealedByHealthKits(pickeruper)))
+	while (pickeruper != null && (!TouchingBBox(self, pickeruper) || pickeruper == self.GetOwner() || !CanBeHealedByHealthKits(self, pickeruper)))
 	{
 		pickeruper = Entities.FindByClassname(pickeruper, "player")
 	}
@@ -426,19 +426,25 @@ function TouchingBBox(ent1, ent2)
 }
 
 // Can the player be healed by healthkits?
-function CanBeHealedByHealthKits(player)
+function CanBeHealedByHealthKits(entity, player)
 {
 	local activeweapon = player.GetActiveWeapon()
 	local overheal = GetWearableAttribute(player, "health kits can overheal on wearer", 0) + activeweapon.GetAttribute("health kits can overheal on active", 0)
 
 	local owner
-	if (self.GetContext("TrueOwner") != "")
+	if (entity.GetContext("TrueOwner") != "")
 	{
-		owner = EntIndexToHScript(self.GetContext("TrueOwner").tointeger())
+		owner = EntIndexToHScript(entity.GetContext("TrueOwner").tointeger())
 	}
 	else
 	{
-		owner = self.GetOwner()
+		owner = entity.GetOwner()
+	}
+
+	if (!owner)
+	{
+		// How
+		return false
 	}
 
 	local enemy = false
@@ -465,7 +471,7 @@ function CanBeHealedByHealthKits(player)
 		(player.GetMaxHealth() > player.GetHealth()) ||
 		(overheal > 0 && player.GetMaxHealth() * 1.5 * GetWearableAttribute(player, "patient overheal penalty", 1) > player.GetHealth()) ||
 		// This entire last condition is purely so that sandviches that deal damage to enemies are allowed through. Hopefully shouldn't decrease efficency TOO much?
-		(enemy && overheal > 0 && ((player.GetMaxHealth() * PACKSTABLE[self.GetClassname()] * GetWearableAttribute(owner, "sandvich enemy healing", 1)) + GetWearableAttribute(owner, "sandvich enemy healing additive", 0)) < 0)
+		(enemy && overheal > 0 && ((player.GetMaxHealth() * PACKSTABLE[entity.GetClassname()] * GetWearableAttribute(owner, "sandvich enemy healing", 1)) + GetWearableAttribute(owner, "sandvich enemy healing additive", 0)) < 0)
 	)
 }
 
