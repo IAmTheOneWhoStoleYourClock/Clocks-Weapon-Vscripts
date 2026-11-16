@@ -9,7 +9,7 @@
 // NOTE: THIS PLUGIN IS INTENDED TO BE USED WITH TASER ATTRIBUTE SELF SPLICING
 // if you have no idea what that means, @theclockstealer in #modding-discussion in the TF2C discord server, because it's complicated!
 
-Convars.RegisterConvar("cvs_notaser_charge_default", "0", "Should the taser not start with boost by default?", 0)
+Convars.RegisterConvar("cvs_notasercharge_default", "0", "Should the taser not start with boost by default?", 0)
 
 IncludeScript("lib/clocksutils.nut");
 
@@ -145,7 +145,7 @@ IncludeScript("lib/clocksutils.nut");
 		{
 			taser.AddAttribute("effect bar recharge rate VSCRIPT", GetWearableAttribute(player, "taser recharge rate wearer", 1), 0)
 			local nocharge = taser.GetAttribute("taser starts uncharged", 0)
-			if (nocharge || Convars.GetBool("cvs_notaser_charge_default"))
+			if (nocharge || Convars.GetBool("cvs_notasercharge_default"))
 			{
 				local chargetime = 30 * taser.GetAttribute("effect bar recharge rate VSCRIPT", 1) * taser.GetAttribute("effect bar recharge rate increased", 1) * taser.GetAttribute("effect bar recharge rate decreased", 1)
 				local expendedtime = Time() - taser.GetContext("rechargestarttime").tofloat()
