@@ -31,15 +31,15 @@
 "taser enemy weapon attrib full only"
 // Same as before, but only at full charge.
 "taser cond to self"
-// Apply a condition onto yourself when you boost (ex: "taser cond to self" "11 1")
+// Apply a condition onto yourself when you charge a teammate (ex: 12, 1)
 "taser player attrib to self"
-// Apply an attribute onto yourself. (Wearable attributes.)
+// Apply an attribute onto yourself when you charge a teammate. (Wearable attributes.)
 // Input as 'atrribname', value, time (ex: "taser player attrib to self" "'max health additive bonus' 100 3")
 "taser weapon attrib to self"
-// Apply an attribute onto all of your weapons.
+// Apply an attribute onto all of your weapons when you charge a teammate.
 // Input as 'atrribname', value, time (ex: "taser weapon attrib to self" "'damage bonus' 1.2 8")
 "taser weapon attrib to taser"
-// Apply an attribute onto the taser.
+// Apply an attribute onto the taser when you charge a teammate.
 // Input as 'atrribname', value, time (ex: "taser weapon attrib to taser" "'damage bonus' 1.2 8")
 "taser starts uncharged"
 // Your boost will start at no charge when you get this taser and will not regain ammo upon resupply
