@@ -25,7 +25,7 @@
 "custom aura priority"
 // Auras with a higher priority always are prioritized over auras with lower priorities, regardless of distance. Defaults to 0.
 "custom aura slot"
-// The aura should only be active while the weapon in this slot is active.
+// The aura should only be active while the weapon in this slot (As a number, like how bucket works + 1) is active.
 
 
         "18006"
