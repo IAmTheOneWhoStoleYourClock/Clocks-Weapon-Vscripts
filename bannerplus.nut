@@ -38,7 +38,7 @@ BannerBoomOffset <- Vector(0, 0, 30)
 			// Some of these will have bannertime + 1, because the effect actually ends in bannertime + 1 seconds, where as the banner itself stops at bannertime
 			player.AddCustomAttribute("major move speed bonus", speedup, bannertime + 1)
 		}
-		local condition = weapon.GetAttribute("banner effect", 0)
+		local condition = GetWearableAttribute(player,"banner effect", 0) //weapon.GetAttribute("banner effect", 0)
 		if (condition != 0)
 		{
 			player.AddCondEx(condition, bannertime + 1, player)
