@@ -19,7 +19,7 @@ IncludeScript("lib/clocksutils.nut");
 		}
 		local weapon = EntIndexToHScript(params.entindex)
 		local owner = EntIndexToHScript(params.owner_entindex)
-		if (Convars.GetBool("cvs_armor_base_protection") || weapon.GetAttribute("boost starts uncharged", 0))
+		if (Convars.GetBool("cvs_noboost_default") || weapon.GetAttribute("boost starts uncharged", 0))
 		{
 			local delay = Convars.GetFloat("tf2c_vip_boost_cooldown") * weapon.GetAttribute("umbrella recharge rate increased", 1) * weapon.GetAttribute("umbrella recharge rate decreased", 1) * weapon.GetAttribute("umbrella recharge rate VSCRIPT", 1)
 			FunctionInTime(SetDelay, 0, [weapon, delay])
