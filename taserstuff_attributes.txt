@@ -31,7 +31,7 @@
 "taser enemy weapon attrib full only"
 // Same as before, but only at full charge.
 "taser cond to self"
-// Apply a condition onto yourself when you boost (ex: 12, 1)
+// Apply a condition onto yourself when you boost (ex: "taser cond to self" "11 1")
 "taser player attrib to self"
 // Apply an attribute onto yourself. (Wearable attributes.)
 // Input as 'atrribname', value, time (ex: "taser player attrib to self" "'max health additive bonus' 100 3")
