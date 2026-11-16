@@ -19,16 +19,21 @@ IncludeScript("lib/clocksutils.nut");
 		}
 		local weapon = EntIndexToHScript(params.entindex)
 		local owner = EntIndexToHScript(params.owner_entindex)
-		local boostmodwearer = GetWearableAttribute(owner, "umbrella recharge rate wearer", 1)
-		if (boostmodwearer != 1)
-		{
-			weapon.AddAttribute("umbrella recharge rate VSCRIPT", boostmodwearer, 0)
-		}
 		if (Convars.GetBool("cvs_armor_base_protection") || weapon.GetAttribute("boost starts uncharged", 0))
 		{
 			local delay = Convars.GetFloat("tf2c_vip_boost_cooldown") * weapon.GetAttribute("umbrella recharge rate increased", 1) * weapon.GetAttribute("umbrella recharge rate decreased", 1) * weapon.GetAttribute("umbrella recharge rate VSCRIPT", 1)
 			FunctionInTime(SetDelay, 0, [weapon, delay])
 		}
+	}
+	function OnGameEvent_post_inventory_application(params)
+	{
+		local player = GetPlayerFromUserID(params.userid)
+		local umbrella = GetWeaponByClass(player, "tf2c_weapon_umbrella")
+		if (!umbrella)
+		{
+			return
+		}
+		umbrella.AddAttribute("umbrella recharge rate VSCRIPT", GetWearableAttribute(owner, "umbrella recharge rate wearer", 1), 0)
 	}
 	function OnGameEvent_vip_boost(params)
 	{
@@ -53,6 +58,12 @@ IncludeScript("lib/clocksutils.nut");
 		if (selfweaponattrib[0] != "")
 		{
 			AddTimedWearerAttribute(player, selfweaponattrib[0], selfweaponattrib[1], selfweaponattrib[2])
+		}
+
+		local weaponattrib = ProcessStringAttrib(weapon.GetAttributeString("civ boost umbrella attrib", ""))
+		if (weaponattrib[0] != "")
+		{
+			AddTimedAttribute(weapon, weaponattrib[0], weaponattrib[1], weaponattrib[2])
 		}
 
 		local extracond = ProcessStringAttrib(weapon.GetAttributeString("civ boost extra cond", ""))

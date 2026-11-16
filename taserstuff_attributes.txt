@@ -13,12 +13,54 @@
 // Same as before, but only at full charge.
 "add give health to teammate on hit self scale"
 // Scales how much health is taken by "add give health to teammate on hit" from you.
-
+"taser ally player attrib"
+// Apply an attribute onto the allied player. (Wearable attributes.)
+// Input as 'atrribname', value, time (ex: "taser ally player attrib"	"'max health additive bonus' 100 3")
+"taser ally weapon attrib"
+// Apply an attribute onto all of the weapons of an friendly player.
+// Input as 'atrribname', value, time (ex: "taser ally weapon attrib"	"'damage bonus' 1.2 8")
+"taser enemy player attrib"
+// Apply an attribute onto the enemy player. (Wearable attributes.)
+// Input as 'atrribname', value, time (ex: "taser enemy player attrib"	"'max health additive bonus' 100 3")
+// Duration is based on charge. (applied after minimum 25% charge)
+"taser enemy weapon attrib"
+// Apply an attribute onto all of the weapons of an enemy player.
+// Input as 'atrribname', value, time (ex: "taser enemy weapon attrib"	"'damage bonus' 1.2 8")
+// Duration is based on charge. (applied after minimum 25% charge)
+"taser enemy player attrib full only"
+"taser enemy weapon attrib full only"
+// Same as before, but only at full charge.
+"taser cond to self"
+// Apply a condition onto yourself when you boost (ex: 12, 1)
+"taser player attrib to self"
+// Apply an attribute onto yourself. (Wearable attributes.)
+// Input as 'atrribname', value, time (ex: "taser player attrib to self" "'max health additive bonus' 100 3")
+"taser weapon attrib to self"
+// Apply an attribute onto all of your weapons.
+// Input as 'atrribname', value, time (ex: "taser weapon attrib to self" "'damage bonus' 1.2 8")
+"taser weapon attrib to taser"
+// Apply an attribute onto the taser.
+// Input as 'atrribname', value, time (ex: "taser weapon attrib to taser" "'damage bonus' 1.2 8")
+"taser starts uncharged"
+// Your boost will start at no charge when you get this taser and will not regain ammo upon resupply
+"taser recharge rate wearer"
+// Modifies taser recharge rate on wearer
+"taser charge on hit add"
+// Hits with this weapon will subtract this much time in seconds from the recharge time of a taser
+"taser charge on hit percent"
+// Hits with this weapon will subtract the amount of damage dealt multiplied by this from the recharge time a taser
+"taser charge on hit percent wearer"
+// Hits with all weapons will subtract the amount of damage dealt multiplied by this from the recharge time a taser
+"taser enemy no charge decay"
+// Hitting enemies with this taser does not consume charge.
 
 "ubercharge rate penalty VSCRIPT"
 // Needed for "ubercharge rate penalty on wearer". Do not use manually.
+"effect bar recharge rate VSCRIPT"
+// Needed for "taser recharge rate wearer". Do not use manually.
 
-       "15320"
+
+      		"15320"
 		{
 			"name"					"taser cap"
 			"description_format"	"value_is_additive"
@@ -125,4 +167,135 @@
 			"hidden"	"1"
 			"effect_type"	"positive"
 			"stored_as_integer"	"0"
+		}
+		
+		"8022"
+		{
+			"name"	"taser starts uncharged"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"negative"
+		}
+		"8023"
+		{
+			"name"	"taser recharge rate wearer"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"positive"
+		}
+		"8024"
+		{
+			"name"	"taser charge on hit add"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+		}
+		"8025"
+		{
+			"name"	"taser charge on hit percent"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+		}
+		"8026"
+		{
+			"name"	"taser charge on hit percent wearer"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+		}
+		"8027"
+		{
+			"name"	"effect bar recharge rate VSCRIPT"
+			"attribute_class"	"effectbar_recharge_rate"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"positive"
+		}
+		"8028"
+		{
+			"name"	"taser enemy no charge decay"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"positive"
+		}
+		"8029"
+		{
+			"name"	"taser cond to self"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"	"1"
+			"effect_type"	"positive"
+		}
+		"8030"
+		{
+			"name"	"taser player attrib to self"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"	"1"
+			"effect_type"	"positive"
+		}
+		"8031"
+		{
+			"name"	"taser weapon attrib to self"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"	"1"
+			"effect_type"	"positive"
+		}
+		"8032"
+		{
+			"name"	"taser weapon attrib to taser"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"	"1"
+			"effect_type"	"positive"
+		}
+		"8034"
+		{
+			"name"	"taser ally player attrib"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"	"1"
+			"effect_type"	"positive"
+		}
+		"8035"
+		{
+			"name"	"taser ally weapon attrib"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"	"1"
+			"effect_type"	"positive"
+		}
+		"8036"
+		{
+			"name"	"taser enemy player attrib"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"	"1"
+			"effect_type"	"positive"
+		}
+		"8037"
+		{
+			"name"	"taser enemy weapon attrib"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"	"1"
+			"effect_type"	"positive"
+		}
+		"8038"
+		{
+			"name"	"taser enemy player attrib full only"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"	"1"
+			"effect_type"	"positive"
+		}
+		"8039"
+		{
+			"name"	"taser enemy weapon attrib full only"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"hidden"	"1"
+			"effect_type"	"positive"
 		}
