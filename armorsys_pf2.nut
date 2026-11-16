@@ -280,6 +280,7 @@ if (!("playercurrarmor" in getroottable())) {
 			if (damage <= 0)
 			{
 				//Ignore
+				player.SetArmor(armor)
 				return true
 			}
 			ToggleArmor(player, true)

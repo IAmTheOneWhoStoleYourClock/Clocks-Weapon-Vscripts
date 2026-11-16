@@ -168,6 +168,7 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 			if (damage <= 0)
 			{
 				//Why?
+				player.SetArmor(armor)
 				return false
 			}
 			local scriptscope = player.GetOrCreatePrivateScriptScope()
