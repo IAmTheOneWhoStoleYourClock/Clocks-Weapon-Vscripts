@@ -235,16 +235,16 @@ BannerBoomOffset <- Vector(0, 0, 30)
 			player.AddCondEx(139, 1, owner) // Give it this condition so that there's a visual identifier!
 		}
 
-		local playerattrib = ProcessStringAttrib(weapon.GetAttributeString("banner buff player attrib", ""))
+		local playerattrib = ProcessStringAttrib(GetWearableAttributeString(owner,"banner buff player attrib", ""))
 		if (playerattrib[0] != "")
 		{
-			buffed.AddCustomAttribute(playerattrib[0], playerattrib[1], 1)
+			player.AddCustomAttribute(playerattrib[0], playerattrib[1], 1)
 		}
 
-		local weaponattrib = ProcessStringAttrib(weapon.GetAttributeString("banner buff weapon attrib", ""))
+		local weaponattrib = ProcessStringAttrib(GetWearableAttributeString(owner,"banner buff weapon attrib", ""))
 		if (weaponattrib[0] != "")
 		{
-			AddTimedWearerAttribute(buffed, weaponattrib[0], weaponattrib[1], 1)
+			AddTimedWearerAttribute(player, weaponattrib[0], weaponattrib[1], 1)
 		}
 
 		local bannerdefense = GetWearableAttribute(owner,"banner defense", 1)
