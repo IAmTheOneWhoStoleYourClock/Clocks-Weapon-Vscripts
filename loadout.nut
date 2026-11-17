@@ -237,6 +237,19 @@ local locked = false
 				{
 					locked = true
 					player.GenerateAndWearItem(fallbacklist[player.GetPlayerClass() - 1][slot])
+
+					// Medival mode hack fix
+					local newweapon = GetWeaponInSlot(player, slot)
+					if (Convars.GetBool("tf_medieval") && !((MedievalWeapons.find(newweapon.GetClassname()) != null && !newweapon.GetAttribute("banned in medieval mode", 0)) || newweapon.GetAttribute("allowed in medieval mode", 0)))
+					{
+						local wearable = NetProps.GetPropEntity(newweapon, "m_hExtraWearable")
+						if (wearable)
+						{
+							wearable.Kill()
+						}
+						newweapon.Kill()
+					}
+
 					locked = false
 				}
 			}
