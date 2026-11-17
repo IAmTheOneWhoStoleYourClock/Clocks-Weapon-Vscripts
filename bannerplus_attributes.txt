@@ -26,6 +26,12 @@
 // You explode when you finish blowing your banner. Also releases a massive explosion particle (the same one from "use large smoke explosion").
 // Explosion does 300 damage by default, which can be adjusted with "blast splash damage decreased"
 // Otherwise functions as a "normal" grenade and be modified as such.
+"banner buff player attrib"
+// Apply an attribute onto the player on boosting. (Wearable attributes.)
+// Input as 'atrribname', value, time (ex: "banner buff player attrib"	"'max health additive bonus' 100 3")
+"banner buff weapon attrib"
+// Apply and attribute onto all of the weapons of a boosted player.
+// Input as 'atrribname', value, time (ex: "banner buff weapon attrib"	"'damage bonus' 1.2 8")
 
         "17670"
 		{
@@ -137,4 +143,23 @@ Loot effects melees 25% more"
 			"name"					"banner explodes"
 			"description_format"	"value_is_additive"
 			"effect_type"			"neutral"
+		}
+
+		"17982"
+		{
+			"name"	"banner buff player attrib"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"17983"
+		{
+			"name"	"banner buff weapon attrib"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
 		}
