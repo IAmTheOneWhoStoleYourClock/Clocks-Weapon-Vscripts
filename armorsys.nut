@@ -24,7 +24,7 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 			NetProps.SetPropInt(player, "m_ArmorValue", armor)
 			armoredplayers.append(player)
 		}
-		else if (player in armoredplayers)
+		else if (armoredplayers.find(player) != null)
 		{
 			NetProps.SetPropInt(player, "m_ArmorValue", 0)
 			local playerindex = armoredplayers.find(player)
@@ -210,7 +210,7 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 				armorprotection *= GetWearableAttribute(player, "mult armor minicrit protection", 1)
 			}
 
-			if (scriptscope.weaponbuffer)
+			if (scriptscope.weaponbuffer && scriptscope.weaponbuffer.IsWeapon())
 			{
 				armorratio *= scriptscope.weaponbuffer.GetAttribute("mult damage to armor", 1)
 				armorprotection *= scriptscope.weaponbuffer.GetAttribute("mult armor pierce", 1)

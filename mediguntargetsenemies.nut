@@ -429,7 +429,6 @@ function MedigunEnemyChecker()
 	if (medigunscope.target && IsBuilding(medigunscope.target) && !medigunscope.isusinguber) // For enemy buildings, just use the building rate.
 	{
 		self.AddAttribute("ubercharge rate penalty VSCRIPT", 0, 0)
-		printl(medigunscope.uberratebuildings)
 		NetProps.SetPropFloat(self, "m_flChargeLevel", min(medigunscope.uber + (medigunscope.uberratebuildings)/762,1)) // 381 is a magic number
 		medigunscope.uber += (medigunscope.uberratebuildings)/762
 	}
