@@ -303,7 +303,7 @@ function DispenserArmorCheck(entity)
 
 function CartDispenserArmorCheck(cart)
 {
-	if (PointsMayBeCaptured() && !NetProps.GetPropInt(cart,"m_bDisabled"))
+	if (cart && PointsMayBeCaptured() && !NetProps.GetPropInt(cart,"m_bDisabled"))
 	{
 		local BBox = Vector(128,128,64)
 		local player = Entities.FindByClassnameWithinBox(null, "player", -BBox + cart.GetOrigin(), BBox + cart.GetOrigin())
@@ -311,7 +311,8 @@ function CartDispenserArmorCheck(cart)
 		while (player && player != prev)
 		{
 			// Assume The map maker isn't doing cursed garbage cause I CAN'T ACCOUNT FOR THAT!!!!
-			if (player.GetTeam() == cart.GetTeam() && Entities.FindByClassnameNearest("trigger_capture_area", cart.GetOrigin(), 100000000000).IsTouching(player))
+			local caparea = Entities.FindByClassnameNearest("trigger_capture_area", cart.GetOrigin(), 100000000000)
+			if (player.GetTeam() == cart.GetTeam() && caparea && caparea.IsTouching(player))
 			{
 				local pc = player.GetPlayerClass() - 1
 				local cap = GetWearableAttribute(player, "armor cap", 0)

@@ -165,7 +165,7 @@ if (!("playercurrarmor" in getroottable())) {
 		local prev = null
 		while (cart && cart != prev)
 		{
-			EntFireByHandle(cart, "CallScriptFunction", "CartDispenserArmorCheck", generalstats[4], null, null)
+			ReapeatingFunctionInTime(CartDispenserArmorCheck, generalstats[4], [cart])
 			prev = cart
 			cart = Entities.FindByClassname(null, "mapobj_cart_dispenser")
 		}
@@ -493,10 +493,9 @@ function DispenserArmorCheck()
 	}
 }
 
-function CartDispenserArmorCheck()
+function CartDispenserArmorCheck(self)
 {
-	EntFireByHandle(self, "CallScriptFunction", "CartDispenserArmorCheck", generalstats[4], null, null)
-	if (PointsMayBeCaptured && !NetProps.GetPropInt(self,"m_bDisabled"))
+	if (self && PointsMayBeCaptured && !NetProps.GetPropInt(self,"m_bDisabled"))
 	{
 		local BBox = Vector(128,128,64)
 		local player = Entities.FindByClassnameWithinBox(null, "player", -BBox + self.GetOrigin(), BBox + self.GetOrigin())
@@ -504,7 +503,8 @@ function CartDispenserArmorCheck()
 		while (player && player != prev)
 		{
 			// Assume The map maker isn't doing cursed garbage cause I CAN'T ACCOUNT FOR THAT!!!!
-			if (player.GetTeam() == self.GetTeam() && Entities.FindByClassnameNearest("trigger_capture_area", self.GetOrigin(), 100000000000).IsTouching(player))
+			local caparea = Entities.FindByClassnameNearest("trigger_capture_area", cart.GetOrigin(), 100000000000)
+			if (player.GetTeam() == self.GetTeam() && caparea && caparea.IsTouching(player))
 			{
 				local pc = player.GetPlayerClass() - 1
 				local cap = GetWearableAttribute(player, "armor cap", 0) + durabiltylist[pc][0]
