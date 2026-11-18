@@ -77,11 +77,9 @@ function CivCheck()
 				{
 					foreach (effect in auraeffects)
 					{
-						printl(effect[2][8] & aura[8])
 						if (effect[0] == target && effect[2][8] & aura[8] && effect[2][9] <= aura[9])
 						{
 							local length = (target.EyePosition() - player.EyePosition()).Length()
-							printl(effect[2][9] < aura[9])
 							if (effect[1] > length || effect[2][9] < aura[9])
 							{
 								auraeffects.remove(auraeffects.find(effect))

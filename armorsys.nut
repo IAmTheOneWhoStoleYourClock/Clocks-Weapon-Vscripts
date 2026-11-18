@@ -24,7 +24,7 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 			NetProps.SetPropInt(player, "m_ArmorValue", armor)
 			armoredplayers.append(player)
 		}
-		else if (player in armoredplayers)
+		else if (armoredplayers.find(player) != null)
 		{
 			NetProps.SetPropInt(player, "m_ArmorValue", 0)
 			local playerindex = armoredplayers.find(player)
@@ -210,7 +210,7 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 				armorprotection *= GetWearableAttribute(player, "mult armor minicrit protection", 1)
 			}
 
-			if (scriptscope.weaponbuffer)
+			if (scriptscope.weaponbuffer && scriptscope.weaponbuffer.IsWeapon())
 			{
 				armorratio *= scriptscope.weaponbuffer.GetAttribute("mult damage to armor", 1)
 				armorprotection *= scriptscope.weaponbuffer.GetAttribute("mult armor pierce", 1)
@@ -303,7 +303,7 @@ function DispenserArmorCheck(entity)
 
 function CartDispenserArmorCheck(cart)
 {
-	if (PointsMayBeCaptured() && !NetProps.GetPropInt(cart,"m_bDisabled"))
+	if (cart && PointsMayBeCaptured() && !NetProps.GetPropInt(cart,"m_bDisabled"))
 	{
 		local BBox = Vector(128,128,64)
 		local player = Entities.FindByClassnameWithinBox(null, "player", -BBox + cart.GetOrigin(), BBox + cart.GetOrigin())
@@ -311,7 +311,8 @@ function CartDispenserArmorCheck(cart)
 		while (player && player != prev)
 		{
 			// Assume The map maker isn't doing cursed garbage cause I CAN'T ACCOUNT FOR THAT!!!!
-			if (player.GetTeam() == cart.GetTeam() && Entities.FindByClassnameNearest("trigger_capture_area", cart.GetOrigin(), 100000000000).IsTouching(player))
+			local caparea = Entities.FindByClassnameNearest("trigger_capture_area", cart.GetOrigin(), 100000000000)
+			if (player.GetTeam() == cart.GetTeam() && caparea && caparea.IsTouching(player))
 			{
 				local pc = player.GetPlayerClass() - 1
 				local cap = GetWearableAttribute(player, "armor cap", 0)
