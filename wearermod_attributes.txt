@@ -1,3 +1,11 @@
+{slot} - Slot as text:
+primary
+secondary
+melee
+pda
+pda2
+utility
+
 "{slot} clip size"
 // Self explanatory
 "{slot} damage"
@@ -6,6 +14,9 @@
 // melee swing speed modifier for other weapons
 "heal on kill wearer"
 // Self explanatory
+"{slot} attributes"
+// Add these attributes to this slot (ex: 'damage bonus' 1.2 'fire rate bonus' 0.8)
+
 "{type} VSCRIPT"
 // Functional attributes, do not use manually.
 
@@ -134,4 +145,53 @@
 			"description_string"	"Secondaries deal %s1% less damage"
 			"description_format"	"value_is_percentage"
 			"effect_type"			"negative"
+		}
+
+		"20000"
+		{
+			"name"					"primary attributes"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"attribute_type"		"string"
+			"effect_type"			"positive"
+		}
+		"20001"
+		{
+			"name"					"secondary attributes"
+			""description_format"	"value_is_additive"
+			"hidden"	"1"
+			"attribute_type"		"string"
+			"effect_type"			"positive"
+		}
+		"20002"
+		{
+			"name"					"melee attributes"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"attribute_type"		"string"
+			"effect_type"			"positive"
+		}
+		"20003"
+		{
+			"name"					"pda attributes"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"attribute_type"		"string"
+			"effect_type"			"positive"
+		}
+		"20004"
+		{
+			"name"					"pda2 attributes"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"attribute_type"		"string"
+			"effect_type"			"positive"
+		}
+		"20005"
+		{
+			"name"					"utility attributes"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"attribute_type"		"string"
+			"effect_type"			"positive"
 		}
