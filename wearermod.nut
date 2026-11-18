@@ -70,7 +70,7 @@ function AttribMod(player, weapon)
 	{
 		for (local i = 0; i < secondaryattribs.len(); i += 2)
 		{
-			AttributeWeaponInSlot(player, 0, secondaryattribs[i], secondaryattribs[i+1])
+			AttributeWeaponInSlot(player, 1, secondaryattribs[i], secondaryattribs[i+1])
 		}
 	}
 	local meleeattribs = ProcessStringAttrib(weapon.GetAttributeString(player, "melee attributes",""))
@@ -78,7 +78,7 @@ function AttribMod(player, weapon)
 	{
 		for (local i = 0; i < meleeattribs.len(); i += 2)
 		{
-			AttributeWeaponInSlot(player, 0, meleeattribs[i], meleeattribs[i+1])
+			AttributeWeaponInSlot(player, 2, meleeattribs[i], meleeattribs[i+1])
 		}
 	}
 	local pdaattribs = ProcessStringAttrib(weapon.GetAttributeString(player, "pda attributes",""))
@@ -86,7 +86,7 @@ function AttribMod(player, weapon)
 	{
 		for (local i = 0; i < pdaattribs.len(); i += 2)
 		{
-			AttributeWeaponInSlot(player, 0, pdaattribs[i], pdaattribs[i+1])
+			AttributeWeaponInSlot(player, 3, pdaattribs[i], pdaattribs[i+1])
 		}
 	}
 	local pda2attribs = ProcessStringAttrib(weapon.GetAttributeString(player, "pda2 attributes",""))
@@ -94,7 +94,7 @@ function AttribMod(player, weapon)
 	{
 		for (local i = 0; i < pda2attribs.len(); i += 2)
 		{
-			AttributeWeaponInSlot(player, 0, pda2attribs[i], pda2attribs[i+1])
+			AttributeWeaponInSlot(player, 4, pda2attribs[i], pda2attribs[i+1])
 		}
 	}
 	local utilityattribs = ProcessStringAttrib(weapon.GetAttributeString(player, "utility attributes",""))
@@ -102,7 +102,7 @@ function AttribMod(player, weapon)
 	{
 		for (local i = 0; i < utilityattribs.len(); i += 2)
 		{
-			AttributeWeaponInSlot(player, 0, utilityattribs[i], utilityattribs[i+1])
+			AttributeWeaponInSlot(player, 5, utilityattribs[i], utilityattribs[i+1])
 		}
 	}
 }
