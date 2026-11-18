@@ -15,7 +15,7 @@ utility
 "heal on kill wearer"
 // Self explanatory
 "{slot} attributes"
-// Add these attributes to this slot (ex: 'damage bonus' 1.2 'fire rate bonus' 0.8)
+// Add these attributes to this slot (ex: "{slot} attributes" "'damage bonus' 1.2 'fire rate bonus' 0.8")
 
 "{type} VSCRIPT"
 // Functional attributes, do not use manually.
