@@ -395,6 +395,180 @@ Model: Valve, SpaceChem"
 			"drop_sound"		"ui/item_metal_weapon_drop.wav"
 		}
 
+		"9920"
+		{
+			"name"					"TF_WEAPON_COILWRENCH"
+			"prefab"					"weapon_wrench"
+			"item_class"				"tf_weapon_wrench"
+			"item_quality"				"rarity3"
+			"show_in_armory"			"1"
+			"item_slot"					"melee"
+			"anim_slot"					"melee"
+
+			"propername"				"1"
+			"item_name"					"Hit Induction"
+			"item_type_name"				"Homemade Wrench"
+			"item_description" "'How's this for a manicure sissy!'
+  
+Model by: 'Rapoza'
+Building by: 'AyesDyef', 'wanard'
+Weapon by: IAmTheOneWhoStoleYourClock"
+			"item_logname"				"coilwrench"
+			"item_iconname"				"coilwrench"
+			"image_inventory"				"backpack/coilwrench/coilwrench.vtf"
+			"model_world"				"models/weapons/c_models/c_coilwrench/w_coilwrench.mdl"
+			"model_player"				"models/weapons/c_models/c_coilwrench/v_model/v_coilwrench.mdl"
+			"attach_to_hands"				"2"
+			"used_by_classes"
+			{
+				"engineer"				"2"
+			}
+			"static_attrs"
+			{
+				"sentry level 1 blueprint model"	"models\buildables\blingtry1_blueprint.mdl"
+				"sentry level 1 contruction model" 	"models\buildables\blingtry1_heavy.mdl"
+				"sentry level 1 model" 				"models\buildables\blingtry1.mdl"
+				"sentry level 2 blueprint model"	"models\buildables\blingtry1_blueprint.mdl"
+				"sentry level 2 contruction model" 	"models\buildables\blingtry2_heavy.mdl"
+				"sentry level 2 model" 				"models\buildables\blingtry2.mdl"
+				"sentry level 3 blueprint model"	"models\buildables\blingtry1_blueprint.mdl"
+				"sentry level 3 contruction model" 	"models\buildables\blingtry3_heavy.mdl"
+				"sentry level 3 model" 				"models\buildables\blingtry3.mdl"
+
+				"sentry health mult"				"1.4"
+				"sentry health increased"			"1.4"
+				"engy sentry bullets mult"			"10"
+				"engy sentry spread"				"0.125 0.125 0.125"
+				"engy sentry spread mult levels"	"1 0.8 0.6" // Spread decreases by 20% per level
+
+				"engy sentry bullet damage levels"	"0.175 0.2 0.225" // 175%/200%/225% base damage
+				"engy sentry fire rate levels"		"1 1.334 1" //50%/75%/100% fire rate
+				"engy sentry nonbullet damage levels" "0.8 0.8 0.8" // Flat 80 laser damage
+				"engy sentry MOOF"					"2000" // I don't think this is *quite* fast enough to bounce but I could be wrong tbh
+
+				"sentry compatability"				"2"
+			}
+			"attributes" //TO DO: Custom building for this? Would be a pain in my butt...
+			{
+				"set sentry rocket"
+				{
+					"attribute_class"	"set_sentry_rocket"
+					"value" 			"33"
+				}
+				//"Set DamageType Ignite"
+				//{
+				//	"attribute_class"	"set_dmgtype_ignite"
+				//	"value"				"1"
+				//}
+				"Construction rate increased"
+				{
+					"attribute_class"	"mult_construction_value"
+					"value"				"1.5"
+				}
+				//"weapon burn dmg increased"
+				//{
+				//	"attribute_class"	"mult_wpn_burndmg"
+				//	"value"				"3"
+				//}
+				"Repair rate decreased"															// I don't know if this works. I think it does.
+				{
+					"attribute_class"	"mult_repair_value"
+					"value"				"0.75"
+				}
+				//"weapon burn time reduced"
+				//{
+				//	"attribute_class"	"mult_wpn_burntime"
+				//	"value"				"0.5"
+				//}
+				//"damage penalty"
+				//{
+				//	"attribute_class"	"mult_dmg"
+				//	"value"				"0.34"
+				//}
+				"shotgun sentry"
+				{
+					"attribute_class"	"DISPLAY_ONLY"
+					"value"				"1"
+				}
+				"hidden separator" "1"
+				"engy sentry fire rate increased"
+				{
+					"attribute_class"	"mult_sentry_firerate"
+					"value"				"0.5"
+				}
+				"engy sentry burstfire"
+				{
+					"attribute_class"	"VSCRIPT"
+					"value"				"3 2.5"
+				}
+			}
+			"visuals"
+			{
+			}
+		}
+
+		"13351"																					// Another unused weapon! This one lets you deploy buildings remotely, either by hitting it with a Wrench, or activating "Build" again.
+        {
+            "name"						"TF_WEAPON_WHY_DID_I_MAKE_THIS"
+            "item_class"				"tf_weapon_pda_engineer_build"
+			"item_slot"					"pda"
+            "show_in_armory"			"1"
+
+			"item_quality"				"rarity3"
+			"item_name"					"PDA: Speedy Assistant"
+			"item_type_name"			"#TF_Weapon_PDA_Engineer"
+			"item_description"			"Those crazy overpaid tech 'visonaries' produce something that actually seems like a not awful idea occasionally.
+Of course it's locked behind their robotic assistant, and I could only get the ''for the pawed'' version...
+
+Model by: Lime Man, MrFunReal
+OC by: The Nameless Dude
+Building by: Mr_Ysachov
+Weapon by: IAmTheOneWhoStoleYourClock"
+			"image_inventory"			"backpack/weapons/w_models/w_assistant_pda_large"			// Prior to 2.2.5, this used the Rush Order's teamcolored PDA model, but I felt that model fit more on that one.
+			"model_world"				"models/weapons/w_models/w_assistant_pda/w_assistant_pda.mdl"		// So, I found a new model for this that ALSO looks like it could remote deploy! Hopefully it works?
+			"model_player"				"models/weapons/v_models/v_assistant_pda/v_assistant_pda.mdl"
+			"attach_to_hands"			"2"
+			"used_by_classes"
+			{
+				"engineer"				"1"
+			}
+			"static_attrs"
+			{
+				"move speed bonus"	"1.07"
+				"dispenser healing received penalty"	"0"
+				"creates speedpad"	"1"
+				"padA think script"					"SpeedPadCheck"
+				"padB think script"					"SpeedPadCheck"
+				"padA setup script"					"SpeedPadSetup"
+				"padB setup script"					"SpeedPadSetup"
+				"padA compatability"				"4"
+				"padB compatability"				"4"
+
+				"padA level 1 blueprint model"		"models\buildables\pawpad_blueprint_enter.mdl"
+				"padA level 1 contruction model" 	"models\buildables\pawpad.mdl"
+				"padA level 1 model" 				"models\buildables\pawpad_light.mdl"
+
+				"padB level 1 blueprint model"		"models\buildables\pawpad_blueprint_exit.mdl"
+				"padB level 1 contruction model" 	"models\buildables\pawpad.mdl"
+				"padB level 1 model" 				"models\buildables\pawpad_light.mdl"
+			}
+            "attributes"
+            {
+				"teleporter is jump pad"
+                {
+                    "attribute_class"	"set_teleporter_mode"
+                    "value"				"1"
+                }
+				"allowed in medieval mode"
+				{
+					"attribute_class"	"allowed_in_medieval_mode"
+					"value"				"1"
+				}
+            }
+			"mouse_pressed_sound"		"#ui/item_metal_weapon_pickup.wav"
+			"drop_sound"				"#ui/item_metal_weapon_drop.wav"
+        }
+
 		"5277"
 		{
 			"name"		"mod soldier buff range"
@@ -833,6 +1007,28 @@ of all damage taken in a 5-2 ratio"
 			"hidden"	"1"
 			"effect_type"	"positive"
 			"stored_as_integer"	"0"
+		}
+
+		"9041"
+		{
+			"name"	"creates speedpad"
+			"description_string"	"Teleporters are replaced by Speedpads"
+			"description_format"	"value_is_additive"
+			"effect_type"	"neutral"
+		}
+		"9042"
+		{
+			"name"	"sentry health increased"
+			"description_string"	"+%s1% sentry max health"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"9043"
+		{
+			"name"	"shotgun sentry"
+			"description_string"	"Constructs a powerful burstfire shotgun sentry that does absurd damage at close range but lackluster damage at a distance, and fires speedy lasers for rockets."
+			"description_format"	"value_is_additive"
+			"effect_type"	"neutral"
 		}
 
 "EngieArmor.Break"

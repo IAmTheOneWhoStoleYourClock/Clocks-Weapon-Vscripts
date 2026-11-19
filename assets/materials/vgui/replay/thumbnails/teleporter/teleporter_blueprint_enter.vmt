@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"vgui\replay\thumbnails\teleporter\teleporter_blueprint_enter"
+	"$surfaceprop"	"no_decal"
+}

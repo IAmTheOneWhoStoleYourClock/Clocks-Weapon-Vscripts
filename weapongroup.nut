@@ -50,7 +50,7 @@ function OnTakeDamage(self,info)
 			info.SetDamage((self.GetHealth() * 3) + 1000)
 			info.SetDamageCustom(91)
 		}
-		if (group & attackerweapon.GetAttribute("weapon group cond", 0))
+		if (group & attackerweapon.GetAttribute("weapon group cond", 0).tointeger())
 		{
 			self.AddCondEx(attackerweapon.GetAttribute("weapon group cond cond", 0),attackerweapon.GetAttribute("weapon group cond time", 0),info.GetAttacker())
 		}

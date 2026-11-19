@@ -1,0 +1,19 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"vgui\replay\thumbnails\teleporter\teleportspin_blue"
+	"$translucent" "1"
+	"$model" "1"
+	"$surfaceprop"	"default"
+	"$halflambert" "1"
+	"$nodecal" "1"
+
+	// Cloaking
+	"$cloakPassEnabled" "1"
+
+	"Proxies"
+	{
+		"building_invis"
+		{
+		}
+	}
+}

@@ -1,0 +1,19 @@
+"VertexLitGeneric"
+{
+	
+
+	"$basetexture"	"vgui\replay\thumbnails\teleporter\teleporter_Gibs"
+	"$phong" "1"
+	"$phongexponent" "10"
+	"$phongboost" "3"	
+	"$lightwarptexture" "models\buildables\sentry1\Sentry1_lightwarp"
+	"$phongfresnelranges" "[.25 .5 1]"
+	
+	"$basemapalphaphongmask" "1"
+
+	"$rimlight" "1"						
+	"$rimlightexponent" "4"				
+	"$rimlightboost" ".125"
+	
+
+}

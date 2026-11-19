@@ -987,9 +987,9 @@ CTFBot.GiveAllAmmoPercent <- CTFPlayer.GiveAllAmmoPercent
 	}
 }
 
-::IsScriptedbuilding <- function(building)
+::IsScriptedBuilding <- function(building)
 {
-	return building.GetScriptScope() && "compat" in building.GetScriptScope() // Why compat specifically??? Uh. Feel like it.
+	return building.IsAlive() && building.GetScriptScope() && "mode" in building.GetScriptScope() // Defined the earliest
 }
 
 ::Bingus <- function()

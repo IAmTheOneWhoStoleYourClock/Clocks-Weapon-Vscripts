@@ -1,0 +1,7 @@
+SDK_UnlitGeneric
+{
+	"$baseTexture" "backpack/weapons/w_models/w_assistant_pda_large"
+	"$translucent" 1
+	$vertexcolor 1		
+	"$ignorez" 1
+}

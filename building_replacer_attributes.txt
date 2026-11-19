@@ -1,0 +1,1259 @@
+{buildingtype} clarifier:
+-sentry
+-dispenser
+-entrance (teleporter entrance)
+-exit (teleporter exit)
+-padA (jumppad A)
+-padB (jumppad B)
+
+//
+// NOTES:
+// mod_teleporter_cost no longer effects teleporters upgrade costs, combine with "{buildingtype} level {level} upgrade cost"
+//
+
+cvs_icarus_level_limit - If buildings are above the max level cap allowed to the user, they will destroyed on resupply. I HIGHLY recommend not turning this off, but you may.
+cvs_enforce_level_limit - True/False. (True by default) Whether or not buildings should lower their max level in accordance with the user.
+cvs_lax_level_limit - True/False. (True by default) Whether or not buildings should raise their max level in accordance with the user.
+cvs_enforce_health_limit - True/False. (True by default) Whether or not buildings should lower their max health in accordance with the user.
+cvs_enforce_health_limit_upgrade - True/False. (True by default) If cvs_enforce_health_limit is false, should it still change upon upgrading?
+cvs_lax_health_limit - True/False. (False by default) Whether or not buildings should raise their max health in accordance with the user.
+cvs_lax_health_limit_upgrade - True/False. (True by default) If cvs_lax_health_limit is false, should it still change upon upgrading?
+
+"{buildingtype} level {level} blueprint model"
+"{buildingtype} level {level} contruction model"
+"{buildingtype} level {level} model"
+// The bread and butter.
+// Blueprint is the blueprint placing model, construction is the model used during construction, and "model" is just the model used for regular operation
+// Blueprints do need to be manually defined per level, sorry. I know there are litterally no blueprints currently existing beyond level 1 but I wanted support anyways.
+"{buildingtype} level {level} upgrade cost"
+// Modify the amount of metal is takes to upgrade from this level by this much.
+"{buildingtype} scale"
+// Scale this building type's model by this much.
+"{buildingtype} BBox"
+// Define this building ypes BBox (ex: "{buildingtype} BBox" "-20 -20 0 20 20 125")
+"engy mini {buildingtype}"
+// Your buildings of this type are "mini" buildings. (Smaller gibs, can't be upgraded, sentries get their iconic model and stats)
+"{buildingtype} max level"
+// Your buildings of this type have their levels change by this amount, can be positive to increase the max level of buildings that are normally locked to level 1
+// In the future I'll add level 4 and beyond support if I ever can, but it doesn't seem to be doable rn...
+"{buildingtype} health mult"
+// Multiplies this building type's health by this amount
+"{buildingtype} level {level} health mult"
+// Multiplies this building type's health at this level by this amount
+"{buildingtype} compatability"
+// If the compatability of the user is ever different from the compatability from when the building was built, it will be destroyed.
+"{buildingtype} think script"
+// Think script to be attached to the building.
+"{buildingtype} setup script"
+// Script that is run as soon as the building is created (NOTE: This is while it is still a blueprint!)
+"engy sentry bullets mult"
+// Multiplier to how many bullets a sentry should fire per shot.
+// Does not work on projectiles.
+"engy sentry wrangle dmgtaken"
+// How much more/less damage a sentry should take while wrangled.
+"engy sentry wrangle firerate"
+// How much faster/slower a sentry should fire while wrangled. Only works for sentries which fire bullets.
+"engy sentry spread"
+// The vector that a sentry's bullet shots should spread in (ex: "engy sentry spread"		"0.125 0.125 0.125")
+"engy sentry spread mult levels"
+// How much the spread of the vectors should be multiplied per level (ex: "engy sentry spread mult levels"	"1 0.8 0.6")
+"engy sentry wrangle spread mult levels"
+// How much the spread of the vectors should be multiplied per level while wrangled (ex: "engy sentry wrangle spread mult levels"	"1.2 1.2 1.1")
+"engy sentry fire rate levels"
+// How much the firing spread of the sentry should be multiplied per level, only works on sentries that fire bullets ftm. (ex: "engy sentry fire rate levels"	"1 1.334 1")
+"engy sentry cond"
+// Condition to apply to an enemy hit by the sentry, seperated by levels (ex: "engy sentry cond"		"27 1 27 2 27 3")
+"engy sentry self cond"
+// Condition to apply to yourself uppon hitting and enemy with your sentry, seperated by levels (ex: "engy sentry self cond"		"11 1 11 2 11 3")
+"engy sentry burstfire"
+// Burstfire for the sentry, Only works for sentries which fire bullets. (ex: "engy sentry burstfire"		"3 2.5")
+"engy sentry limited range"
+// Bullets from this sentry are limited to this distance in hammer units.
+"engy sentry heal per hit"
+// The sentrygun heals itself for this much upon hiting an enemy
+"engy sentry upgrade per hit"
+// The sentrygun upgrades itself for this much upon hiting an enemy
+"engy sentry bullet flags"
+// Change the bullets flags on the sentry's bullets. (only important ones are 1 for a single perfect accurate bullets per shot and 2 for not being able to shoot into water.)
+"engy sentry bullet tracer frequency mult"
+// Compared to 1.
+"engy sentry bullet damage type"
+// Change the damage type of the bullets this sentry fires.
+"engy sentry nonbullet damage type"
+// Change the damage tpye of the non-bullets this sentry fires.
+"engy sentry MOOF"
+// Accelerate projectiles fired by this sentry by this amount.
+"engy sentry proj spread"
+// The vector that a sentry's projectile shots should spread in (ex: "engy sentry proj spread"		"0.125 0.125 0.125")
+"engy sentry bullet damage levels"
+// Modifies much damage bullets from this sentry deal per level (ex: "engy sentry bullet damage levels"	"0.175 0.2 0.225")
+"engy sentry nonbullet damage levels"
+// Modifies much damage non-bullets from this sentry deal per level (ex: "engy sentry nonbullet damage levels" "0.8 0.8 0.8")
+"engy dispenser range levels"
+// Modifies dispenser range per level (ONLY WORKS ON ONE DISPENSER AT A TIME!!!)
+"engy dispenser rate levels"
+// Modifies dispenser rate per level (ONLY WORKS ON ONE DISPENSER AT A TIME!!!)
+"extra sentries"
+"extra dispensers"
+"extra padA"
+"extra PadB"
+// Allows the user to place down this amount more of that type of building.
+// NOTE: there's no options for diserning which building it is, all buildings built by this will be the exact same!
+
+
+		"7862"
+		{
+			"name"	"sentry level 1 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7863"
+		{
+			"name"	"sentry level 2 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7864"
+		{
+			"name"	"sentry level 3 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7865"
+		{
+			"name"	"sentry level 1 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7866"
+		{
+			"name"	"sentry level 2 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7867"
+		{
+			"name"	"sentry level 3 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7868"
+		{
+			"name"	"sentry level 1 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"7869"
+		{
+			"name"	"sentry level 2 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7870"
+		{
+			"name"	"sentry level 3 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		
+		"7871"
+		{
+			"name"	"dispenser level 1 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7872"
+		{
+			"name"	"dispenser level 2 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7873"
+		{
+			"name"	"dispenser level 3 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7874"
+		{
+			"name"	"dispenser level 1 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7875"
+		{
+			"name"	"dispenser level 2 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7876"
+		{
+			"name"	"dispenser level 3 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7877"
+		{
+			"name"	"dispenser level 1 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"7878"
+		{
+			"name"	"dispenser level 2 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7879"
+		{
+			"name"	"dispenser level 3 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		
+		"7880"
+		{
+			"name"	"entrance level 1 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7881"
+		{
+			"name"	"entrance level 2 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7882"
+		{
+			"name"	"entrance level 3 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7883"
+		{
+			"name"	"entrance level 1 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7884"
+		{
+			"name"	"entrance level 2 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7885"
+		{
+			"name"	"entrance level 3 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7886"
+		{
+			"name"	"entrance level 1 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"7887"
+		{
+			"name"	"entrance level 2 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7888"
+		{
+			"name"	"entrance level 3 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+
+		"7889"
+		{
+			"name"	"exit level 1 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7890"
+		{
+			"name"	"exit level 2 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7891"
+		{
+			"name"	"exit level 3 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7892"
+		{
+			"name"	"exit level 1 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7893"
+		{
+			"name"	"exit level 2 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7894"
+		{
+			"name"	"exit level 3 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7895"
+		{
+			"name"	"exit level 1 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"7896"
+		{
+			"name"	"exit level 2 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7897"
+		{
+			"name"	"exit level 3 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+
+		"7898"
+		{
+			"name"	"padA level 1 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7899"
+		{
+			"name"	"padA level 2 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7900"
+		{
+			"name"	"padA level 3 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7901"
+		{
+			"name"	"padA level 1 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7902"
+		{
+			"name"	"padA level 2 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7903"
+		{
+			"name"	"padA level 3 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7904"
+		{
+			"name"	"padA level 1 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"7905"
+		{
+			"name"	"padA level 2 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7906"
+		{
+			"name"	"padA level 3 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+
+		"7907"
+		{
+			"name"	"padB level 1 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7908"
+		{
+			"name"	"padB level 2 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7909"
+		{
+			"name"	"padB level 3 blueprint model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7910"
+		{
+			"name"	"padB level 1 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7911"
+		{
+			"name"	"padB level 2 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7912"
+		{
+			"name"	"padB level 3 contruction model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7913"
+		{
+			"name"	"padB level 1 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"7914"
+		{
+			"name"	"padB level 2 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7915"
+		{
+			"name"	"padB level 3 model"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+
+		"7916"
+		{
+			"name"	"sentry health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7917"
+		{
+			"name"	"dispenser health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7918"
+		{
+			"name"	"entrance health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7919"
+		{
+			"name"	"exit health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7920"
+		{
+			"name"	"padA health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7921"
+		{
+			"name"	"padB health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+
+		"7922"
+		{
+			"name"	"sentry level 1 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7923"
+		{
+			"name"	"sentry level 2 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7924"
+		{
+			"name"	"sentry level 3 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+
+		"7925"
+		{
+			"name"	"extra sentries"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7926"
+		{
+			"name"	"extra dispensers"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7927"
+		{
+			"name"	"extra padA"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7928"
+		{
+			"name"	"extra padB"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+
+		"7929"
+		{
+			"name"	"sentry max level"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7930"
+		{
+			"name"	"dispenser max level"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7931"
+		{
+			"name"	"entrance max level"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7932"
+		{
+			"name"	"exit max level"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7933"
+		{
+			"name"	"padA max level"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7934"
+		{
+			"name"	"padB max level"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+
+		"7935"
+		{
+			"name"	"sentry BBox"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7936"
+		{
+			"name"	"dispenser BBox"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7937"
+		{
+			"name"	"entrance BBox"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7938"
+		{
+			"name"	"exit BBox"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7939"
+		{
+			"name"	"padA BBox"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7940"
+		{
+			"name"	"padB BBox"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+
+		"7941"
+		{
+			"name"	"sentry scale"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7942"
+		{
+			"name"	"dispenser scale"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7943"
+		{
+			"name"	"entrance scale"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7944"
+		{
+			"name"	"exit scale"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7945"
+		{
+			"name"	"padA scale"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7946"
+		{
+			"name"	"padB scale"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+
+		"7947"
+		{
+			"name"	"engy sentry bullets mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7948"
+		{
+			"name"	"engy sentry spread"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7949"
+		{
+			"name"	"engy sentry limited range"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7950"
+		{
+			"name"	"engy sentry burstfire"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		//"7951" //scrapped
+		//{
+		//	"name"	"engy sentry ignore owner"
+		//	"description_format"	"value_is_additive"
+		//	"effect_type"	"positive"
+		//}
+		"7952"
+		{
+			"name"	"engy sentry cond"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7953"
+		{
+			"name"	"engy sentry self cond"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7954"
+		{
+			"name"	"engy sentry heal per hit"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7955"
+		{
+			"name"	"engy sentry upgrade per hit"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+
+		"7956"
+		{
+			"name"	"sentry think script"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7957"
+		{
+			"name"	"dispenser think script"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7958"
+		{
+			"name"	"entrance think script"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7959"
+		{
+			"name"	"exit think script"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7960"
+		{
+			"name"	"padA think script"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7961"
+		{
+			"name"	"padB think script"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+
+		"7962"
+		{
+			"name"	"engy sentry bullet flags"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7963"
+		{
+			"name"	"engy sentry bullet tracer frequency mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7964"
+		{
+			"name"	"engy sentry damage levels"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7965"
+		{
+			"name"	"engy dispenser range levels"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7966"
+		{
+			"name"	"engy dispenser rate levels"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7967"
+		{
+			"name"	"engy dispenser rate VSCRIPT"
+			"attribute_class"	"mult_dispenser_rate"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7968"
+		{
+			"name"	"engy dispenser radius VSCRIPT"
+			"attribute_class"	"mult_dispenser_radius"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		
+		"7969"
+		{
+			"name"	"sentry setup script"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7970"
+		{
+			"name"	"dispenser setup script"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7971"
+		{
+			"name"	"entrance setup script"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7972"
+		{
+			"name"	"exit setup script"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7973"
+		{
+			"name"	"padA setup script"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7974"
+		{
+			"name"	"padB setup script"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+
+		"7975"
+		{
+			"name"	"sentry compatability"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7976"
+		{
+			"name"	"dispenser compatability"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7977"
+		{
+			"name"	"entrance compatability"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7978"
+		{
+			"name"	"exit compatability"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7979"
+		{
+			"name"	"padA compatability"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7980"
+		{
+			"name"	"padB compatability"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+
+		"7981"
+		{
+			"name"	"engy sentry fire rate levels"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7982"
+		{
+			"name"	"engy sentry bullet damage levels"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7983"
+		{
+			"name"	"engy sentry spread mult levels"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7984"
+		{
+			"name"	"engy sentry nonbullet damage levels"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7985"
+		{
+			"name"	"engy sentry bullet damage type"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7986"
+		{
+			"name"	"engy sentry nonbullet damage type"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7987"
+		{
+			"name"	"engy sentry MOOF"
+			"description_format"	"value_is_additive"
+			"effect_type"	"positive"
+		}
+		"7988"
+		{
+			"name"	"engy sentry proj spread"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"7989"
+		{
+			"name"	"engy mini sentry"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		"7990"
+		{
+			"name"	"engy mini dispenser"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		"7991"
+		{
+			"name"	"engy mini entrance"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		"7992"
+		{
+			"name"	"engy mini exit"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		"7993"
+		{
+			"name"	"engy mini padA"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		"7994"
+		{
+			"name"	"engy mini padB"
+			"description_format"	"value_is_additive"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+
+		"7995"
+		{
+			"name"	"dispenser level 1 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7996"
+		{
+			"name"	"dispenser level 2 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7997"
+		{
+			"name"	"dispenser level 3 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+
+		"7998"
+		{
+			"name"	"entrance level 1 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"7999"
+		{
+			"name"	"entrance level 2 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8000"
+		{
+			"name"	"entrance level 3 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+
+		"8001"
+		{
+			"name"	"exit level 1 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8002"
+		{
+			"name"	"exit level 2 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8003"
+		{
+			"name"	"exit level 3 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+
+		"8004"
+		{
+			"name"	"padA level 1 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8005"
+		{
+			"name"	"padA level 2 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8006"
+		{
+			"name"	"padA level 3 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+
+		"8007"
+		{
+			"name"	"padB level 1 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8008"
+		{
+			"name"	"padB level 2 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8009"
+		{
+			"name"	"padB level 3 health mult"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+
+		"8010"
+		{
+			"name"	"sentry level 1 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8011"
+		{
+			"name"	"sentry level 2 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8012"
+		{
+			"name"	"sentry level 3 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+
+		"8013"
+		{
+			"name"	"dispenser level 1 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8014"
+		{
+			"name"	"dispenser level 2 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8015"
+		{
+			"name"	"dispenser level 3 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+
+		"8016"
+		{
+			"name"	"entrance level 1 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8017"
+		{
+			"name"	"entrance level 2 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8018"
+		{
+			"name"	"entrance level 3 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+
+		"8019"
+		{
+			"name"	"exit level 1 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8020"
+		{
+			"name"	"exit level 2 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8021"
+		{
+			"name"	"exit level 3 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+
+		"8022"
+		{
+			"name"	"padA level 1 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8023"
+		{
+			"name"	"padA level 2 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8024"
+		{
+			"name"	"padA level 3 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+
+		"8025"
+		{
+			"name"	"padB level 1 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8036"
+		{
+			"name"	"padB level 2 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8027"
+		{
+			"name"	"padB level 3 upgrade cost"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+
+		"8028"
+		{
+			"name"	"engy sentry wrangle firerate"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8029"
+		{
+			"name"	"engy sentry wrangle dmgtaken"
+			"description_format"	"value_is_percentage"
+			"effect_type"	"positive"
+		}
+		"8030"
+		{
+			"name"	"engy sentry wrangle spread mult levels"
+			"description_format"	"value_is_additive"
+			"attribute_type"		"string"
+			"effect_type"	"positive"
+		}
+		"8031"
+		{
+			"name"		"engy sentry fire rate VSCRIPT"
+			"attribute_class"		"mult_sentry_firerate"
+			"description_format"		"value_is_inverted_percentage"
+			"hidden"		"1"
+			"effect_type"		"positive"
+		}
