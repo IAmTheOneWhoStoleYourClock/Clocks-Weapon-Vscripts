@@ -18,7 +18,7 @@ local sandvichdetectionon = true
 
 IncludeScript("lib/clocksutils.nut");
 
-MOSTRECENTHEAL <- array(MaxPlayers(), 0)
+MOSTRECENTHEAL <- array(MaxPlayers().tointeger()+1, 0)
 PACKSTABLE <- {
 	item_healthkit_small = 0.2
 	item_healthkit_medium = 0.5
