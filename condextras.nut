@@ -8,7 +8,11 @@
 
 IncludeScript("lib/clocksutils.nut")
 
-BUILDINGS <- ["obj_sentrygun", "obj_dispenser", "obj_teleporter"]
+BUILDINGS <- ["obj_sentrygun", "obj_dispenser", "obj_teleporter", "obj_jumppad"]
+
+if (!("buildingstuntime" in getroottable())) {
+	buildingstuntime <- array(2048, 0)
+}
 
 ::CondExtrasEventTable <- {
 	function OnGameEvent_player_spawn(params)
@@ -50,18 +54,17 @@ BUILDINGS <- ["obj_sentrygun", "obj_dispenser", "obj_teleporter"]
 		local disabletime = weapon.GetAttribute("disable buildings on hit", 0)
 		if (disabletime)
 		{
-			NetProps.SetPropInt(building, "m_bDisabled", 1)
-			local scriptscope = building.GetOrCreatePrivateScriptScope()
-			if (!("disabletime" in scriptscope))
+			buildingstuntime[building.GetEntityIndex()] = Time() + disabletime
+			building.TakeDamageCustom(null, null, null, NULLVECTOR, NULLVECTOR, 0, 2048, 47)
+			if (disabletime % 4 != 0)
 			{
-				scriptscope.disabletime <- Time() + disabletime
+				FunctionInTime(BuildingReenable,disabletime,[building])
 			}
-			else
+			while (disabletime > 4)
 			{
-				scriptscope.disabletime <- max(scriptscope.disabletime, Time() + disabletime)
+				FunctionInTime(BuildingReping,disabletime - (disabletime % 4),[building])
+				disabletime -= 4
 			}
-			NetProps.SetPropInt(building, "m_bDisabled", 1)
-			EntFireByHandle(building, "CallScriptFunction", "BuildingReenable", disabletime, null, null)
 		}
 	}
 	function OnGameEvent_player_hurt(params)
@@ -242,7 +245,7 @@ function PlayerHurtWearer(weapon,params)
 
 function OnTakeDamage(self,info)
 {
-	if (!self.IsPlayer() || info.GetAttacker() == self || !info.GetWeapon() || !(info.GetWeapon() instanceof CEconEntity))
+	if (!self.IsPlayer() || info.GetAttacker() == self || !info.GetWeapon() || !info.GetWeapon().IsWeapon())
 	{
 		return
 	}
@@ -391,13 +394,29 @@ function OnTakeDamageWearer(self,info,weapon)
 	}
 }
 
-function BuildingReenable()
+function BuildingReenable(building)
 {
-	local scriptscope = self.GetOrCreatePrivateScriptScope()
-	if(!NetProps.GetPropInt(self, "m_bPlasmaDisable") && scriptscope.disabletime <= Time())
+	if (!building || !building.IsValid())
 	{
-		EntFireByHandle(self, "Enable", "", 0, null, null)
+		return false
 	}
+	if (buildingstuntime[building.GetEntityIndex()] <= Time())
+	{
+		NetProps.SetPropBool(building, "m_bPlasmaDisable", false)
+		building.AcceptInput("show", "", null, null)
+	}
+	return true
 }
+
+function BuildingReping(building)
+{
+	if (!building || !building.IsValid())
+	{
+		return false
+	}
+	building.TakeDamageCustom(null, null, null, NULLVECTOR, NULLVECTOR, 0, 2048, 47)
+	return true
+}
+
 
 IncludeScript("lib/mapbasehookcollector.nut")

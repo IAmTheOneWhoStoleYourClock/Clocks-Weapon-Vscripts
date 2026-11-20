@@ -29,7 +29,7 @@ IncludeScript("lib/clocksutils.nut");
 	{
 		local player = GetPlayerFromUserID(params.userid)
 		local umbrella = GetWeaponByClass(player, "tf2c_weapon_umbrella")
-		if (!umbrella)
+		if (!umbrella || !umbrella.IsValid())
 		{
 			return
 		}

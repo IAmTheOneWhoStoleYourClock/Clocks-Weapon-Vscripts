@@ -61,7 +61,7 @@ IncludeScript("lib/clocksutils.nut");
 	function OnGameEvent_player_healed(params)
 	{
 		// This check should only be true if this is a taser.
-		if(!("priority" in params) && ("healer" in params) && ("patient" in params) && params.healer != params.patient && false)
+		if(!("priority" in params) && ("healer" in params) && ("patient" in params) && params.healer != params.patient)
 		{
 			local healer = GetPlayerFromUserID(params.healer)
 			local healed = GetPlayerFromUserID(params.patient)
@@ -78,7 +78,7 @@ IncludeScript("lib/clocksutils.nut");
 			weapon.AddContext("rechargestarttime", Time().tostring(), 0)
 			// Cap the amount of healing this can do, since normally taser healing is completely uncapped.
 			local selfcond = ProcessStringAttrib(weapon.GetAttributeString("taser cond to self", ""))
-			if (selfcond)
+			if (selfcond[0] != "")
 			{
 				healer.AddCondEx(selfcond[0], selfcond[1], player)
 			}
