@@ -57,7 +57,7 @@ IncludeScript("lib/clocksutils.nut")
 
 function AttribMod(player, weapon)
 {
-	local primaryattribs = ProcessStringAttrib(weapon.GetAttributeString(player, "primary attributes",""))
+	local primaryattribs = ProcessStringAttrib(weapon.GetAttributeString("primary attributes",""))
 	if (primaryattribs[0] != "")
 	{
 		for (local i = 0; i < primaryattribs.len(); i += 2)
@@ -65,7 +65,7 @@ function AttribMod(player, weapon)
 			AttributeWeaponInSlot(player, 0, primaryattribs[i], primaryattribs[i+1])
 		}
 	}
-	local secondaryattribs = ProcessStringAttrib(weapon.GetAttributeString(player, "secondary attributes",""))
+	local secondaryattribs = ProcessStringAttrib(weapon.GetAttributeString("secondary attributes",""))
 	if (secondaryattribs[0] != "")
 	{
 		for (local i = 0; i < secondaryattribs.len(); i += 2)
@@ -73,7 +73,7 @@ function AttribMod(player, weapon)
 			AttributeWeaponInSlot(player, 1, secondaryattribs[i], secondaryattribs[i+1])
 		}
 	}
-	local meleeattribs = ProcessStringAttrib(weapon.GetAttributeString(player, "melee attributes",""))
+	local meleeattribs = ProcessStringAttrib(weapon.GetAttributeString("melee attributes",""))
 	if (meleeattribs[0] != "")
 	{
 		for (local i = 0; i < meleeattribs.len(); i += 2)
@@ -81,7 +81,7 @@ function AttribMod(player, weapon)
 			AttributeWeaponInSlot(player, 2, meleeattribs[i], meleeattribs[i+1])
 		}
 	}
-	local pdaattribs = ProcessStringAttrib(weapon.GetAttributeString(player, "pda attributes",""))
+	local pdaattribs = ProcessStringAttrib(weapon.GetAttributeString("pda attributes",""))
 	if (pdaattribs[0] != "")
 	{
 		for (local i = 0; i < pdaattribs.len(); i += 2)
@@ -89,7 +89,7 @@ function AttribMod(player, weapon)
 			AttributeWeaponInSlot(player, 3, pdaattribs[i], pdaattribs[i+1])
 		}
 	}
-	local pda2attribs = ProcessStringAttrib(weapon.GetAttributeString(player, "pda2 attributes",""))
+	local pda2attribs = ProcessStringAttrib(weapon.GetAttributeString("pda2 attributes",""))
 	if (pda2attribs[0] != "")
 	{
 		for (local i = 0; i < pda2attribs.len(); i += 2)
@@ -97,7 +97,7 @@ function AttribMod(player, weapon)
 			AttributeWeaponInSlot(player, 4, pda2attribs[i], pda2attribs[i+1])
 		}
 	}
-	local utilityattribs = ProcessStringAttrib(weapon.GetAttributeString(player, "utility attributes",""))
+	local utilityattribs = ProcessStringAttrib(weapon.GetAttributeString("utility attributes",""))
 	if (utilityattribs[0] != "")
 	{
 		for (local i = 0; i < utilityattribs.len(); i += 2)
