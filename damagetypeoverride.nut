@@ -23,7 +23,7 @@ __CollectGameEventCallbacks(DamageTypeOverrideEventTable)
 // NEW CHANGE: MAPBASE HOOKS HAVE TO LIST THEIR PARAMETERS DUE TO THE HOOK COLLECTOR
 function OnTakeDamage(self,info)
 {
-	if (self.IsPlayer() && info.GetAttacker() != self && info.GetWeapon())
+	if (self.IsPlayer() && info.GetAttacker() != self && info.GetWeapon() || && info.GetWeapon().IsWeapon())
 	{
 		local weapon = info.GetWeapon()
 		local COD = weapon.GetAttribute("cond on damagetype", 0).tointeger()
