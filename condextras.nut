@@ -242,7 +242,7 @@ function PlayerHurtWearer(weapon,params)
 
 function OnTakeDamage(self,info)
 {
-	if (!self.IsPlayer() || info.GetAttacker() == self || !info.GetWeapon())
+	if (!self.IsPlayer() || info.GetAttacker() == self || !info.GetWeapon() || !(info.GetWeapon() instanceof CEconEntity))
 	{
 		return
 	}
