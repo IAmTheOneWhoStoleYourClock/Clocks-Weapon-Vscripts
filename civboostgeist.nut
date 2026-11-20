@@ -33,7 +33,7 @@ IncludeScript("lib/clocksutils.nut");
 		{
 			return
 		}
-		umbrella.AddAttribute("umbrella recharge rate VSCRIPT", GetWearableAttribute(owner, "umbrella recharge rate wearer", 1), 0)
+		umbrella.AddAttribute("umbrella recharge rate VSCRIPT", GetWearableAttribute(player, "umbrella recharge rate wearer", 1), 0)
 	}
 	function OnGameEvent_vip_boost(params)
 	{
