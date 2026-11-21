@@ -64,7 +64,33 @@ Entities.EnableEntityListening() // This is needed for CEntities hooks.
 
 function OnEntityCreatedBuilding(entity)
 {
-	if (entity && entity.IsValid() && (buildingtypes.find(entity.GetClassname())) != null)
+	if (!entity || !entity.IsValid())
+	{
+		return false
+	}
+	if (entity.GetClassname() == "tf_ammo_pack" && !entity.GetPhysicsObject())
+	{
+		switch (RandomInt(1,4))
+		{
+			case 1:
+				entity.SetModelSimple("models/props_training/target_gibs01.mdl")
+				break;
+			case 2:
+				entity.SetModelSimple("models/props_training/target_gibs02.mdl")
+				break;
+			case 3:
+				entity.SetModelSimple("models/props_training/target_gibs03.mdl")
+				break;
+			case 4:
+				entity.SetModelSimple("models/props_training/target_gibs04.mdl")
+				break;
+		}
+		entity.PhysicsInitNormal(6,1,true)
+		entity.ApplyAbsVelocityImpulse(Vector(RandomFloat( -0.5, 0.5 ),RandomFloat( -0.5, 0.5 ),RandomFloat( 0.75, 1.25 )) * RandomFloat( 100, 450 ))
+		entity.ApplyLocalAngularVelocityImpulse(Vector(0,RandomFloat( 0, 100 ),0))
+		entity.SetCollisionGroup(1)
+	}
+	if ((buildingtypes.find(entity.GetClassname())) != null)
 	{
 		local level = NetProps.GetPropInt(entity, "m_iUpgradeLevel")
 		local owner = NetProps.GetPropEntity(entity, "m_hBuilder")
@@ -361,6 +387,25 @@ function OnEntityCreatedBuilding(entity)
 				{
 					building.Kill()
 					buildings[i].remove(buildings[i].find(building))
+					// Overkill but works
+					foreach (sentry in buildings[0])
+					{
+						NetProps.SetPropInt(sentry, "m_iObjectType", 2)
+					}
+					foreach (dispenser in buildings[1])
+					{
+						NetProps.SetPropInt(dispenser, "m_iObjectType", 0)
+					}
+					foreach (jumppad in buildings[4])
+					{
+						NetProps.SetPropInt(jumppad, "m_iObjectType", 4)
+						NetProps.SetPropInt(jumppad, "m_iObjectMode", 0);
+					}
+					foreach (jumppad in buildings[5])
+					{
+						NetProps.SetPropInt(jumppad, "m_iObjectType", 4)
+						NetProps.SetPropInt(jumppad, "m_iObjectMode", 1);
+					}
 				}
 				else
 				{
@@ -811,7 +856,10 @@ function WeaponSwitchPDACheck()
 		{
 			foreach (sentry in activebuildings[0])
 			{
-				NetProps.SetPropInt(sentry, "m_iObjectType", 3)
+				if (sentry.GetScriptScope().placed)
+				{
+					NetProps.SetPropInt(sentry, "m_iObjectType", 3)
+				}
 			}
 		}
 
@@ -819,7 +867,10 @@ function WeaponSwitchPDACheck()
 		{
 			foreach (dispenser in activebuildings[1])
 			{
-				NetProps.SetPropInt(dispenser, "m_iObjectType", 3)
+				if (dispenser.GetScriptScope().placed)
+				{
+					NetProps.SetPropInt(dispenser, "m_iObjectType", 3)
+				}
 			}
 		}
 
@@ -827,7 +878,10 @@ function WeaponSwitchPDACheck()
 		{
 			foreach (jumppad in activebuildings[4])
 			{
-				NetProps.SetPropInt(jumppad, "m_iObjectType", 3)
+				if (jumppad.GetScriptScope().placed)
+				{
+					NetProps.SetPropInt(jumppad, "m_iObjectType", 3)
+				}
 			}
 		}
 
@@ -835,7 +889,10 @@ function WeaponSwitchPDACheck()
 		{
 			foreach (jumppad in activebuildings[5])
 			{
-				NetProps.SetPropInt(jumppad, "m_iObjectType", 3)
+				if (jumppad.GetScriptScope().placed)
+				{
+					NetProps.SetPropInt(jumppad, "m_iObjectType", 3)
+				}
 			}
 		}
 	}

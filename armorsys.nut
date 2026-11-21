@@ -258,6 +258,8 @@ Convars.RegisterConvar("cvs_armor_explosive_weakness", "2", "How much more damag
 		{
 			player.SetArmor(armor)
 		}
+
+		playercurrarmor[player.GetEntityIndex()] = 0
 	}
 }
 
@@ -380,6 +382,16 @@ function OnTakeDamage(self,info)
 		scriptscope.inflictorbuffer <- info.GetAttacker()
 		scriptscope.damagetypebuffer <- info.GetDamageType()
 		scriptscope.weaponbuffer <- info.GetWeapon()
+
+		FunctionInTime(RestoreIfUnsuccessful, 0, [self])
+	}
+}
+
+function RestoreIfUnsuccessful(player)
+{
+	if (playercurrarmor[player.GetEntityIndex()] > 0)
+	{
+		NetProps.SetPropInt(player, "m_ArmorValue", playercurrarmor[player.GetEntityIndex()])
 	}
 }
 
