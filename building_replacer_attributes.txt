@@ -9,6 +9,7 @@
 //
 // NOTES:
 // mod_teleporter_cost no longer effects teleporters upgrade costs, combine with "{buildingtype} level {level} upgrade cost"
+// 4-team minisentry materials by Squid Eevee. For other inclued custom buildings check their weapon in exampleitems.
 //
 
 cvs_icarus_level_limit - If buildings are above the max level cap allowed to the user, they will destroyed on resupply. I HIGHLY recommend not turning this off, but you may.
