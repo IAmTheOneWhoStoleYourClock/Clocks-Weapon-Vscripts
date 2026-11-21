@@ -180,7 +180,8 @@ function OnEntityCreatedBuilding(entity)
 
 		if (buildingindex == 0) // Sentry
 		{
-			scope.minisentry <- NetProps.GetPropBool(entity, "m_bMiniBuilding")
+			local gunslinger = GetWearableAttribute(owner, "mod wrench builds minisentry", 0)
+			scope.minisentry <- NetProps.GetPropBool(entity, "m_bMiniBuilding") || gunslinger
 
 			// bruh
 			// Minis don't even do anything do anything that this plguin can't replicate on normal sentries, but for UI reasons it's for the best I support them
@@ -194,6 +195,10 @@ function OnEntityCreatedBuilding(entity)
 				if (buildstages[2] == "models/buildables/sentry1.mdl")
 				{
 					buildstages[2] = "models/buildables/sentry1_mini_4team.mdl"
+				}
+				if (gunslinger)
+				{
+					scope.healthlvls[0] *= 0.667
 				}
 			}
 
