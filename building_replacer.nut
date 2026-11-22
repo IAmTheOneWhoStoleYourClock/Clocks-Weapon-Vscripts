@@ -85,6 +85,7 @@ function OnEntityCreatedBuilding(entity)
 				entity.SetModelSimple("models/props_training/target_gibs04.mdl")
 				break;
 		}
+
 		entity.PhysicsInitNormal(6,1,true)
 		entity.ApplyAbsVelocityImpulse(Vector(RandomFloat( -0.5, 0.5 ),RandomFloat( -0.5, 0.5 ),RandomFloat( 0.75, 1.25 )) * RandomFloat( 100, 450 ))
 		entity.ApplyLocalAngularVelocityImpulse(Vector(0,RandomFloat( 0, 100 ),0))
@@ -320,7 +321,9 @@ function OnEntityCreatedBuilding(entity)
 				local attachedbuilding = NetProps.GetPropEntity(entity, "m_hBuiltOnEntity")
 				if (IsScriptedBuilding(attachedbuilding))
 				{
-					attachedbuilding.GetScriptScope().reversing <- true
+					local scope = attachedbuilding.GetScriptScope()
+					scope.reversing <- true
+					scope.healthbuffer <- attachedbuilding.GetHealth()
 					NetProps.SetPropBool(attachedbuilding, "m_bHasSapper", true) // It will say it ISN'T sapped otherwise? :bigredx:
 					SetBuildingModel(attachedbuilding, (3 * (NetProps.GetPropInt(attachedbuilding, "m_iUpgradeLevel")-1)) + 1)
 					attachedbuilding.SetContextThink("BuildingWaitForCompletion", BuildingWaitForCompletion, 0.015);
@@ -508,15 +511,27 @@ function BuildingWaitForCompletion(self)
 	local targetreached = level == leveldesired
 	local scope = self.GetScriptScope()
 	BBoxOrient(self) // TO DO: Find a way to prevent players from clipping into buildings WITHOUT having to do this!
-	if (level != scope.currlevel)
-	{
-		SetBuildingModel(self, (3 * (level-1)) + 1)
-		self.ResetSequence(self.LookupSequence("ACT_OBJ_UPGRADING"))
-		scope.currlevel <- level
-	}
 	if (scope.reversing)
 	{
 		// Dumb Hack because this game is dumb
+		if (scope.healthbuffer != self.GetHealth())
+		{
+			if (NetProps.GetPropInt(self, "m_iMaxHealth") == floor(scope.healthlvls[level-1]))
+			{
+				scope.healthbuffer <- self.GetHealth()
+			}
+			else
+			{
+				local health = scope.healthbuffer
+				if (health > scope.healthlvls[level-1])
+				{
+					health = scope.healthlvls[level-1]
+				}
+				NetProps.SetPropInt(self, "m_iMaxHealth", health)
+				self.AcceptInput("AddHealth", "10000", null null)
+				NetProps.SetPropInt(self, "m_iMaxHealth", scope.healthlvls[level-1])
+			}
+		}
 		if (scope.buildstages[(3 * (level-1)) + 1] != self.GetModelName())
 		{
 			SetBuildingModel(self, (3 * (level-1)) + 1)
@@ -528,6 +543,13 @@ function BuildingWaitForCompletion(self)
 		{
 			scope.reversing <- false
 		}
+	}
+	if (level != scope.currlevel)
+	{
+		NetProps.SetPropInt(self, "m_iMaxHealth", scope.healthlvls[level-1])
+		SetBuildingModel(self, (3 * (level-1)) + 1)
+		self.ResetSequence(self.LookupSequence("ACT_OBJ_UPGRADING"))
+		scope.currlevel <- level
 	}
 	if (targetreached && !scope.reversing)
 	{
