@@ -353,15 +353,18 @@ function OnEntityCreatedBuilding(entity)
 	function OnGameEvent_player_carryobject(params)
 	{
 		local entity = EntIndexToHScript(params.index)
-		local scope = entity.GetScriptScope()
-		scope.placed <- false
-		scope.active <- false
-
-		FunctionInTime(SetBuildingModel, 0, [entity, (NetProps.GetPropInt(entity, "m_iUpgradeLevel")-1)*3])
-
-		if (scope.bboverride)
+		if (IsScriptedBuilding(entity))
 		{
-			ReapeatingFunctionInTime(BBoxOrientBlueprint,0.015,[entity, owner])
+			local scope = entity.GetScriptScope()
+			scope.placed <- false
+			scope.active <- false
+
+			FunctionInTime(SetBuildingModel, 0, [entity, (NetProps.GetPropInt(entity, "m_iUpgradeLevel")-1)*3])
+
+			if (scope.bboverride)
+			{
+				ReapeatingFunctionInTime(BBoxOrientBlueprint,0.015,[entity, owner])
+			}
 		}
 	}
 
@@ -459,7 +462,7 @@ function OnEntityCreatedBuilding(entity)
 	function OnGameEvent_sentry_on_go_active(params)
 	{
 		local entity = EntIndexToHScript(params.index)
-		if (NetProps.GetPropInt(entity, "m_iState") != 3) 
+		if (NetProps.GetPropInt(entity, "m_iState") != 3 && IsScriptedBuilding(entity)) 
 		{
 			BuildingDone(entity)
 		}
@@ -692,7 +695,7 @@ function ApplyBuildingProjVelAndSpread(entity, MOOF, PD, isgrenade)
 
 function FireBullets()
 {
-	if (self.GetClassname() != "obj_sentrygun") // Is there anything else that even runs this in tf2?
+	if (self.GetClassname() != "obj_sentrygun" && IsScriptedBuilding(self)) // Is there anything else that even runs this in tf2?
 	{
 		return true
 	}
