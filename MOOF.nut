@@ -34,7 +34,7 @@ function EntitySpawnMOOF(entity)
 	}
 
 	local classname = entity.GetClassname()
-	
+
 	local weapon = owner.GetActiveWeapon()
 
 	if (weapon == null)
