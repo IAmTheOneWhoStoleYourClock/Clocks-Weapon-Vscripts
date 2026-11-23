@@ -28,7 +28,7 @@ function EntitySpawnMOOF(entity)
 		owner = entity.GetThrower()
 	}
 
-	if (!owner)
+	if (!owner || !owner.IsPlayer())
 	{
 		return
 	}
