@@ -848,7 +848,7 @@ function HitWithHammer(building, team)
 // The function that's run when construction/upgrading is finished, either when the think function says it is for dispensers, teleporters, and jumppads (I hate that this is how I have to do this)
 function BuildingDone(building)
 {
-	if (!building || !building.IsValid())
+	if (!building || !building.IsValid() || !NetProps.GetPropEntity(building, "m_hBuilder"))
 	{
 		// How
 		return false
