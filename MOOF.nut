@@ -28,13 +28,13 @@ function EntitySpawnMOOF(entity)
 		owner = entity.GetThrower()
 	}
 
-	if (!owner)
+	if (!owner || !owner.IsPlayer())
 	{
 		return
 	}
 
 	local classname = entity.GetClassname()
-
+	
 	local weapon = owner.GetActiveWeapon()
 
 	if (weapon == null)
