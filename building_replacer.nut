@@ -383,8 +383,9 @@ function OnEntityCreatedBuilding(entity)
 		for (local i = 0; i < 6; i++)
 		{
 			local k = 0
-			foreach (building in buildings[i])
+			while (k < buildings[i].len())
 			{
+				local building = buildings[i][k]
 				if (!building || !building.IsValid())
 				{
 					continue
@@ -451,9 +452,9 @@ function OnEntityCreatedBuilding(entity)
 								scope.healthlvls[j] = healtharray[j]
 							}
 						}
+						k++
 					}
 				}
-				k++
 			}
 		}
 		
