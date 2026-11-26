@@ -1,6 +1,5 @@
 "damagetypeoverride"
 // Change the damage type the weapon deals to this. (Note: This preserves a couple of important damage types, such as critical damage.)
-// Yes, this is no longer misspelled. Update your scripts.
 "customtypeoverride"
 // Change the custom damage this weapon deals to this. (Note: This preserves headshots.)
 "no non boosted crits"
@@ -15,6 +14,137 @@
 "cond on customtype cond"
 "cond on customtype time"
 // Apply a condition if the attack has this custom type, this is processed BEFORE the override attributes. (Headshot is 1, and Backstab is 2 btw!)
+
+Damage type flags (INFORMATION HERE MAY NOT BE COMPLETE): 
+DMG_CRUSH					1 - Used for physics damage? I think?
+DMG_BULLET					2 - Bullet damage, activates relevant resistances. Also makes this destroy stickybombs.
+\ also DMG_IGNORE_MAXHEALTH but that's special
+DMG_SLASH					4 - Sometimes used for melee damage I think? Doesn't activiate any relevant resistances though.
+\ also DMG_IGNORE_DEBUFFS but that's special
+DMG_BURN					8 - Burn damage, typically afterburn normally.
+DMG_VEHICLE					16 - Train damage.
+DMG_FALL					32 - Fall damage.
+DMG_BLAST					64 - Blast damage. Also makes this destroy stickybombs if this also has DMG_IGNITE because volvo loves their shortcuts.
+DMG_CLUB					128 - Melee damage, activates relevant resistances.
+DMG_SHOCK					256 - Makes a HUGE spark on the point of impact. Not subtle at all.
+DMG_SONIC					512 - Only effect I can find is that it makes the damage move stickybombs.
+DMG_RADIUS_MAX				1024 - Doesn't appear to effect blast damage in any obvious way. According to the code, "indicates that it should be a minicrit."
+| No idea how to get this to trigger and doesn't make attacks minicrit or anything... Seems to be used for the medic mvm shield though.
+| https://developer.valvesoftware.com/wiki/Talk:Damage_types says this sets rampup to 0, but this doesn't seem to be true either.
+\ also DMG_ENERGYBEAM
+DMG_PREVENT_PHYSICS_FORCE	2048 - Attack deals no knockback at all.
+DMG_NEVERGIB				4096 - The attack will never gib the enemy, even if it normally could.
+DMG_ALWAYSGIB				8192 - The attack will always gib the enemy, even if it normally couldn't.
+DMG_DROWN					16384 - Drowning damage.
+DMG_PARALYZE				32768 - No obvious effect.
+DMG_NERVEGAS				65536 - Saw blade damage.
+DMG_NOCLOSEDISTANCEMOD		131072 - Reduces rampup to 20% like the syringe gun
+| https://developer.valvesoftware.com/wiki/Talk:Damage_types says this also reduces the falloff distance but I don't think this is true.
+\ also DMG_POISON
+DMG_HALF_FALLOFF			262144 - Can't tell if this does anything, leaning towards "probably not".
+| https://developer.valvesoftware.com/wiki/Talk:Damage_types says this also reduces rampup damage but I don't think this is true.
+\ also DMG_RADIATION
+DMG_DROWNRECOVER			524288 - Drown recovery "damage", could potentally be useful?
+DMG_CRITICAL				1048576 - Critical damage. Normally preserved for reasons I hope are obvious, but you can still set this manually.
+\ also DMG_ACID
+DMG_USEDISTANCEMOD     		2097152 - IMPORTANT ONE! This controls whether falloff is present on the weapon. Can be added even to weapons which normally don't work with it, like grenades, coilguns, and sniper rifles!
+DMG_REMOVENORAGDOLL			4194304 - Supposed to delete the ragdolls, but bugs them out instead. Not the sneaky spy weapon that would be hoped for.
+DMG_PHYSGUN					8388608 - No obvious effect.
+DMG_IGNITE					16777216 - Fire damage, ignites the enemy if allowed. Weapons that don't have this can't ignite at all.
+\ also DMG_PLASMA and DMG_FROM_OTHER_SAPPER
+DMG_USE_HITLOCATIONS		33554432 - Damage type used by weapons the ambassor and the scrapped smg and pistol variants. Associated with being able to headshot, but does not inhenertly seem to allow headshotting (at least not if overriden at this point.)
+\ also DMG_ARIBOAT
+DMG_DONT_COUNT_DAMAGE_TOWARDS_CRIT_RATE	67108864 - Damage doesn't contribute towards the crit crit calcuations I think? Also comes with one of the funnier Valve comments in the code imo.
+\ also DMG_DISSOLVE
+DMG_MELEE					134217728 - Not melee damage, but is is still set by most melees. Great job Volvo. Indicates the game that the damage is NOT ranged damage, and makes this destroy stickybombs.
+\ also DMG_BLAST_SURFACE
+DMG_DIRECT					268435456 - Might have an effect? If it does I can't figure it out.
+DMG_BUCKSHOT				536870912 - Bullet damage again. Not sure what's different with this one. Also makes this destroy stickybombs, although if it didn't destroy them it would push them back 62.5% less for some unfathomable reason?
+
+Custom damage types (Mostly copy pasted from Kiri's attribute listing.)
+TO DO: Replace this with an explanation more like the above at some point!
+1 - Headshot (Anim, Kill Icon, Particles. Triggers things like headshot explosion!)
+2 - Backstab (Anim, Kill Icon)
+3 - Burning (Anim. No other special effects)
+6 - World Hazard (Killfeed says you Finished Off enemy)
+7 - Pyro Tauntkill (Kill Icon. No other special effects)
+8 - Flare Gun (Kill Icon, makes an afterburn sound)
+9 - Fists Tauntkill (Kill Icon)
+10 - Sandman Tauntkill (Kill Icon)
+13 - Knife Tauntkill (Kill Icon)
+15 - Huntsman Tauntkill (Kill Icon)
+16 - Telefrag (Kill Icon. No other special effects)
+17 - Flaming Arrow (Kill Icon. No other special effects)
+18 - Flaming Arrow (Different Kill Icon. No other special effects)
+19 - Pumpkin Bomb (Kill Icon)
+20 - Decapitation! (Anim, Particles)
+21 - Equalizer Tauntkill (Kill Icon)
+22 - Baseball (Kill Icon)
+24 - Eyelander Tauntkill (Anim, Kill Icon. It uses the wrong kill-icon, strangely?)
+22 - Equalizer (Kill Icon)
+29 - Überspritze Tauntkill (Kill Icon)
+30 - Wrangler (Kill Icon)
+33 - Guitar Tauntkill (Kill Icon, smashes ragdoll's head into neck!)
+34 - Bleed (Kill Icon)
+35 - Gold Wrench (Ragdolls freeze pose and drop, also has sfx)
+36 - Hauled Building Destroyed (Kill Icon)
+37 - Gunslinger Combo (Kill Icon)
+38 - Gunslinger Tauntkill (Kill Icon)
+40 - Trigger_Hurt (Kill Icon)
+41 - HHH Decap (Anim, Particles, Kill Icon)
+42 - Ullapool Caber (Kill Icon)
+44 - Detonator (Kill Icon)
+45 - Mantreads Stomp (Kill Icon. Stomp! particles on every hit!)
+46 - Mangler Damage (Particles, vaporizes ragdolls)
+47 - Charged Manger Damage (Particles, gibs and vaporizes ragdolls! Also makes damage do mini-crits)
+50 - Monoculus (Kill Icon)
+51 - Headshot Decap (Anim, Particles, Kill Icon)
+52 - Rainblower Tauntkill (Kill Icon)
+53 - Scorch Shot Tauntkill (Sends enemies flying back! No other special effects)
+55 - Cleaver Combo (Makes damage do mini-crits?)
+56 - Red-Tape Recorder (Kill Icon)
+57 - HWN Headbomb (Kill Icon)
+58 - Merasmus Bombs (Kill Icon)
+59 - Merasmus Magic (Kill Icon. This is a strange squigglies icon I've never seen before)
+60 - Merasmus Decap (Anim, Particles, Kill Icon)
+61 - Cannonball (Kill Icon)
+62 - Shred Alert Tauntkill (Kill Icon...?)
+65~74 - HWN: Spells (Kill Icon)
+75 - Bumper Bash (Kill Icon, inflicts EXTREME KNOCKBACK on enemies at the right angle!?)
+76 - Necro Smasher (Kill Icon)
+77 - Rune: Reflect (This is weird. You can't hurt anyone if a Crit would otherwise kill them?)
+79 - Dragon's Fury Combo (Kill Icon)
+81 - Crocodile Pit (Kill Icon)
+82 - Jetpack Tauntkill (Kill Icon)
+83 - Axtinguisher Boost (You gain a speed-boost for 3s on kill??)
+84 - Krampus (Kill Icon...? Also shows a big name popup on-kill, "KRAMPUS")
+85 - Krampus (Kill Icon...? Also shows a big name popup on-kill, "KRAMPUS")
+86 - Trickshot Tauntkill (Kill Icon...?)
+
+[LAST UPDATED: TF2C v3.0.11]
+[NOTE: Entries here are liable to change as TF2 / TF2C update!]
+87 - Earthquake (Kill Icon, Inflicts weak upward knockback to enemy)
+88 - Airshot (Kill Text)
+89 - Harvester Decap (Anim, Particles, Kill Icon)
+90 - MIRV Impact (Kill Icon)
+91 - Cyclops Combo (Kill Text, Sound Effects)
+92 - Jump Pad Stomp (Kill Icon)
+93 - Boioing! (Sends ragdoll flying! Killfeed says you Finished Off enemy)
+94 - Stomp (Sends ragdoll down. Killfeed says you Finished Off enemy)
+95 - Ash Disintegration (Disintegrates into ash. Killfeed says you Finished Off enemy)
+96 - Knockback (Sends ragdoll further away! No other special effects)
+97 - Decapitation II (Decaps! Killfeed says you Finished Off enemy)
+98 - Gold Statue (Turns ragdoll to gold! Killfeed says you Finished Off enemy)
+99 - Ice Statue (Turns ragdoll to ice / silver! Killfeed says you Finished Off enemy)
+100 - Disintegration II (Disintegrates! Killfeed says you Finished Off enemy)
+101 - Invisify (Cloaks ragdoll after death! Killfeed says you Finished Off enemy)
+[NEED_FIXES] 104 - Gibbed! (Anim, Particles) -- This stopped working extremely recently?
+105 - TF2C Burning Arrow Headshot (Kill Icon, makes sfx)
+106 - TF2C Reflect Arrow Headshot (Kill Icon)
+107 - TF2C Reflect Burning Arrow (Kill Icon)
+109 - Shock Therapy (Kill Icon)
+111 - MIRV Tauntkill (Kill Icon)
+112 - Harvester Tauntkill (Anim, Particles, Kill Icon)
 
 		"15330"
 		{
