@@ -56,7 +56,8 @@ DMG_USE_HITLOCATIONS		33554432 - Damage type used by weapons the ambassor and th
 \ also DMG_ARIBOAT
 DMG_DONT_COUNT_DAMAGE_TOWARDS_CRIT_RATE	67108864 - Damage doesn't contribute towards the crit crit calcuations I think? Also comes with one of the funnier Valve comments in the code imo.
 \ also DMG_DISSOLVE
-DMG_MELEE					134217728 - Not melee damage, but is is still set by most melees. Great job Volvo. Indicates the game that the damage is NOT ranged damage, and makes this destroy stickybombs.
+DMG_MELEE					134217728 - Not melee damage (in that it doesn't utilize the resistances), but is still set by most melees. (Melee damage isn't melee damage. Great job Volvo.)
+| Indicates to the game that the damage is NOT ranged damage (not sure what exactly that entails), and makes this destroy stickybombs.
 \ also DMG_BLAST_SURFACE
 DMG_DIRECT					268435456 - Might have an effect? If it does I can't figure it out.
 DMG_BUCKSHOT				536870912 - Bullet damage again. Not sure what's different with this one. Also makes this destroy stickybombs, although if it didn't destroy them it would push them back 62.5% less for some unfathomable reason?
