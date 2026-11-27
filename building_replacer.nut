@@ -13,6 +13,7 @@ if (!("playeractivebuildings" in getroottable())) {
 	{
 		playeractivebuildings.append([[],[],[],[],[],[]])
 	}
+	roundstart <- Time()
 }
 
 // An array of the class names of all of the buildings, self explanatory. Checked to determine building type index.
@@ -367,10 +368,18 @@ function OnEntityCreatedBuilding(entity)
 			}
 		}
 	}
+	function OnGameEvent_teamplay_restart_round(params)
+	{
+		roundstart <- Time()
+	}
 
 	// Check stuff the we should be checking EVERY time the player resupplies
 	function OnGameEvent_post_inventory_application(params)
 	{
+		if (roundstart == Time())
+		{
+			return // Prevents a game crash, and should never be nessesary.
+		}
 		local player = GetPlayerFromUserID(params.userid)
 		local playerscope = player.GetScriptScope()
 		playerscope.extrasentry <- GetWearableAttribute(player, "extra sentries", 0)
@@ -400,6 +409,7 @@ function OnEntityCreatedBuilding(entity)
 					building.Kill()
 					buildings[i].remove(buildings[i].find(building))
 					// Overkill but works
+					// TO DO: DO BETTER
 					foreach (sentry in buildings[0])
 					{
 						NetProps.SetPropInt(sentry, "m_iObjectType", 2)
