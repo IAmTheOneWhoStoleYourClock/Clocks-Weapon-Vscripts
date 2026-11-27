@@ -368,7 +368,12 @@ function OnEntityCreatedBuilding(entity)
 			}
 		}
 	}
+	// For some reason, multi buildings will crash the game if checked at round start, so keep track in a variable when the round starts
 	function OnGameEvent_teamplay_restart_round(params)
+	{
+		roundstart <- Time()
+	}
+	function OnGameEvent_stats_resetround(params)
 	{
 		roundstart <- Time()
 	}
