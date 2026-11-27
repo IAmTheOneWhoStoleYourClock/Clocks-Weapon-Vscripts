@@ -1039,11 +1039,17 @@ function GetPlayerActiveBuildings(player)
 	local index = player.GetEntityIndex()
 	foreach (i in playeractivebuildings[index-1])
 	{
-		foreach (k in i)
+		local k = 0
+		while (k < i.len())
 		{
-			if (!k || !k.IsValid() || !IsScriptedBuilding(k)) 
+			local val = i[k]
+			if (!val || !val.IsValid() || !IsScriptedBuilding(val)) 
 			{
-				i.remove(i.find(k))
+				i.remove(i.find(val))
+			}
+			else
+			{
+				k++;
 			}
 		}
 	}
