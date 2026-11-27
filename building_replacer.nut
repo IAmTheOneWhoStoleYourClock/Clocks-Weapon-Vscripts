@@ -449,6 +449,7 @@ function OnEntityCreatedBuilding(entity)
 						if (scope.maxlevel > maxlevel && Convars.GetBool("cvs_enforce_level_limit") || scope.maxlevel < maxlevel && Convars.GetBool("cvs_lax_level_limit"))
 						{
 							scope.maxlevel = maxlevel
+							NetProps.SetPropInt(building, "m_bIsUpgradable", scope.maxlevel > scope.currlevel ? 1 : 0)
 						}
 						local healtharray = GetBuildingHealthArray(player, i, scope.maxlevel)
 						if ((healtharray[level-1] < scope.healthlvls[level-1] && Convars.GetBool("cvs_enforce_health_limit")) || (healtharray[level-1] > scope.healthlvls[level-1] && Convars.GetBool("cvs_lax_health_limit")))
