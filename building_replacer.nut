@@ -1047,13 +1047,6 @@ function GetPlayerActiveBuildings(player)
 			}
 		}
 	}
-	foreach (i in playeractivebuildings[index-1])
-	{
-		foreach (k in i)
-		{
-			printl(k)
-		}
-	}
 	return playeractivebuildings[index-1]
 }
 
