@@ -14,6 +14,7 @@ if (!("playeractivebuildings" in getroottable())) {
 		playeractivebuildings.append([[],[],[],[],[],[]])
 	}
 	roundstart <- Time()
+	playerbuildingcheckcooldown <- array(MaxPlayers(), Time())
 }
 
 // An array of the class names of all of the buildings, self explanatory. Checked to determine building type index.
@@ -368,7 +369,7 @@ function OnEntityCreatedBuilding(entity)
 			}
 		}
 	}
-	// For some reason, multi buildings will crash the game if checked at round start, so keep track in a variable when the round starts
+	// For some reason, multi buildings will crash the game if checked at the wrong time, so keep track of some variables.
 	function OnGameEvent_teamplay_restart_round(params)
 	{
 		roundstart <- Time()
@@ -377,20 +378,27 @@ function OnEntityCreatedBuilding(entity)
 	{
 		roundstart <- Time()
 	}
+	function OnGameEvent_player_changeclass(params)
+	{
+		local player = GetPlayerFromUserID(params.userid)
+		local index = player.GetEntityIndex()
+		playeractivebuildings[index] = [[],[],[],[],[],[]] // Force clear buildings.
+		playerbuildingcheckcooldown[index] = Time()
+	}
 
 	// Check stuff the we should be checking EVERY time the player resupplies
 	function OnGameEvent_post_inventory_application(params)
 	{
-		if (roundstart == Time())
-		{
-			return // Prevents a game crash, and should never be nessesary.
-		}
 		local player = GetPlayerFromUserID(params.userid)
 		local playerscope = player.GetScriptScope()
 		playerscope.extrasentry <- GetWearableAttribute(player, "extra sentries", 0)
 		playerscope.extradispenser <- GetWearableAttribute(player, "extra dispensers", 0)
 		playerscope.extrapadA <- GetWearableAttribute(player, "extra padA", 0)
 		playerscope.extrapadB <- GetWearableAttribute(player, "extra padB", 0)
+		if (roundstart == Time() || playerbuildingcheckcooldown[player.GetEntityIndex()] == Time())
+		{
+			return // Should not be nessesary but somehow is.
+		}
 
 		local buildings = GetPlayerActiveBuildings(player)
 		// Looking at this gives me a headache but any comments here would just be redundant I think
