@@ -369,22 +369,6 @@ function OnEntityCreatedBuilding(entity)
 			}
 		}
 	}
-	// For some reason, multi buildings will crash the game if checked at the wrong time, so keep track of some variables.
-	function OnGameEvent_teamplay_restart_round(params)
-	{
-		roundstart <- Time()
-	}
-	function OnGameEvent_stats_resetround(params)
-	{
-		roundstart <- Time()
-	}
-	function OnGameEvent_player_changeclass(params)
-	{
-		local player = GetPlayerFromUserID(params.userid)
-		local index = player.GetEntityIndex()
-		playeractivebuildings[index] = [[],[],[],[],[],[]] // Force clear buildings.
-		playerbuildingcheckcooldown[index] = Time()
-	}
 
 	// Check stuff the we should be checking EVERY time the player resupplies
 	function OnGameEvent_post_inventory_application(params)
@@ -395,10 +379,6 @@ function OnEntityCreatedBuilding(entity)
 		playerscope.extradispenser <- GetWearableAttribute(player, "extra dispensers", 0)
 		playerscope.extrapadA <- GetWearableAttribute(player, "extra padA", 0)
 		playerscope.extrapadB <- GetWearableAttribute(player, "extra padB", 0)
-		if (roundstart == Time() || playerbuildingcheckcooldown[player.GetEntityIndex()] == Time())
-		{
-			return // Should not be nessesary but somehow is.
-		}
 
 		local buildings = GetPlayerActiveBuildings(player)
 		// Looking at this gives me a headache but any comments here would just be redundant I think
@@ -410,11 +390,13 @@ function OnEntityCreatedBuilding(entity)
 				local building = buildings[i][k]
 				if (!building || !building.IsValid())
 				{
+					k++;
 					continue
 				}
 				local scope = building.GetScriptScope()
 				if (!scope)
 				{
+					k++;
 					continue
 				}
 				if (scope.compat != GetWearableAttribute(player, buildingtypesconvert[i] + " compatability", 0) || k > GetBuildingExtra(player, i+1))
@@ -1063,6 +1045,13 @@ function GetPlayerActiveBuildings(player)
 			{
 				i.remove(i.find(k))
 			}
+		}
+	}
+	foreach (i in playeractivebuildings[index-1])
+	{
+		foreach (k in i)
+		{
+			printl(k)
 		}
 	}
 	return playeractivebuildings[index-1]
