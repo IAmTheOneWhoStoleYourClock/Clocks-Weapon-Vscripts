@@ -363,7 +363,7 @@ function OnEntityCreatedBuilding(entity)
 
 			if (scope.bboverride)
 			{
-				ReapeatingFunctionInTime(BBoxOrientBlueprint,0.015,[entity, owner])
+				ReapeatingFunctionInTime(BBoxOrientBlueprint,0.015,[entity, scope.builder])
 			}
 		}
 	}
@@ -427,7 +427,7 @@ function OnEntityCreatedBuilding(entity)
 					if (level > maxlevel && Convars.GetBool("cvs_icarus_level_limit"))
 					{
 						building.Kill()
-						buildings.remove(buildings.find(building))
+						buildings[i].remove(buildings[i].find(building))
 					}
 					else
 					{
