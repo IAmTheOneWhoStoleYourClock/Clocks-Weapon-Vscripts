@@ -77,7 +77,14 @@ function MedievalMyMode(player)
 			continue
 		if (!wearable.GetAttribute("allowed in medieval mode", 0) && NetProps.GetPropInt(wearable, "m_AttributeManager.m_Item.m_iItemDefinitionIndex") != 65535)
 		{
-			wearable.Destroy()
+			try
+			{
+				wearable.Destroy()
+			}
+			catch (e)
+			{
+				wearable = player.FirstMoveChild()
+			}
 		}
 	}
 }
